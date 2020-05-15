@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "348445979536",
+    "firebase_url": "https://synthia-app-eip.firebaseio.com",
+    "project_id": "synthia-app-eip",
+    "storage_bucket": "synthia-app-eip.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348445979536:android:b1d7effdae9bac3efe3915",
+        "android_client_info": {
+          "package_name": "com.synthia.synthiaapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "348445979536-cdq9fa1a87i98uj2jnsvv6ma9ujcbdmh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsFgJQTqNxa-ZtNgnj1FmKT4poGVvkVK4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "348445979536-cdq9fa1a87i98uj2jnsvv6ma9ujcbdmh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

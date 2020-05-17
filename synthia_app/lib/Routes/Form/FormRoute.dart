@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../Form/meetingInformation.dart';
-import '../../Models/Form.dart';
-
-// Debug
-import 'dart:developer';
+import '../../Form/meetingSummary.dart';
+import '../../Models/FormModel.dart';
+import '../../Form/meetingListMembers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyForm extends StatefulWidget {
 	MyForm() : super();
@@ -17,6 +17,7 @@ class Form extends State<MyForm> {
 	int _current = 0;
 	bool _error = false;
 	MeetingData model = MeetingData();
+	final databaseReference = Firestore.instance;
 
 	Step customStep(title, content, index, error) {
 		return Step(
@@ -30,10 +31,16 @@ class Form extends State<MyForm> {
 	List<Step> getSteps(BuildContext context) {
 		List<Step> _steps = [
 			customStep('What\'s it about ?', MeetingBasicInfo(model), 0, _error),
-			customStep('Who is participating ?', Text('lol'), 1, _error),
-			customStep('Summary', Text(''), 2, _error)
+			customStep('Who is participating ?', MeetingMembers(model), 1, _error),
+			customStep('Summary', MeetingSummary(model), 2, _error)
 		];
 		return _steps;
+	}
+
+	void pushDataMeeting() async {
+		await databaseReference.collection('meetings')
+				.document(model.getMeetingId())
+				.setData(model.getData());
 	}
 
 	@override
@@ -48,17 +55,19 @@ class Form extends State<MyForm> {
 					steps: steps,
 					currentStep: _current,
 					onStepContinue: () {
-						// log(model.getData().toString());
-						if (model.getMeetingTitle() == null && model.getMeetingSubject() == null) {
-							log('ERRORR');
+						print(model.getData().toString());
+						if (model.verify(_current)== false) {
 							setState(() {
 								_error = true;
 							  _current = _current;
 							});
 						} else {
-							log('NOT EROR');
 							setState(() {
 								_error = false;
+								if (_current >= steps.length - 1) {
+									pushDataMeeting();
+									Navigator.pop(context);
+								}
 								_current < steps.length - 1 ? _current++ : _current = steps.length - 1;
 							});
 						}

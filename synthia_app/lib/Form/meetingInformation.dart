@@ -1,10 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:synthiaapp/Models/Form.dart';
+import 'package:synthiaapp/Models/FormModel.dart';
 
 class MeetingBasicInfo extends StatefulWidget {
-	MeetingData model;
+	final MeetingData model;
 	MeetingBasicInfo([this.model]);
 
 	@override
@@ -61,12 +59,12 @@ class Info extends State<MeetingBasicInfo> {
 						Container(
 							child: Column(
 								children: <Widget>[
-									Text('Your meeting will start the ' + _date.day.toString() + '/' + _date.month.toString() + '/' + _date.year.toString()),
+									Text(widget.model.getMeetingSubject() == null ? '' : 'Your meeting will start the ' + _date.day.toString() + '/' + _date.month.toString() + '/' + _date.year.toString()),
 									FlatButton(
 										onPressed: () {
 											pickDate(context);
 										},
-										child: Text('Change meeting schedule.'),
+										child: Text(widget.model.getMeetingSchedule() == null ? 'Please pick a date' : 'Change meeting schedule.'),
 									),
 								],
 							),

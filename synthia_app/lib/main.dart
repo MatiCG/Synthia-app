@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'Routes/FormRoute.dart';
 
 void main() {
   runApp(MyApp());
@@ -37,6 +38,12 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: ListPage(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MyForm()));
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }

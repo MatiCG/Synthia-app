@@ -13,7 +13,6 @@ class MyForm extends StatefulWidget {
 }
 
 class Form extends State<MyForm> {
-	// Globals
 	int _current = 0;
 	bool _error = false;
 	MeetingData model = MeetingData();

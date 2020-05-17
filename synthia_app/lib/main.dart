@@ -30,6 +30,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int selectedPage = 0;
+
+  static List<Widget> pages = [
+    ListPage(),
+    Text('lol'),
+    Text('ok'),
+  ];
+
+  BottomNavigationBarItem createBNBitem(title, icon) {
+    return BottomNavigationBarItem(
+      title: Text(title),
+      icon: Icon(icon),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +51,20 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: ListPage(),
+      body: pages.elementAt(selectedPage),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          createBNBitem('home', Icons.home),
+          createBNBitem('organization', Icons.work),
+          createBNBitem('account', Icons.account_box),
+        ],
+        currentIndex: selectedPage,
+        onTap: (index) {
+          setState(() {
+            selectedPage = index;
+          });
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => MyForm()));

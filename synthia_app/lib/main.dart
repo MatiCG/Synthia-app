@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'Routes/FormRoute.dart';
+import 'Routes/Form/FormRoute.dart';
+// Import pages for navBar
+import 'Pages/HomePage.dart';
+import 'Pages/AccountPage.dart';
+import 'Pages/OrganizationPage.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,8 +37,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static List<Widget> pages = [
     ListPage(),
-    Text('lol'),
-    Text('ok'),
+    OrganizationPage(),
+    AccountPage(),
   ];
 
   BottomNavigationBarItem createBNBitem(title, icon) {
@@ -70,78 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.push(context, MaterialPageRoute(builder: (context) => MyForm()));
         },
         child: Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-class ListPage extends StatefulWidget {
-  @override
-  _ListPageState createState()=> _ListPageState();
-}
-
-class _ListPageState extends State<ListPage> {
-  Future getPosts() async {
-    var firestore = Firestore.instance;
-
-    QuerySnapshot qn = await firestore.collection("meetings").getDocuments();
-
-    return qn.documents;
-  }
-
-  navigateToDetail(DocumentSnapshot post){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(post: post,)));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: FutureBuilder(
-          future: getPosts(),
-          builder: (_, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: Text("Loading ..."),
-              );
-            } else {
-              return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (_, index){
-                    return Card(
-                      child: ListTile(
-                        title: Text(snapshot.data[index].data["title"]),
-                        onTap: () => navigateToDetail(snapshot.data[index]),
-                      ),
-                    );
-                  });
-            }
-          }),
-    );
-  }
-}
-
-class DetailPage extends StatefulWidget {
-
-  final DocumentSnapshot post;
-
-  DetailPage({this.post});
-
-  @override
-  _DetailPageState createState()=> _DetailPageState();
-}
-
-class _DetailPageState extends State<DetailPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Text(widget.post.data["title"])
-      ),
-      body: Container(
-        child: ListTile(
-          title: Text(widget.post.data["title"]),
-          subtitle: Text(widget.post.data["description"]),
-        ),
       ),
     );
   }

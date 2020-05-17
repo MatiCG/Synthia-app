@@ -24,7 +24,7 @@ class Form extends State<MyForm> {
 			title: Text(_current == index ? title : ''),
 			content: content,
 			isActive: _current > index ? true : false,
-			state: error == true && index == _current ? StepState.error : _current == index ? StepState.editing : _current > 0 ? StepState.complete : StepState.disabled
+			state: error == true && index == _current ? StepState.error : _current == index ? StepState.editing : _current > index ? StepState.complete : StepState.disabled
 		);
 	}
 

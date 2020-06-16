@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:synthiaapp/Services/HttpService.dart' as httpService;
 
 class TestPage extends StatefulWidget {
   TestPage() : super();
@@ -11,6 +12,7 @@ class TestPage extends StatefulWidget {
   @override
   Test createState() => Test();
 }
+
 
 class Test extends State<TestPage> {
  @override
@@ -22,6 +24,11 @@ class Test extends State<TestPage> {
           RaisedButton(
             onPressed: _send,
             child: const Text('Send Test Email', style: TextStyle(fontSize: 20)),
+          ),
+          const SizedBox(height: 30),
+          RaisedButton(
+            onPressed: httpService.sendConfirmationEmail(),
+            child: const Text('Send Confirmation', style: TextStyle(fontSize: 20)),
           ),
           const SizedBox(height: 30)
         ],

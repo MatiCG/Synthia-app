@@ -6,6 +6,7 @@ import 'Routes/Form/FormRoute.dart';
 import 'Pages/HomePage.dart';
 import 'Pages/AccountPage.dart';
 import 'Pages/OrganizationPage.dart';
+import 'Pages/TestPage.dart';
 
 void main() => runApp(MyApp());
 
@@ -46,6 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ListPage(),
     OrganizationPage(),
     AccountPage(),
+    TestPage(),
   ];
 
   BottomNavigationBarItem createBNBitem(title, icon) {
@@ -78,10 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: pages.elementAt(selectedPage),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[
           createBNBitem('home', Icons.home),
           createBNBitem('organization', Icons.work),
           createBNBitem('account', Icons.account_box),
+          createBNBitem('mail test', Icons.mail),
         ],
         currentIndex: selectedPage,
         onTap: (index) {

@@ -30,6 +30,9 @@
 .pub/
 /build/
 
+#secret keys related
+secrets.json
+
 # Web related
 lib/generated_plugin_registrant.dart
 

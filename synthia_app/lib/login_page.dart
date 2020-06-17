@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'primary_button.dart';
 import 'auth.dart';
+import 'Services/Mailer.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title, this.auth, this.onSignIn}) : super(key: key);
@@ -44,6 +45,25 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           _authHint = 'Signed In\n\nUser id: $userId';
         });
+          if (_formType == FormType.register) {
+            Map<String, dynamic> toJson() =>
+            {
+              "from": {
+                'email': "synthia@no-reply.com",
+              },
+              "personalizations": [{
+                "to": [{
+                  "email": _email
+                }],
+                "dynamic_template_data": {
+                  "name": _email.substring(0, _email.indexOf('@'))
+                }
+              }],
+              "template_id": "d-f9371f5562984dcd8f2e21ca75423924"
+            };
+            Mailer mailer = new Mailer();
+            await mailer.sendMail(toJson());
+          }
         widget.onSignIn();
       }
       catch (e) {

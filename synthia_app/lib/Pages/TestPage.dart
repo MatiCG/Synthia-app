@@ -26,8 +26,7 @@ class Test extends State<TestPage> {
         }],
         "dynamic_template_data": {
           "name": "Matias"
-        },
-        "subject": "Thanks for joining Synthia"
+        }
       }],
       "template_id": "d-f9371f5562984dcd8f2e21ca75423924"
     };

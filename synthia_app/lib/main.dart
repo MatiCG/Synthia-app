@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'root_page.dart';
+import 'auth.dart';
 import 'Routes/Form/FormRoute.dart';
 // Import pages for navBar
 import 'Pages/HomePage.dart';
@@ -6,34 +8,39 @@ import 'Pages/AccountPage.dart';
 import 'Pages/OrganizationPage.dart';
 import 'Pages/TestPage.dart';
 
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Synthia App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Meeting list'),
+      home: RootPage(auth: new Auth()),
     );
   }
+  
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key key, this.title, this.auth, this.onSignOut}) : super(key: key);
 
   final String title;
+  final BaseAuth auth;
+  final VoidCallback onSignOut;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState(auth: auth, onSignOut: onSignOut);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  _MyHomePageState({this.auth, this.onSignOut});
+
+  final BaseAuth auth;
+  final VoidCallback onSignOut;
   int selectedPage = 0;
 
   static List<Widget> pages = [
@@ -52,9 +59,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    void _signOut() async {
+      try {
+        await auth.signOut();
+        onSignOut();
+      } catch (e) {
+        print(e);
+      }
+    }
+    
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
+      appBar: new AppBar(
+          actions: <Widget>[
+            new FlatButton(
+                onPressed: _signOut,
+                child: new Text('Logout', style: new TextStyle(fontSize: 17.0, color: Colors.white))
+            )
+          ],
       ),
       body: pages.elementAt(selectedPage),
       bottomNavigationBar: BottomNavigationBar(

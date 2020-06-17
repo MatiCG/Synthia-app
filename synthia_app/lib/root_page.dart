@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:synthiaapp/main.dart';
 import 'auth.dart';
 import 'login_page.dart';
-import 'home_page.dart';
+import 'main.dart';
 
 class RootPage extends StatefulWidget {
   RootPage({Key key, this.auth}) : super(key: key);
@@ -45,9 +46,10 @@ class _RootPageState extends State<RootPage> {
           onSignIn: () => _updateAuthStatus(AuthStatus.signedIn),
         );
       case AuthStatus.signedIn:
-        return new HomePage(
+        return new MyHomePage(
+            title: 'Meetings',
             auth: widget.auth,
-            onSignOut: () => _updateAuthStatus(AuthStatus.notSignedIn)
+            onSignOut: () => _updateAuthStatus(AuthStatus.notSignedIn),
         );
     }
   }

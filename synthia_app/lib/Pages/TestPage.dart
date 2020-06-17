@@ -1,11 +1,9 @@
 
 import 'dart:async';
-import 'dart:io';
-
+import '../Services/Mailer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:synthiaapp/Services/HttpService.dart' as httpService;
-
+import '../Services/SecretLoader.dart';
 class TestPage extends StatefulWidget {
   TestPage() : super();
 
@@ -15,6 +13,31 @@ class TestPage extends StatefulWidget {
 
 
 class Test extends State<TestPage> {
+
+  Future<void> testSendGrid() async {
+    Map<String, dynamic> toJson() =>
+    {
+      "from": {
+        'email': "synthia@no-reply.com",
+      },
+      "personalizations": [{
+        "to": [{
+          "email": "matias.castro-guzman@epitech.eu"
+        }],
+        "dynamic_template_data": {
+          "name": "Matias"
+        },
+        "subject": "Thanks for joining Synthia"
+      }],
+      "template_id": "d-f9371f5562984dcd8f2e21ca75423924"
+    };
+
+    Mailer mailer = new Mailer();
+    var response = await mailer.sendMail(toJson());
+    print(response.statusCode);
+    print(response.body);
+  }
+
  @override
   Widget build(BuildContext context) {
     return Center(
@@ -27,7 +50,7 @@ class Test extends State<TestPage> {
           ),
           const SizedBox(height: 30),
           RaisedButton(
-            onPressed: httpService.sendConfirmationEmail(),
+            onPressed: testSendGrid,
             child: const Text('Send Confirmation', style: TextStyle(fontSize: 20)),
           ),
           const SizedBox(height: 30)

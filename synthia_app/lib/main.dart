@@ -80,6 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: pages.elementAt(selectedPage),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[
           createBNBitem('home', Icons.home),
           createBNBitem('organization', Icons.work),

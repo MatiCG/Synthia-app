@@ -20,9 +20,6 @@ version: 1.0.0+1
 environment:
   sdk: ">=2.7.0 <3.0.0"
 
-assets:
-  - secrets.json
-
 dependencies:
   flutter:
     sdk: flutter
@@ -52,6 +49,8 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - secrets.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

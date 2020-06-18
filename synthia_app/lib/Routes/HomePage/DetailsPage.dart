@@ -33,7 +33,8 @@ class _DetailPageState extends State<DetailPage> {
             "email": values[selected]
           }],
           "dynamic_template_data": {
-            "email": user
+            "email": user,
+            "title": widget.post.data["title"]
           }
         }],
         "template_id": "d-bdca15e6acdd40b988f665d7c3bf1c59"
@@ -63,6 +64,26 @@ class _DetailPageState extends State<DetailPage> {
     await sendSynthesis(values, selectedValues);
   }
 
+  Future<void> _showMultiSelectSynthesis(BuildContext context) async {
+
+    final items = <MultiSelectDialogItem<int>>[
+      MultiSelectDialogItem(0, "pdf"),
+      MultiSelectDialogItem(1, "docx"),
+      MultiSelectDialogItem(2, "odt"),
+      MultiSelectDialogItem(3, "txt"),
+    ];
+
+    final selectedValues = await showDialog<Set<int>>(
+      context: context,
+      builder: (BuildContext context) {
+        return MultiSelectDialog(
+          items: items,
+          initialSelectedValues: [0].toSet(),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,6 +97,10 @@ class _DetailPageState extends State<DetailPage> {
           ListTile(
           title: Text(widget.post.data["title"]),
           subtitle: Text(widget.post.data["description"]),
+          ),
+          RaisedButton(
+            onPressed: () => _showMultiSelectSynthesis(context),
+            child: const Text('Synthesis options', style: TextStyle(fontSize: 20)),
           ),
           RaisedButton(
             onPressed: () => _showMultiSelect(context),

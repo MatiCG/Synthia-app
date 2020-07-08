@@ -1,0 +1,27 @@
+name: Flutter CI
+
+on: [push,pull_request]
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '1.12.14'
+          channel: 'dev'
+      - run: |
+          cd synthia_app
+          flutter pub get
+      - run: |
+          cd synthia_app
+          flutter  analyze
+      - run: |
+          cd synthia_app
+          flutter test --coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: coverage/lcov.info

@@ -3,7 +3,6 @@ import 'dart:async';
 import '../Services/Mailer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import '../Services/SecretLoader.dart';
 class TestPage extends StatefulWidget {
   TestPage() : super();
 
@@ -69,13 +68,10 @@ class Test extends State<TestPage> {
       isHTML: false,
     );
 
-    String platformResponse;
-
     try {
       await FlutterEmailSender.send(email);
-      platformResponse = 'success';
     } catch (error) {
-      platformResponse = error.toString();
+      //platformResponse = error.toString();
     }
   }
 }

@@ -52,5 +52,10 @@ class _RootPageState extends State<RootPage> {
             onSignOut: () => _updateAuthStatus(AuthStatus.notSignedIn),
         );
     }
+    return new LoginPage(
+          title: 'Flutter Login',
+          auth: widget.auth,
+          onSignIn: () => _updateAuthStatus(AuthStatus.signedIn),
+        );
   }
 }

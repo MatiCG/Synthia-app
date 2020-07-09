@@ -2,7 +2,6 @@ import 'dart:async' show Future;
 import 'dart:convert' show json;
 import 'package:http/http.dart' as http;
 import 'SecretLoader.dart';
-import 'dart:developer';
 
 class Mailer {
 

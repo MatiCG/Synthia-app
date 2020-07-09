@@ -73,7 +73,7 @@ class _DetailPageState extends State<DetailPage> {
       MultiSelectDialogItem(3, "txt"),
     ];
 
-    final selectedValues = await showDialog<Set<int>>(
+    await showDialog<Set<int>>(
       context: context,
       builder: (BuildContext context) {
         return MultiSelectDialog(

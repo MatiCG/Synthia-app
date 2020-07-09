@@ -11,15 +11,9 @@ jobs:
         with:
           flutter-version: '1.16.0'
           channel: 'dev'
-      - run: |
-          cd synthia_app
-          flutter pub get
-      - run: |
-          cd synthia_app
-          flutter  analyze
-      - run: |
-          cd synthia_app
-          flutter test --coverage
+      - run: flutter pub get
+      - run: flutter  analyze
+      - run: flutter test --coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:

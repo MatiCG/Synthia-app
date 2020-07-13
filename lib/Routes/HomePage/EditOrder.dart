@@ -71,11 +71,9 @@ class _EditOrderState extends State<EditOrder> {
   void _saveDocument(BuildContext context) {
     final contents = jsonEncode(_controller.document);
     firestore.collection("meetings").where('title', isEqualTo: widget.post.data['title']).getDocuments().then((QuerySnapshot meetings) {
-      if (meetings.documents[0].data["order"].isNotEmpty) {
         firestore.collection("meetings").document(meetings.documents[0].documentID).updateData({"order": contents}).then((_) {
           Scaffold.of(context).showSnackBar(SnackBar(content : Text("Saved.")));
         });
-      }
     });
   }
 }

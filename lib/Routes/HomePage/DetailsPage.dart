@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:synthiaapp/Routes/HomePage/EditOrder.dart';
 import 'MultiSelect.dart';
 import '../../Services/Mailer.dart';
 import '../../auth.dart';
@@ -16,6 +17,9 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   final auth = new Auth();
+  var firestore = Firestore.instance;
+
+
 
   Future<void> sendSynthesis(values, Set<int> selectedValues) async {
     Mailer mailer = new Mailer();
@@ -83,12 +87,50 @@ class _DetailPageState extends State<DetailPage> {
       },
     );
   }
+  
+  emailPopUp(BuildContext context) {
+    TextEditingController customController = new TextEditingController();
+    
+    return showDialog(context: context, builder: (context) {
+      return AlertDialog (
+        title: Text("Enter Email"),
+        content: TextField(
+          controller: customController,
+        ),
+        actions: <Widget>[
+          MaterialButton (
+            elevation: 5.0,
+            child: Text("Share"),
+            onPressed: () {
+              firestore.collection("meetings").where('title', isEqualTo: widget.post.data['title']).getDocuments().then((QuerySnapshot meetings) {
+                firestore.collection("meetings").document(meetings.documents[0].documentID).updateData({"members": FieldValue.arrayUnion([customController.text.toString()])}).then((_) {
+                });
+              });
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      );
+    });
+  }
+
+  navigateToEditOrder(DocumentSnapshot post){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => EditOrder(post: post,)));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text(widget.post.data["title"])
+          title: Text(widget.post.data["title"]),
+            actions: <Widget>[
+              Builder(
+               builder: (context) => IconButton(
+                icon: Icon(Icons.share),
+                onPressed: () => emailPopUp(context),
+                ),
+              )
+          ],
       ),
       body: Container(
         child: Column(
@@ -105,6 +147,10 @@ class _DetailPageState extends State<DetailPage> {
           RaisedButton(
             onPressed: () => _showMultiSelect(context),
             child: const Text('Send Synthesis', style: TextStyle(fontSize: 20)),
+          ),
+          RaisedButton(
+            onPressed: () => navigateToEditOrder(widget.post),
+            child: const Text('Edit Order', style: TextStyle(fontSize: 20)),
           ),
           const SizedBox(height: 30)
         ],

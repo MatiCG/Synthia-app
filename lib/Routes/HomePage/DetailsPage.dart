@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:synthiaapp/Routes/HomePage/EditOrder.dart';
 import 'MultiSelect.dart';
 import '../../Services/Mailer.dart';
 import '../../auth.dart';
@@ -84,6 +85,10 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
+  navigateToEditOrder(DocumentSnapshot post){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => EditOrder(post: post,)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,6 +110,10 @@ class _DetailPageState extends State<DetailPage> {
           RaisedButton(
             onPressed: () => _showMultiSelect(context),
             child: const Text('Send Synthesis', style: TextStyle(fontSize: 20)),
+          ),
+          RaisedButton(
+            onPressed: () => navigateToEditOrder(widget.post),
+            child: const Text('Edit Order', style: TextStyle(fontSize: 20)),
           ),
           const SizedBox(height: 30)
         ],

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../Routes/HomePage/DetailsPage.dart';
+import '../auth.dart';
 
 class ListPage extends StatefulWidget {
   @override
@@ -9,10 +10,12 @@ class ListPage extends StatefulWidget {
 }
 
 class _ListPageState extends State<ListPage> {
+  final auth = new Auth();
+
   Future getPosts() async {
     var firestore = Firestore.instance;
 
-    QuerySnapshot qn = await firestore.collection("meetings").getDocuments();
+    QuerySnapshot qn = await firestore.collection("meetings").where("members", arrayContains: await auth.currentUserMail()).getDocuments();
 
     return qn.documents;
   }

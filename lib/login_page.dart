@@ -3,6 +3,18 @@ import 'primary_button.dart';
 import 'auth.dart';
 import 'Services/Mailer.dart';
 
+class EmailFieldValidator {
+  static String validate(String value) {
+    value.isEmpty ? 'Email can\'t be empty.' : null;
+  }
+}
+
+class PasswordFieldValidator {
+  static String validate(String value) {
+    value.isEmpty ? 'Password can\'t be empty.' : null;
+  }
+}
+
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title, this.auth, this.onSignIn}) : super(key: key);
 
@@ -101,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
         key: new Key('email'),
         decoration: new InputDecoration(labelText: 'Email'),
         autocorrect: false,
-        validator: (val) => val.isEmpty ? 'Email can\'t be empty.' : null,
+        validator: EmailFieldValidator.validate,
         onSaved: (val) => _email = val,
       )),
       padded(child: new TextFormField(
@@ -109,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
         decoration: new InputDecoration(labelText: 'Password'),
         obscureText: true,
         autocorrect: false,
-        validator: (val) => val.isEmpty ? 'Password can\'t be empty.' : null,
+        validator: PasswordFieldValidator.validate,
         onSaved: (val) => _password = val,
       )),
     ];

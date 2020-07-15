@@ -6,12 +6,14 @@ import 'Services/Mailer.dart';
 class EmailFieldValidator {
   static String validate(String value) {
     value.isEmpty ? 'Email can\'t be empty.' : null;
+    return null;
   }
 }
 
 class PasswordFieldValidator {
   static String validate(String value) {
     value.isEmpty ? 'Password can\'t be empty.' : null;
+    return null;
   }
 }
 

@@ -5,7 +5,7 @@ void main() {
 
   test('empty email returns error string', () {
     var result = EmailFieldValidator.validate('');
-    expect(result, 'Email can\'t be empty');
+    expect(result, 'Email can\'t be empty.');
   });
 
   test('non-empty email return null', () {
@@ -15,7 +15,7 @@ void main() {
 
   test('empty password returns error string', () {
     var result = PasswordFieldValidator.validate('');
-    expect(result, 'Password can\'t be empty');
+    expect(result, 'Password can\'t be empty.');
   });
 
   test('non-empty password return null', () {

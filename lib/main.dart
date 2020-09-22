@@ -51,6 +51,13 @@ class _MyHomePageState extends State<MyHomePage> {
     TestPage(),
   ];
 
+  static List<String> pagesName = [
+    "Meetings",
+    "Organization",
+    "Account",
+    "Test",
+  ];
+
   BottomNavigationBarItem createBNBitem(title, icon) {
     return BottomNavigationBarItem(
       title: Text(title),
@@ -72,20 +79,24 @@ class _MyHomePageState extends State<MyHomePage> {
     
     return Scaffold(
      appBar: new AppBar(
-        elevation: 0.1,
-          backgroundColor: Colors.blueGrey[800],
-          actions: <Widget>[
+       elevation: 0.1,
+       backgroundColor:  Color.fromRGBO(58, 66, 86, 1.0),
+       title: Text(
+               pagesName[selectedPage],
+               style: TextStyle(color: Colors.white)
+           ),
+       actions: <Widget>[
             new IconButton(
                 onPressed: _signOut,
                 icon: Icon(Icons.clear),
             )
           ],
       ),
-      backgroundColor: Colors.blueGrey[800],
+      backgroundColor:  Color.fromRGBO(58, 66, 86, 1.0),
       body: pages.elementAt(selectedPage),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.blueGrey[800],
-        selectedItemColor: Colors.blueGrey,
+        backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+        selectedItemColor: Colors.white,
         type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[
           createBNBitem('home', Icons.home),

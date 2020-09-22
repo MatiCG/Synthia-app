@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'root_page.dart';
 import 'auth.dart';
 import 'Routes/Form/FormRoute.dart';
@@ -70,16 +71,21 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     
     return Scaffold(
-      appBar: new AppBar(
+     appBar: new AppBar(
+        elevation: 0.1,
+          backgroundColor: Colors.blueGrey[800],
           actions: <Widget>[
-            new FlatButton(
+            new IconButton(
                 onPressed: _signOut,
-                child: new Text('Logout', style: new TextStyle(fontSize: 17.0, color: Colors.white))
+                icon: Icon(Icons.clear),
             )
           ],
       ),
+      backgroundColor: Colors.blueGrey[800],
       body: pages.elementAt(selectedPage),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.blueGrey[800],
+        selectedItemColor: Colors.blueGrey,
         type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[
           createBNBitem('home', Icons.home),

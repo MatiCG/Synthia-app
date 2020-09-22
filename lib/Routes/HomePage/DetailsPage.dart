@@ -114,6 +114,118 @@ class _DetailPageState extends State<DetailPage> {
     });
   }
 
+  Widget topContentText() {
+    return Container(
+        child: new Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 120.0),
+            Icon(
+              Icons.assignment,
+              color: Colors.white,
+              size: 40.0,
+            ),
+            Container(
+              width: 90.0,
+              child: new Divider(color: Colors.green),
+            ),
+            SizedBox(height: 10.0),
+            Text(
+              widget.post.data["title"],
+              style: TextStyle(color: Colors.white, fontSize: 45.0),
+            ),
+            SizedBox(height: 30.0),
+          ],
+        ),
+    );
+  }
+
+  Widget bottomContentText(){
+    return Container(
+       child: Text(
+          widget.post.data["description"],
+          style: TextStyle(fontSize: 18.0),
+        ),
+    );
+  }
+
+  Widget bottomContentButton() {
+    return Container(
+        child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 40.0),
+            child: RaisedButton(
+              onPressed: () => navigateToEditOrder(widget.post),
+              color: Color.fromRGBO(58, 66, 86, 1.0),
+              child:
+              Text("SEE AND EDIT ORDER", style: TextStyle(color: Colors.white)),
+            )),
+    );
+  }
+
+  Widget bottomContent() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.all(40.0),
+      child: Center(
+        child: Column(
+          children: <Widget>[bottomContentText(), bottomContentButton()],
+        ),
+      ),
+    );
+  }
+
+  Widget topContent() {
+    return Container(
+      child : Stack(
+        children: <Widget>[
+          Container(
+              padding: EdgeInsets.only(left: 10.0),
+              height: MediaQuery.of(context).size.height * 0.35,
+              decoration: new BoxDecoration(
+                image: new DecorationImage(
+                  image: new AssetImage("assets/meeting.jpeg"),
+                  fit: BoxFit.cover,
+                ),
+              )),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.35,
+            padding: EdgeInsets.all(0.0),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, .9)),
+            child: Center(
+              child: topContentText(),
+            ),
+          ),
+          Positioned(
+            left: 8.0,
+            top: 60.0,
+            child: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Icon(Icons.arrow_back, color: Colors.white),
+            ),
+          ),
+          Positioned(
+            right: 8.0,
+            top: 60.0,
+            child: InkWell(
+              onTap: () {
+                emailPopUp(context);
+              },
+              child: Icon(Icons.share, color: Colors.white),
+            ),
+          ),
+          Positioned(
+            right: 8.0,
+            bottom: 10,
+            child: Text(widget.post.data["schedule"], style: TextStyle(color: Colors.white))
+          )
+        ],
+      ),
+    );
+  }
+
   navigateToEditOrder(DocumentSnapshot post){
     Navigator.push(context, MaterialPageRoute(builder: (context) => EditOrder(post: post,)));
   }
@@ -121,18 +233,10 @@ class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text(widget.post.data["title"]),
-            actions: <Widget>[
-              Builder(
-               builder: (context) => IconButton(
-                icon: Icon(Icons.share),
-                onPressed: () => emailPopUp(context),
-                ),
-              )
-          ],
+      body: Column(
+        children: <Widget>[topContent(), bottomContent()],
       ),
-      body: Container(
+      /*body: Container(
         child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -155,7 +259,7 @@ class _DetailPageState extends State<DetailPage> {
           const SizedBox(height: 30)
         ],
       ),
-      ),
+      ),*/
     );
   }
 }

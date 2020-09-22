@@ -132,6 +132,7 @@ class _LoginPageState extends State<LoginPage> {
             color: Colors.white70,
           ),
         ),
+        style: TextStyle(color: Colors.white),
         autocorrect: false,
         validator: EmailFieldValidator.validate,
         onSaved: (val) => _email = val,
@@ -164,6 +165,7 @@ class _LoginPageState extends State<LoginPage> {
               color: Colors.white70,
             ),
           ),
+          style: TextStyle(color: Colors.white),
           obscureText: true,
           autocorrect: false,
           validator: PasswordFieldValidator.validate,
@@ -306,7 +308,7 @@ class _LoginPageState extends State<LoginPage> {
     switch (_formType) {
       case FormType.login:
         return Padding(
-          padding: const EdgeInsets.only(top: 20, left: 10),
+          padding: const EdgeInsets.only(top: 20, left: 30),
           child: RotatedBox(
               quarterTurns: -1,
               child: Text(
@@ -320,7 +322,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       case FormType.register:
         return Padding(
-          padding: const EdgeInsets.only(top: 20, left: 10),
+          padding: const EdgeInsets.only(top: 20, left: 30),
           child: RotatedBox(
               quarterTurns: -1,
               child: Text(

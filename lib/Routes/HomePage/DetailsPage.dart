@@ -47,47 +47,6 @@ class _DetailPageState extends State<DetailPage> {
     }
   }
 
-  Future<void> _showMultiSelect(BuildContext context) async {
-    List<String> values= ['matias.castro-guzman@epitech.eu', 'pierre.delsirie@epitech.eu', 'tyliam.silvini@epitech.eu', 'hugo.gagliardi@epitech.eu'];
-
-    final items = <MultiSelectDialogItem<int>>[];
-
-    for (var i = 0; i < values.length; i++) {
-        items.add(MultiSelectDialogItem(i, values[i]));
-    }
-
-    final selectedValues = await showDialog<Set<int>>(
-      context: context,
-      builder: (BuildContext context) {
-        return MultiSelectDialog(
-          items: items
-        );
-      },
-    );
-
-    await sendSynthesis(values, selectedValues);
-  }
-
-  Future<void> _showMultiSelectSynthesis(BuildContext context) async {
-
-    final items = <MultiSelectDialogItem<int>>[
-      MultiSelectDialogItem(0, "pdf"),
-      MultiSelectDialogItem(1, "docx"),
-      MultiSelectDialogItem(2, "odt"),
-      MultiSelectDialogItem(3, "txt"),
-    ];
-
-    await showDialog<Set<int>>(
-      context: context,
-      builder: (BuildContext context) {
-        return MultiSelectDialog(
-          items: items,
-          initialSelectedValues: [0].toSet(),
-        );
-      },
-    );
-  }
-  
   emailPopUp(BuildContext context) {
     TextEditingController customController = new TextEditingController();
     
@@ -236,30 +195,6 @@ class _DetailPageState extends State<DetailPage> {
       body: Column(
         children: <Widget>[topContent(), bottomContent()],
       ),
-      /*body: Container(
-        child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          ListTile(
-          title: Text(widget.post.data["title"]),
-          subtitle: Text(widget.post.data["description"]),
-          ),
-          RaisedButton(
-            onPressed: () => _showMultiSelectSynthesis(context),
-            child: const Text('Synthesis options', style: TextStyle(fontSize: 20)),
-          ),
-          RaisedButton(
-            onPressed: () => _showMultiSelect(context),
-            child: const Text('Send Synthesis', style: TextStyle(fontSize: 20)),
-          ),
-          RaisedButton(
-            onPressed: () => navigateToEditOrder(widget.post),
-            child: const Text('Edit Order', style: TextStyle(fontSize: 20)),
-          ),
-          const SizedBox(height: 30)
-        ],
-      ),
-      ),*/
     );
   }
 }

@@ -369,7 +369,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget logo() {
     return Padding(
-        padding: const EdgeInsets.only(left:100.0, right: 100.0, top:100),
+        padding: const EdgeInsets.only(left:100.0, right: 100.0, bottom:100),
         child: Container(
           alignment: Alignment.bottomCenter,
           height: 50,

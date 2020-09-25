@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'primary_button.dart';
+import 'package:flutter/widgets.dart';
 import 'auth.dart';
 import 'Services/Mailer.dart';
 
@@ -107,56 +107,187 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  List<Widget> usernameAndPassword() {
-    return [
-      padded(child: new TextFormField(
+  Widget inputEmail() {
+    return Padding(
+        padding: const EdgeInsets.only(top: 20, left: 50, right: 50),
+        child: new TextFormField(
         key: new Key('email'),
-        decoration: new InputDecoration(labelText: 'Email'),
+        decoration: new InputDecoration(border: InputBorder.none,
+          fillColor: Colors.lightBlueAccent,
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25.0),
+            borderSide: BorderSide(
+              color: Colors.blue,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25.0),
+            borderSide: BorderSide(
+              color: Colors.white,
+              width: 2.0,
+            ),
+          ),
+          labelText: 'E-mail',
+          labelStyle: TextStyle(
+            color: Colors.white70,
+          ),
+        ),
+        style: TextStyle(color: Colors.white),
         autocorrect: false,
         validator: EmailFieldValidator.validate,
         onSaved: (val) => _email = val,
-      )),
-      padded(child: new TextFormField(
-        key: new Key('password'),
-        decoration: new InputDecoration(labelText: 'Password'),
-        obscureText: true,
-        autocorrect: false,
-        validator: PasswordFieldValidator.validate,
-        onSaved: (val) => _password = val,
-      )),
-    ];
+      )
+    );
   }
 
-  List<Widget> submitWidgets() {
+  Widget inputPassword() {
+    return Padding(
+        padding: const EdgeInsets.only(top: 20, left: 50, right: 50),
+        child: new TextFormField(
+          key: new Key('password'),
+          decoration: new InputDecoration(border: InputBorder.none,
+            fillColor: Colors.lightBlueAccent,
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: BorderSide(
+                color: Colors.blue,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: BorderSide(
+                color: Colors.white,
+                width: 2.0,
+              ),
+            ),
+            labelText: 'Password',
+            labelStyle: TextStyle(
+              color: Colors.white70,
+            ),
+          ),
+          style: TextStyle(color: Colors.white),
+          obscureText: true,
+          autocorrect: false,
+          validator: PasswordFieldValidator.validate,
+          onSaved: (val) => _password = val,
+        )
+    );
+  }
+
+  Widget submitButton() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 40, right: 50, left: 200),
+      child: Container(
+        alignment: Alignment.bottomRight,
+        height: 50,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.blue[300],
+              blurRadius: 10.0, // has the effect of softening the shadow
+              spreadRadius: 1.0, // has the effect of extending the shadow
+              offset: Offset(
+                5.0, // horizontal, move right 10
+                5.0, // vertical, move down 10
+              ),
+            ),
+          ],
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: FlatButton(
+          onPressed: validateAndSubmit,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'OK',
+                style: TextStyle(
+                  color: Colors.lightBlueAccent,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward,
+                color: Colors.lightBlueAccent,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget firstTime() {
     switch (_formType) {
       case FormType.login:
-        return [
-          new PrimaryButton(
-              key: new Key('login'),
-              text: 'Login',
-              height: 44.0,
-              onPressed: validateAndSubmit
+        return Padding(
+          padding: const EdgeInsets.only(top: 30, left: 30),
+          child: Container(
+            alignment: Alignment.topRight,
+            //color: Colors.red,
+            height: 20,
+            child: Row(
+              children: <Widget>[
+                Text(
+                  'Your first time?',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white70,
+                  ),
+                ),
+                FlatButton(
+                  padding: EdgeInsets.all(0),
+                  key: new Key('need-account'),
+                  onPressed: moveToRegister,
+                  child: Text(
+                    'Sign up',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+              ],
+            ),
           ),
-          new FlatButton(
-              key: new Key('need-account'),
-              child: new Text("Need an account? Register"),
-              onPressed: moveToRegister
-          ),
-        ];
+        );
       case FormType.register:
-        return [
-          new PrimaryButton(
-              key: new Key('register'),
-              text: 'Create an account',
-              height: 44.0,
-              onPressed: validateAndSubmit
+        return Padding(
+          padding: const EdgeInsets.only(top: 30, left: 30),
+          child: Container(
+            alignment: Alignment.topRight,
+            //color: Colors.red,
+            height: 20,
+            child: Row(
+              children: <Widget>[
+                Text(
+                  'Already an account',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white70,
+                  ),
+                ),
+                FlatButton(
+                  padding: EdgeInsets.all(0),
+                  key: new Key('register'),
+                  onPressed: moveToLogin,
+                  child: Text(
+                    'Sign in',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+              ],
+            ),
           ),
-          new FlatButton(
-              key: new Key('need-login'),
-              child: new Text("Have an account? Login"),
-              onPressed: moveToLogin
-          ),
-        ];
+        );
     }
     return null;
   }
@@ -173,38 +304,135 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget verticalText() {
+    switch (_formType) {
+      case FormType.login:
+        return Padding(
+          padding: const EdgeInsets.only(top: 20, left: 30),
+          child: RotatedBox(
+              quarterTurns: -1,
+              child: Text(
+                'Sign in',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 38,
+                  fontWeight: FontWeight.w900,
+                ),
+              )),
+        );
+      case FormType.register:
+        return Padding(
+          padding: const EdgeInsets.only(top: 20, left: 30),
+          child: RotatedBox(
+              quarterTurns: -1,
+              child: Text(
+                'Sign up',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 38,
+                  fontWeight: FontWeight.w900,
+                ),
+              )),
+        );
+    }
+    return null;
+  }
+
+  Widget textLogin() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0, bottom: 40),
+      child: Container(
+        height: 200,
+        width: 300,
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 60,
+            ),
+            Center(
+              child: Text(
+                'Synthia\n'
+                    'Simpler meetings\n'
+                    'Better Synthesis',
+                style: TextStyle(
+                  fontSize: 27,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget logo() {
+    return Padding(
+        padding: const EdgeInsets.only(left:100.0, right: 100.0, bottom:100),
+        child: Container(
+          alignment: Alignment.bottomCenter,
+          height: 50,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+              color: Colors.blue[300],
+              blurRadius: 10.0, // has the effect of softening the shadow
+              spreadRadius: 1.0, // has the effect of extending the shadow
+              offset: Offset(
+                5.0, // horizontal, move right 10
+                5.0, // vertical, move down 10
+              ),
+              ),
+            ],
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30),
+          ),
+            child: Container(
+              child: Image(
+                image: AssetImage('assets/logo.png'),
+                height: 70,
+              ),
+            )
+        ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        appBar: new AppBar(
-          title: new Text(widget.title),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [Colors.blueGrey[900], Colors.lightBlueAccent]),
         ),
-        backgroundColor: Colors.grey[300],
-        body: new SingleChildScrollView(child: new Container(
-            padding: const EdgeInsets.all(16.0),
-            child: new Column(
-                children: [
-                  new Card(
-                      child: new Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            new Container(
-                                padding: const EdgeInsets.all(16.0),
-                                child: new Form(
-                                    key: formKey,
-                                    child: new Column(
-                                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                                      children: usernameAndPassword() + submitWidgets(),
-                                    )
-                                )
-                            ),
-                          ])
-                  ),
-                  hintText()
-                ]
-            )
-        ))
+        child: ListView(
+          children: <Widget>[
+            new Container(
+              child: new Form(
+                key: formKey,
+                child: new Column(
+              children: <Widget>[
+                  Row(children: <Widget>[
+                    verticalText(),
+                     textLogin(),
+                  ]),
+                  inputEmail(),
+                  inputPassword(),
+                  submitButton(),
+                  firstTime(),
+                  hintText(),
+                  logo(),
+                ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

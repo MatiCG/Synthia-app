@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'root_page.dart';
 import 'auth.dart';
 import 'Routes/Form/FormRoute.dart';
@@ -50,6 +51,13 @@ class _MyHomePageState extends State<MyHomePage> {
     TestPage(),
   ];
 
+  static List<String> pagesName = [
+    "Meetings",
+    "Organization",
+    "Account",
+    "Test",
+  ];
+
   BottomNavigationBarItem createBNBitem(title, icon) {
     return BottomNavigationBarItem(
       title: Text(title),
@@ -70,16 +78,25 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     
     return Scaffold(
-      appBar: new AppBar(
-          actions: <Widget>[
-            new FlatButton(
+     appBar: new AppBar(
+       elevation: 0.1,
+       backgroundColor:  Color.fromRGBO(58, 66, 86, 1.0),
+       title: Text(
+               pagesName[selectedPage],
+               style: TextStyle(color: Colors.white)
+           ),
+       actions: <Widget>[
+            new IconButton(
                 onPressed: _signOut,
-                child: new Text('Logout', style: new TextStyle(fontSize: 17.0, color: Colors.white))
+                icon: Icon(Icons.clear),
             )
           ],
       ),
+      backgroundColor:  Color.fromRGBO(58, 66, 86, 1.0),
       body: pages.elementAt(selectedPage),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+        selectedItemColor: Colors.white,
         type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[
           createBNBitem('home', Icons.home),

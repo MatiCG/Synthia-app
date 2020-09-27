@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>348445979536-6kq8llutuv4ases2ietpvvrkhv98nehg.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.348445979536-6kq8llutuv4ases2ietpvvrkhv98nehg</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDFePCL7LKDZOK6dWJFaHEnGhMY5gO8fX4</string>
+	<key>GCM_SENDER_ID</key>
+	<string>348445979536</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.synthia.synthiaapp</string>
+	<key>PROJECT_ID</key>
+	<string>synthia-app-eip</string>
+	<key>STORAGE_BUCKET</key>
+	<string>synthia-app-eip.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:348445979536:ios:ee8778b7cc07e312fe3915</string>
+	<key>DATABASE_URL</key>
+	<string>https://synthia-app-eip.firebaseio.com</string>
+</dict>
+</plist>

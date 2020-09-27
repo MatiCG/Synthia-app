@@ -30,7 +30,11 @@ dependencies:
   uuid: ^2.0.4
   flutter_email_sender: ^3.0.1
   cloud_functions: ^0.5.0
-  zefyr: 0.11.0
+  zefyr:
+    git:
+      url: https://github.com/memspace/zefyr.git
+      path: packages/zefyr/
+      commit: 9b032d8
   quill_delta: 1.0.2
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

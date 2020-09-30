@@ -8,22 +8,27 @@ class User {
   Map<String, dynamic> _data;
   String _uid;
 
-  User(String uid) {
-    _uid = uid;
-  }
-
-  void setData(Map<String, dynamic> data) {
-    _data = data;
-  }
-
   Future<bool> init() async {
-    firestore.document('users/' + _uid).get().then((value) {
+    return FirebaseAuth.instance.currentUser().then((value) {
+      _uid = value.uid;
+      return firestore.document('users/' + _uid).get().then((value) {
+        _data = value.data;
+        return true;
+      });
+    });
+/*
+    await auth.currentUser().then((value) {
+      _uid = value.uid;
+    });
+
+    await firestore.document('users/' + _uid).get().then((value) {
       _data = value.data;
     });
     var value = await firestore.document('users/' + _uid).get();
 
     _data = value.data;
     return true;
+*/
   }
 
   // Setters

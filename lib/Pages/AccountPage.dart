@@ -34,7 +34,7 @@ class Account extends State<AccountPage> {
     'Numéro de téléphone'
   ];
 
-  User _user = User('SaDD6a9IY2VgnjDVgHfb68gPoJf1');
+  User _user = User(); // = User('SaDD6a9IY2VgnjDVgHfb68gPoJf1');
   String fullname = 'none';
   bool edit = false;
 
@@ -84,6 +84,7 @@ class Account extends State<AccountPage> {
     return ListView.builder(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       itemCount: length,
       itemBuilder: (context, index) {
         return ListTile(
@@ -118,9 +119,9 @@ class Account extends State<AccountPage> {
     );
   }
 
-  Container accountWidget() {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
+  SingleChildScrollView accountWidget() {
+    return SingleChildScrollView(
+//      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
       child: Column(
         children: [
           Card(
@@ -181,7 +182,7 @@ class Account extends State<AccountPage> {
               ],
               edit),
           const SizedBox(height: 25.0),
-          Expanded(child: Container()),
+//          Expanded(child: Container()),
           Align(
             alignment: Alignment.bottomCenter,
             child: Card(

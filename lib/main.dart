@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'root_page.dart';
 import 'auth.dart';
-import 'Routes/Form/FormRoute.dart';
 // Import pages for navBar
 import 'Pages/HomePage.dart';
 import 'Pages/AccountPage.dart';
@@ -23,18 +22,19 @@ class MyApp extends StatelessWidget {
       home: RootPage(auth: new Auth()),
     );
   }
-  
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title, this.auth, this.onSignOut}) : super(key: key);
+  MyHomePage({Key key, this.title, this.auth, this.onSignOut})
+      : super(key: key);
 
   final String title;
   final BaseAuth auth;
   final VoidCallback onSignOut;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState(auth: auth, onSignOut: onSignOut);
+  _MyHomePageState createState() =>
+      _MyHomePageState(auth: auth, onSignOut: onSignOut);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -43,13 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final BaseAuth auth;
   final VoidCallback onSignOut;
   int selectedPage = 0;
-
-  static List<Widget> pages = [
-    ListPage(),
-    OrganizationPage(),
-    AccountPage(),
-    TestPage(),
-  ];
+  static List<Widget> pages;
 
   static List<String> pagesName = [
     "Meetings",
@@ -64,10 +58,19 @@ class _MyHomePageState extends State<MyHomePage> {
       icon: Icon(icon),
     );
   }
+  @override
+  void initState() {
+    super.initState();
 
+    pages = [
+      ListPage(),
+      OrganizationPage(),
+      AccountPage(onSignOut: widget.onSignOut),
+      TestPage(),
+    ];
+  }
   @override
   Widget build(BuildContext context) {
-
     void _signOut() async {
       try {
         await auth.signOut();
@@ -76,23 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
         print(e);
       }
     }
-    
+
     return Scaffold(
-     appBar: new AppBar(
-       elevation: 0.1,
-       backgroundColor:  Color.fromRGBO(58, 66, 86, 1.0),
-       title: Text(
-               pagesName[selectedPage],
-               style: TextStyle(color: Colors.white)
-           ),
-       actions: <Widget>[
-            new IconButton(
-                onPressed: _signOut,
-                icon: Icon(Icons.clear),
-            )
-          ],
-      ),
-      backgroundColor:  Color.fromRGBO(58, 66, 86, 1.0),
+      backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
       body: pages.elementAt(selectedPage),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
@@ -110,12 +99,6 @@ class _MyHomePageState extends State<MyHomePage> {
             selectedPage = index;
           });
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MyForm()));
-        },
-        child: Icon(Icons.add),
       ),
     );
   }

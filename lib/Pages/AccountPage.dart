@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
+import 'package:synthiaapp/Widgets/SynthiaButton.dart';
 import '../Models/User.dart';
 
 class AccountPage extends StatefulWidget {
@@ -14,6 +15,7 @@ class AccountPage extends StatefulWidget {
 class Account extends State<AccountPage> {
   Account({this.onSignOut});
 
+/*
   FirebaseAuth auth = FirebaseAuth.instance;
   final VoidCallback onSignOut;
   TextEditingController username = TextEditingController();
@@ -37,55 +39,77 @@ class Account extends State<AccountPage> {
   User _user = User(); // = User('SaDD6a9IY2VgnjDVgHfb68gPoJf1');
   String fullname = 'none';
   bool edit = false;
+*/
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final User _user = User();
+  final VoidCallback onSignOut;
+  List<TextEditingController> controllers;
+  List<String> icons;
+  List<String> titles;
+  bool isEditing;
 
   @override
   void initState() {
     super.initState();
+
+    isEditing = false;
+    titles = ['Pseudonyme', 'Entreprise', 'Poste', 'Numéro de téléphone'];
+    icons = [
+      'assets/name.png',
+      'assets/company.png',
+      'assets/work.png',
+      'assets/phone.png'
+    ];
+    controllers = [
+      TextEditingController(),
+      TextEditingController(),
+      TextEditingController(),
+      TextEditingController()
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
     SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 0,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.edit,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              isEditing = isEditing ? false : true;
+            },
+          )
+        ],
+        brightness: Brightness.light,
+        iconTheme: IconThemeData(color: Colors.black),
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.edit,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                edit = edit ? false : true;
-              },
-            )
-          ],
-          brightness: Brightness.light,
-          iconTheme: IconThemeData(color: Colors.black),
-          backgroundColor: Colors.white,
-        ),
-        body: FutureBuilder(
-          future: _user.init(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return accountWidget();
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
-          },
-        ));
+      ),
+      body: FutureBuilder(
+        future: _user.init(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return accountWidget();
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
   }
 
-  ListView createFields(List<TextEditingController> controllers,
-      List<String> icons, List<String> titles, List<String> values, bool edit) {
-    int length = icons.length;
-
+  ListView createFields(List<String> icons, List<String> titles,
+      List<String> values, bool edit, List<TextEditingController> controllers) {
     return ListView.builder(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      itemCount: length,
+      itemCount: icons.length,
       itemBuilder: (context, index) {
         return ListTile(
           leading: Container(
@@ -121,7 +145,7 @@ class Account extends State<AccountPage> {
 
   SingleChildScrollView accountWidget() {
     return SingleChildScrollView(
-//      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
       child: Column(
         children: [
           Card(
@@ -171,7 +195,6 @@ class Account extends State<AccountPage> {
           ),
           const SizedBox(height: 25.0),
           createFields(
-              [username, company, job, phonenumber],
               icons,
               titles,
               [
@@ -180,53 +203,34 @@ class Account extends State<AccountPage> {
                 _user.getJob(),
                 _user.getPhoneNumber()
               ],
-              edit),
-          const SizedBox(height: 25.0),
-//          Expanded(child: Container()),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Card(
-              elevation: 5,
-              color: edit ? Colors.blueGrey : Colors.red.shade600,
-              margin: const EdgeInsets.fromLTRB(64.0, 32.0, 64.0, 8.0),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)),
-              child: ListTile(
-                leading: Icon(
-                  edit ? Icons.save_alt : Icons.power_settings_new,
-                  color: Colors.white,
-                ),
-                title: Text(
-                  edit ? 'Sauvegarder' : 'Se deconnecter',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onTap: edit
-                    ? () {
-                        username.text.isNotEmpty
-                            ? _user.setUsername(username.text)
-                            : null;
-                        company.text.isNotEmpty
-                            ? _user.setCompany(company.text)
-                            : null;
-                        job.text.isNotEmpty ? _user.setJob(job.text) : null;
-                        phonenumber.text.isNotEmpty
-                            ? _user.setPhoneNumber(phonenumber.text)
-                            : null;
-                        setState(() {
-                          edit = false;
-                        });
+              isEditing,
+              controllers),
+          SynthiaButton(
+            text: isEditing ? 'Sauvegarder' : 'Se deconnecter',
+            icon: isEditing ? Icons.save_alt : Icons.power_settings_new,
+            action: isEditing
+                ? () {
+                    List<Function> update = [
+                      _user.setUsername,
+                      _user.setCompany,
+                      _user.setJob,
+                      _user.setPhoneNumber
+                    ];
+                    controllers.forEach((e) {
+                      if (e.text.isNotEmpty) {
+                        update[controllers.indexOf(e)](e.text);
                       }
-                    : () async {
-                        try {
-                          await auth.signOut();
-                          onSignOut();
-                        } catch (e) {
-                          print(e);
-                        }
-                      },
-              ),
-            ),
-          )
+                    });
+                    setState(() {
+                      isEditing = false;
+                    });
+                  }
+                : () async {
+                    await _auth.signOut();
+                    onSignOut();
+                  },
+            backgroundColor: isEditing ? Colors.blueGrey : Colors.red.shade600,
+          ),
         ],
       ),
     );

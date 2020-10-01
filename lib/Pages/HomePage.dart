@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../Routes/HomePage/DetailsPage.dart';
 import '../auth.dart';
+import '../Routes/Form/FormRoute.dart';
 
 class ListPage extends StatefulWidget {
   @override
@@ -56,8 +57,14 @@ class _ListPageState extends State<ListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: FutureBuilder(
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MyForm()));
+        },
+        child: Icon(Icons.add),
+      ),
+      body: FutureBuilder(
           future: getPosts(),
           builder: (_, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {

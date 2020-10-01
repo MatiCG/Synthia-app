@@ -14,32 +14,6 @@ class AccountPage extends StatefulWidget {
 
 class Account extends State<AccountPage> {
   Account({this.onSignOut});
-
-/*
-  FirebaseAuth auth = FirebaseAuth.instance;
-  final VoidCallback onSignOut;
-  TextEditingController username = TextEditingController();
-  TextEditingController company = TextEditingController();
-  TextEditingController job = TextEditingController();
-  TextEditingController phonenumber = TextEditingController();
-
-  List<String> icons = [
-    'assets/name.png',
-    'assets/company.png',
-    'assets/work.png',
-    'assets/phone.png'
-  ];
-  List<String> titles = [
-    'Pseudonyme',
-    'Entreprise',
-    'Poste',
-    'Numéro de téléphone'
-  ];
-
-  User _user = User(); // = User('SaDD6a9IY2VgnjDVgHfb68gPoJf1');
-  String fullname = 'none';
-  bool edit = false;
-*/
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final User _user = User();
   final VoidCallback onSignOut;

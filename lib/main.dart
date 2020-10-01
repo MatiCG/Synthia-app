@@ -45,13 +45,6 @@ class _MyHomePageState extends State<MyHomePage> {
   int selectedPage = 0;
   static List<Widget> pages;
 
-  static List<String> pagesName = [
-    "Meetings",
-    "Organization",
-    "Account",
-    "Test",
-  ];
-
   BottomNavigationBarItem createBNBitem(title, icon) {
     return BottomNavigationBarItem(
       title: Text(title),
@@ -71,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   @override
   Widget build(BuildContext context) {
+/*
     void _signOut() async {
       try {
         await auth.signOut();
@@ -79,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
         print(e);
       }
     }
-
+*/
     return Scaffold(
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
       body: pages.elementAt(selectedPage),

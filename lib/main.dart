@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:synthiaapp/Pages/Settings.dart';
 import 'root_page.dart';
 import 'auth.dart';
 // Import pages for navBar
@@ -60,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
       OrganizationPage(),
       AccountPage(onSignOut: widget.onSignOut),
       TestPage(),
+      SettingsWidget(onSignOut: widget.onSignOut),
     ];
   }
   @override
@@ -86,6 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
           createBNBitem('organization', Icons.work),
           createBNBitem('account', Icons.account_box),
           createBNBitem('mail test', Icons.mail),
+          createBNBitem('settings', Icons.settings),
         ],
         currentIndex: selectedPage,
         onTap: (index) {

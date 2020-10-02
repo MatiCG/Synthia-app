@@ -33,9 +33,11 @@ class SynthiaButton extends StatelessWidget {
         ),
         child: ListTile(
           leading: icon == null ? null : Icon(icon, color: iconColor),
+          trailing: icon == null ? null : Icon(Icons.ac_unit, color: backgroundColor),
           title: Text(
             text,
-            style: TextStyle(color: textColor)
+            style: TextStyle(color: textColor),
+            textAlign: TextAlign.center,
           ),
           onTap: action,
         ),

@@ -64,6 +64,10 @@ class User {
   }
 
   // Getters
+  String getUid() {
+    return _uid;
+  }
+
   bool getMeetingNew() {
     return _data['meeting_new'];
   }

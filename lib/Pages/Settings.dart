@@ -4,33 +4,32 @@ import 'package:synthiaapp/Widgets/SettingsSection.dart';
 import 'package:synthiaapp/Widgets/SynthiaButton.dart';
 import '../Models/User.dart';
 
-class SettingsWidget extends StatefulWidget {
-  SettingsWidget({Key key, this.onSignOut}) : super(key: key);
+class SettingsPage extends StatefulWidget {
+  SettingsPage({Key key, this.onSignOut}) : super(key: key);
 
   final VoidCallback onSignOut;
   @override
   Settings createState() => Settings(onSignOut: onSignOut);
 }
 
-class Settings extends State<SettingsWidget> {
+class Settings extends State<SettingsPage> {
   Settings({this.onSignOut});
   final User _user = User();
   final VoidCallback onSignOut;
 
-  List<String> meeting_titles;
-  List<String> meeting_subtiles;
-  List<Function> meeting_functions;
+  List<String> meetingTitles;
+  List<String> meetingSubtiles;
 
   @override
   void initState() {
     super.initState();
 
-    meeting_titles = [
+    meetingTitles = [
       'Rejoindre une réunion',
       'Heure de la réunion',
       'Modification de la réunion'
     ];
-    meeting_subtiles = [
+    meetingSubtiles = [
       'Vous receverez une notification lorsque vous êtes invité à rejoindre une réunion',
       'Vous receverez une notification le jour de votre réunion',
       'Vous receverez une notification lorsqu\'une modifcation sera faite sur la réunion'
@@ -63,8 +62,8 @@ class Settings extends State<SettingsWidget> {
           quickAccess(),
           SettingsSection(
             sectionTitle: 'Notifications',
-            titles: meeting_titles,
-            subtitles: meeting_subtiles,
+            titles: meetingTitles,
+            subtitles: meetingSubtiles,
             values: [_user.getMeetingNew(), _user.getMeetingSchedule(), _user.getMeetingChange()],
             user: _user,
             notifications: [_user.setMeetingNew, _user.setMeetingSchedule, _user.setMeetingChange],

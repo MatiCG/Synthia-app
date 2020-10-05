@@ -7,7 +7,7 @@ class User {
   String _uid;
 
   Future<bool> init() async {
-    return FirebaseAuth.instance.currentUser().then((value) {
+    return FirebaseAuth.instance.currentUser().then((value) async {
       _uid = value.uid;
       return firestore.document('users/' + _uid).get().then((value) {
         _data = value.data;
@@ -28,15 +28,18 @@ class User {
 
   // Setters
   void setMeetingNew(bool value) {
-    firestore.document('users/' + _uid).updateData({'meeting_new': value});
+    firestore
+        .document('users/' + _uid).updateData({'meeting_new': value});
   }
 
   void setMeetingSchedule(bool value) {
-    firestore.document('users/' + _uid).updateData({'meeting_schedule': value});
+    firestore
+        .document('users/' + _uid).updateData({'meeting_time': value});
   }
 
   void setMeetingChange(bool value) {
-    firestore.document('users/' + _uid).updateData({'meeting_change': value});
+    firestore
+        .document('users/' + _uid).updateData({'meeting_update': value});
   }
 
   void setFullName(String newValue) {
@@ -73,11 +76,11 @@ class User {
   }
 
   bool getMeetingSchedule() {
-    return _data['meeting_schedule'];
+    return _data['meeting_time'];
   }
 
   bool getMeetingChange() {
-    return _data['meeting_change'];
+    return _data['meeting_update'];
   }
 
   String getFullName() {

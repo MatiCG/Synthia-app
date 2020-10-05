@@ -46,7 +46,7 @@ export const UpdatedMeeting = functions.firestore
         var user = await admin.auth().getUserByEmail(value);
         const permission = await db.collection('users').doc(user.uid).get();
 
-        if (permission.data()!['meeting_change'] == true) {
+        if (permission.data()!['meeting_update'] == true) {
           const fcmToken = await db.collection('users').doc(user.uid).collection('tokens').get();
           const tokens = fcmToken.docs.map(snap => snap.id);
 

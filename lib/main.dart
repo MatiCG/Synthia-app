@@ -1,13 +1,18 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:synthiaapp/Pages/Settings.dart';
+import 'package:synthiaapp/Widgets/LocalNotifications.dart';
 import 'root_page.dart';
 import 'auth.dart';
 // Import pages for navBar
 import 'Pages/HomePage.dart';
 import 'Pages/AccountPage.dart';
-import 'Pages/OrganizationPage.dart';
-import 'Pages/TestPage.dart';
+//import 'Pages/TestPage.dart';
 
 void main() => runApp(MyApp());
 
@@ -45,6 +50,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final VoidCallback onSignOut;
   int selectedPage = 0;
   static List<Widget> pages;
+  final Firestore _db = Firestore.instance;
+  final FirebaseMessaging _fcm = FirebaseMessaging();
 
   BottomNavigationBarItem createBNBitem(title, icon) {
     return BottomNavigationBarItem(
@@ -52,18 +59,47 @@ class _MyHomePageState extends State<MyHomePage> {
       icon: Icon(icon),
     );
   }
+
   @override
   void initState() {
     super.initState();
 
+    _saveDeviceToken();
+    _fcm.configure(onMessage: (Map<String, dynamic> message) async {
+      var test = LocalNotifications();
+      test.showNotification(message['notification']['title'], message['notification']['body']);
+    }, onLaunch: (Map<String, dynamic> message) async {
+      print('onLaunch: $message');
+    }, onResume: (Map<String, dynamic> message) async {
+      print('onResume: $message');
+    });
+
     pages = [
       ListPage(),
-      OrganizationPage(),
       AccountPage(onSignOut: widget.onSignOut),
-      TestPage(),
-      SettingsWidget(onSignOut: widget.onSignOut),
+//      TestPage(),
+      SettingsPage(onSignOut: widget.onSignOut),
     ];
   }
+
+  _saveDeviceToken() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    String token = await _fcm.getToken();
+
+    if (token != null) {
+      var tokenRef = _db
+          .collection('users')
+          .document(user.uid)
+          .collection('tokens')
+          .document(token);
+      await tokenRef.setData({
+        'token': token,
+        'createAt': FieldValue.serverTimestamp(),
+        'platform': Platform.operatingSystem,
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 /*
@@ -85,9 +121,8 @@ class _MyHomePageState extends State<MyHomePage> {
         type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[
           createBNBitem('home', Icons.home),
-          createBNBitem('organization', Icons.work),
           createBNBitem('account', Icons.account_box),
-          createBNBitem('mail test', Icons.mail),
+//          createBNBitem('mail test', Icons.mail),
           createBNBitem('settings', Icons.settings),
         ],
         currentIndex: selectedPage,
@@ -100,3 +135,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+

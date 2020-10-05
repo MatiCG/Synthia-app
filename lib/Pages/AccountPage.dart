@@ -45,34 +45,19 @@ class Account extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.edit,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              isEditing = isEditing ? false : true;
-            },
-          )
-        ],
-        brightness: Brightness.light,
-        iconTheme: IconThemeData(color: Colors.black),
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: Colors.white,
-      ),
-      body: FutureBuilder(
-        future: _user.init(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return accountWidget();
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
+        body: FutureBuilder(
+          future: _user.init(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return accountWidget();
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          },
+        ),
       ),
     );
   }
@@ -122,50 +107,67 @@ class Account extends State<AccountPage> {
       padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
       child: Column(
         children: [
-          Card(
-            elevation: 10,
-            color: Colors.blueAccent,
-            margin: const EdgeInsets.all(16.0),
-            shape: RoundedRectangleBorder(
+          Stack(
+            children: [
+              Card(
+              elevation: 10,
+              color: Colors.blueAccent,
+              margin: const EdgeInsets.all(16.0),
+              shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0)),
-            child: Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.all(16.0),
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(50.0),
-                      child: Image.asset(
-                        'assets/profile.png',
-                        height: 75,
-                        width: 75,
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.all(16.0),
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(50.0),
+                          child: Image.asset(
+                            'assets/profile.png',
+                            height: 75,
+                            width: 75,
+                          ),
+                        ),
                       ),
                     ),
+                    Container(
+                      child: Text(
+                        _user.getFullName(),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
+                      ),
+                      margin: const EdgeInsets.fromLTRB(0, 8.0, 0, 0),
+                    ),
+                    Container(
+                      child: Text(
+                        _user.getEmail(),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12),
+                      ),
+                      margin: const EdgeInsets.fromLTRB(0, 4.0, 0, 32.0),
+                    )
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 16,
+                right: 16,
+                child: IconButton(
+                  onPressed: () {
+                    isEditing = isEditing ? false : true;
+                  },
+                  icon: Icon(
+                    Icons.edit,
+                    color: Colors.white,
                   ),
                 ),
-                Container(
-                  child: Text(
-                    _user.getFullName(),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
-                  ),
-                  margin: const EdgeInsets.fromLTRB(0, 8.0, 0, 0),
-                ),
-                Container(
-                  child: Text(
-                    _user.getEmail(),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 12),
-                  ),
-                  margin: const EdgeInsets.fromLTRB(0, 4.0, 0, 32.0),
-                )
-              ],
-            ),
+              ),
+            ]
           ),
           const SizedBox(height: 25.0),
           createFields(

@@ -7,7 +7,7 @@ class User {
   String _uid;
 
   Future<bool> init() async {
-    return FirebaseAuth.instance.currentUser().then((value) {
+    return FirebaseAuth.instance.currentUser().then((value) async {
       _uid = value.uid;
       return firestore.document('users/' + _uid).get().then((value) {
         _data = value.data;
@@ -16,42 +16,93 @@ class User {
     });
   }
 
+  // Remove
+  Future<bool> deleteUserAccount() async {
+    await firestore.document('users/' + _uid).delete();
+    await FirebaseAuth.instance.currentUser().then((value) {
+      value.delete();
+    });
+    await FirebaseAuth.instance.signOut();
+    return true;
+  }
+
   // Setters
+  void setMeetingNew(bool value) {
+    firestore
+        .document('users/' + _uid).updateData({'meeting_new': value});
+  }
+
+  void setMeetingSchedule(bool value) {
+    firestore
+        .document('users/' + _uid).updateData({'meeting_time': value});
+  }
+
+  void setMeetingChange(bool value) {
+    firestore
+        .document('users/' + _uid).updateData({'meeting_update': value});
+  }
+
   void setFullName(String newValue) {
     firestore.document('users/' + _uid).updateData({'fullname': newValue});
   }
+
   void setEmail(String newValue) {
     firestore.document('users/' + _uid).updateData({'email': newValue});
   }
+
   void setCompany(String newValue) {
     firestore.document('users/' + _uid).updateData({'company': newValue});
   }
+
   void setJob(String newValue) {
     firestore.document('users/' + _uid).updateData({'job': newValue});
   }
+
   void setPhoneNumber(String newValue) {
     firestore.document('users/' + _uid).updateData({'phonenumber': newValue});
   }
+
   void setUsername(String newValue) {
     firestore.document('users/' + _uid).updateData({'username': newValue});
   }
 
   // Getters
+  String getUid() {
+    return _uid;
+  }
+
+  bool getMeetingNew() {
+    return _data['meeting_new'];
+  }
+
+  bool getMeetingSchedule() {
+    return _data['meeting_time'];
+  }
+
+  bool getMeetingChange() {
+    return _data['meeting_update'];
+  }
+
   String getFullName() {
     return _data['firstname'] + ' ' + _data['lastname'];
   }
+
   String getEmail() {
     return _data['email'];
   }
+
   String getCompany() {
     return _data['company'];
   }
+
   String getJob() {
     return _data['job'];
   }
+
   String getPhoneNumber() {
     return _data['phonenumber'];
   }
+
   String getUsername() {
     return _data['username'];
   }

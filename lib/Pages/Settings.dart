@@ -19,6 +19,7 @@ class Settings extends State<SettingsPage> {
 
   List<String> meetingTitles;
   List<String> meetingSubtiles;
+  List<bool> meetingValues;
 
   @override
   void initState() {
@@ -64,9 +65,17 @@ class Settings extends State<SettingsPage> {
             sectionTitle: 'Notifications',
             titles: meetingTitles,
             subtitles: meetingSubtiles,
-            values: [_user.getMeetingNew(), _user.getMeetingSchedule(), _user.getMeetingChange()],
+            values: [
+              _user.getMeetingNew(),
+              _user.getMeetingSchedule(),
+              _user.getMeetingChange()
+            ],
             user: _user,
-            notifications: [_user.setMeetingNew, _user.setMeetingSchedule, _user.setMeetingChange],
+            notifications: [
+              _user.setMeetingNew,
+              _user.setMeetingSchedule,
+              _user.setMeetingChange
+            ],
           ),
           SynthiaButton(
             text: 'Supprimer votre compte',

@@ -6,38 +6,6 @@ admin.initializeApp();
 const db = admin.firestore();
 const fcm = admin.messaging();
 
-/*
-export const NewMeeting = functions.firestore
-  .document('users/{userId}')
-  .onWrite( async snapshot => {
-    var beforeData = snapshot.before.data();
-    var afterData = snapshot.after!.data();
-
-    var beforeArr = beforeData!['meetings'];
-    var afterArr = afterData!['meetings'];
-
-    if (beforeArr != afterArr && afterArr.length > beforeArr.length) {
-      var user = await admin.auth().getUserByEmail(afterData!['email']);
-      const fcmToken = await db.collection('users').doc(user.uid).collection('tokens').get();
-
-      const tokens = fcmToken.docs.map(snap => snap.id);
-      console.log('SEND TOKEN = ', tokens);
-      const payload: admin.messaging.MessagingPayload = {
-        notification: {
-          title: 'Nouvelle réunion',
-          body: `Vous avez été invité à la réunion ! Elle commencera `,
-          icon: 'your-icon-url',
-          click_action: 'FLUTTER_NOTIFICATION_CLICK'
-        }
-      };
-      var res = fcm.sendToDevice(tokens, payload);
-      console.log('RES = ', res);
-      return res;
-    }
-    return false;
-  });
-*/
-
 export const UpdatedMeeting = functions.firestore
   .document('meetings/{meetingId}')
   .onUpdate(async snapshot => {
@@ -67,7 +35,6 @@ export const NewMeeting = functions.firestore
         if (permission.data()!['meeting_new'] == true) {
           const fcmToken = await db.collection('users').doc(user.uid).collection('tokens').get();
           const tokens = fcmToken.docs.map(snap => snap.id);
-
           return sendToDevice('Nouvelle réunion', `Vous avez été ajouté à la réunion ${meeting.title}! Rendez vous sur l'application pour l'ordre du jour`, tokens);
         }
         return false;

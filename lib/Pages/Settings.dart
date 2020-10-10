@@ -52,6 +52,16 @@ class Settings extends State<SettingsPage> {
             }
           },
         ),
+        bottomNavigationBar: SynthiaButton(
+          bottom: 32.0,
+          text: 'Supprimer votre compte',
+          leadingIcon: Icons.delete_outline,
+          color: Colors.red.shade600,
+          onPressed: () async {
+            await _user.deleteUserAccount();
+            onSignOut();
+          },
+        ),
       ),
     );
   }
@@ -76,17 +86,10 @@ class Settings extends State<SettingsPage> {
               _user.setMeetingSchedule,
               _user.setMeetingChange
             ],
-          ),
-          SynthiaButton(
-            text: 'Supprimer votre compte',
-            icon: Icons.delete_outline,
-            backgroundColor: Colors.red.shade600,
-            action: () async {
-              await _user.deleteUserAccount();
-              onSignOut();
-            },
           )
-        ]));
+        ]
+      )
+    );
   }
 
   // QuickAccess Widget

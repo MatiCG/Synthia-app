@@ -69,7 +69,7 @@ class DownloadState extends State<Download> {
                   child: CircularPercentIndicator(
                     radius: 60.0,
                     lineWidth: 5.0,
-                    progressColor: Colors.green,
+                    progressColor: Color.fromRGBO(58, 66, 86, 1.0),
                     percent: 1 * _progress / 100,
                     center: Text('${_progress.round().toString()}%'),
                   ),
@@ -77,11 +77,12 @@ class DownloadState extends State<Download> {
               )
             : SynthiaButton(
                 text: 'Compte Rendu',
-                icon: Icons.file_download,
-                action: () {
+                leadingIcon: Icons.file_download,
+                onPressed: () {
                   _startDownload();
                 },
-              ));
+              )
+    );
   }
 
   Future<void> _showNotification(Map<String, dynamic> downloadStatus) async {
@@ -94,7 +95,7 @@ class DownloadState extends State<Download> {
     final isSuccess = downloadStatus['isSuccess'];
 
     await flutterLocalNotificationsPlugin.show(
-        0, // notification id
+        0,
         isSuccess ? 'Succès' : 'Echec',
         isSuccess
             ? 'Le document à été téléchargé avec succès! Cliquez pour y accéder'

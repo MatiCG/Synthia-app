@@ -58,6 +58,33 @@ class Account extends State<AccountPage> {
             }
           },
         ),
+        bottomNavigationBar: SynthiaButton(
+          bottom: 32.0,
+          text: isEditing ? 'Sauvegarder' : 'Se deconnecter',
+          leadingIcon: isEditing ? Icons.save_alt : Icons.power_settings_new,
+          onPressed: isEditing
+              ? () {
+                  List<Function> update = [
+                    _user.setUsername,
+                    _user.setCompany,
+                    _user.setJob,
+                    _user.setPhoneNumber
+                  ];
+                  controllers.forEach((e) {
+                    if (e.text.isNotEmpty) {
+                      update[controllers.indexOf(e)](e.text);
+                    }
+                  });
+                  setState(() {
+                    isEditing = false;
+                  });
+                }
+              : () async {
+                  await _auth.signOut();
+                  onSignOut();
+                },
+          color: isEditing ? Colors.blueGrey : Colors.red.shade600,
+        ),
       ),
     );
   }
@@ -162,7 +189,7 @@ class Account extends State<AccountPage> {
                     isEditing = isEditing ? false : true;
                   },
                   icon: Icon(
-                    Icons.edit,
+                    !isEditing ? Icons.edit : Icons.cancel_outlined,
                     color: Colors.white,
                   ),
                 ),
@@ -180,32 +207,7 @@ class Account extends State<AccountPage> {
                 _user.getPhoneNumber()
               ],
               isEditing,
-              controllers),
-          SynthiaButton(
-            text: isEditing ? 'Sauvegarder' : 'Se deconnecter',
-            icon: isEditing ? Icons.save_alt : Icons.power_settings_new,
-            action: isEditing
-                ? () {
-                    List<Function> update = [
-                      _user.setUsername,
-                      _user.setCompany,
-                      _user.setJob,
-                      _user.setPhoneNumber
-                    ];
-                    controllers.forEach((e) {
-                      if (e.text.isNotEmpty) {
-                        update[controllers.indexOf(e)](e.text);
-                      }
-                    });
-                    setState(() {
-                      isEditing = false;
-                    });
-                  }
-                : () async {
-                    await _auth.signOut();
-                    onSignOut();
-                  },
-            backgroundColor: isEditing ? Colors.blueGrey : Colors.red.shade600,
+              controllers
           ),
         ],
       ),

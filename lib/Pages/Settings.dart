@@ -17,9 +17,15 @@ class Settings extends State<SettingsPage> {
   final User _user = User();
   final VoidCallback onSignOut;
 
+  // Meeting Section
   List<String> meetingTitles;
   List<String> meetingSubtiles;
   List<bool> meetingValues;
+
+  // Compte Rendu Section
+  List<String> crTitles;
+  List<String> crSubtitles;
+  List<bool> crValues;
 
   @override
   void initState() {
@@ -34,6 +40,12 @@ class Settings extends State<SettingsPage> {
       'Vous receverez une notification lorsque vous êtes invité à rejoindre une réunion',
       'Vous receverez une notification le jour de votre réunion',
       'Vous receverez une notification lorsqu\'une modifcation sera faite sur la réunion'
+    ];
+    crTitles = [
+      'Recevoir le compte rendu par email'
+    ];
+    crSubtitles = [
+      'Vous receverez le compte rendu directement dans votre boîte mail dès que celui-ci sera disponible. Vous pourrez quand même le télécharger sur l\'application'
     ];
   }
 
@@ -86,7 +98,15 @@ class Settings extends State<SettingsPage> {
               _user.setMeetingSchedule,
               _user.setMeetingChange
             ],
-          )
+          ),
+          SettingsSection(
+            sectionTitle: 'Compte Rendu',
+            titles: crTitles,
+            subtitles: crSubtitles,
+            values: [_user.getReportEmail()],
+            user: _user,
+            notifications: [_user.setReportEmail],
+          ),
         ]
       )
     );

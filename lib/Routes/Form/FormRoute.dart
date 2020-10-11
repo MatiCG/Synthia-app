@@ -37,6 +37,7 @@ class _FormState extends State<MyForm> {
         'schedule': _time[0],
         'order': _order.text,
         'members': _members,
+        'reportUrl': '',
       });
       Navigator.pop(context);
     } else {

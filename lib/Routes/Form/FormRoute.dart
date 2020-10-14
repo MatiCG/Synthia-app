@@ -160,7 +160,7 @@ class _CardMembersState extends State<CardMembers> {
                         },
                       )
                     : IconButton(
-                        icon: Icon(Icons.shield),
+                        icon: Icon(Icons.admin_panel_settings),
                         onPressed: null,
                       ),
               );

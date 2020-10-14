@@ -54,11 +54,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final FirebaseMessaging _fcm = FirebaseMessaging();
 
   BottomNavigationBarItem createBNBitem(title, icon) {
-    var bottomNavigationBarItem = BottomNavigationBarItem(
-      label: title == null ? '' : title,
+    return BottomNavigationBarItem(
+      label: title,
       icon: Icon(icon),
     );
-    return bottomNavigationBarItem;
   }
 
   @override

@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   BottomNavigationBarItem createBNBitem(title, icon) {
     return BottomNavigationBarItem(
-      title: Text(title),
+      label: title,
       icon: Icon(icon),
     );
   }

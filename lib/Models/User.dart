@@ -27,19 +27,20 @@ class User {
   }
 
   // Setters
+  void setReportEmail(bool value) {
+    firestore.document('users/' + _uid).updateData({'report_email': value});
+  }
+
   void setMeetingNew(bool value) {
-    firestore
-        .document('users/' + _uid).updateData({'meeting_new': value});
+    firestore.document('users/' + _uid).updateData({'meeting_new': value});
   }
 
   void setMeetingSchedule(bool value) {
-    firestore
-        .document('users/' + _uid).updateData({'meeting_time': value});
+    firestore.document('users/' + _uid).updateData({'meeting_time': value});
   }
 
   void setMeetingChange(bool value) {
-    firestore
-        .document('users/' + _uid).updateData({'meeting_update': value});
+    firestore.document('users/' + _uid).updateData({'meeting_update': value});
   }
 
   void setFullName(String newValue) {
@@ -69,6 +70,10 @@ class User {
   // Getters
   String getUid() {
     return _uid;
+  }
+
+  bool getReportEmail() {
+    return _data['report_email'];
   }
 
   bool getMeetingNew() {

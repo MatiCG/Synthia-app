@@ -405,9 +405,10 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              colors: [Colors.blueGrey[900], Colors.lightBlueAccent]),
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: [Colors.blueGrey[900], Colors.lightBlueAccent]
+          ),
         ),
         child: ListView(
           children: <Widget>[

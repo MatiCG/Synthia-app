@@ -58,6 +58,33 @@ class Account extends State<AccountPage> {
             }
           },
         ),
+        bottomNavigationBar: SynthiaButton(
+          bottom: 32.0,
+          text: isEditing ? 'Sauvegarder' : 'Se deconnecter',
+          leadingIcon: isEditing ? Icons.save_alt : Icons.power_settings_new,
+          onPressed: isEditing
+              ? () {
+                  List<Function> update = [
+                    _user.setUsername,
+                    _user.setCompany,
+                    _user.setJob,
+                    _user.setPhoneNumber
+                  ];
+                  controllers.forEach((e) {
+                    if (e.text.isNotEmpty) {
+                      update[controllers.indexOf(e)](e.text);
+                    }
+                  });
+                  setState(() {
+                    isEditing = false;
+                  });
+                }
+              : () async {
+                  await _auth.signOut();
+                  onSignOut();
+                },
+          color: isEditing ? Colors.blueGrey : Colors.red.shade600,
+        ),
       ),
     );
   }
@@ -107,68 +134,66 @@ class Account extends State<AccountPage> {
       padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
       child: Column(
         children: [
-          Stack(
-            children: [
-              Card(
+          Stack(children: [
+            Card(
               elevation: 10,
               color: Colors.blueAccent,
               margin: const EdgeInsets.all(16.0),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
-                child: Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.all(16.0),
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(50.0),
-                          child: Image.asset(
-                            'assets/profile.png',
-                            height: 75,
-                            width: 75,
-                          ),
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.all(16.0),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50.0),
+                        child: Image.asset(
+                          'assets/profile.png',
+                          height: 75,
+                          width: 75,
                         ),
                       ),
                     ),
-                    Container(
-                      child: Text(
-                        _user.getFullName(),
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16),
-                      ),
-                      margin: const EdgeInsets.fromLTRB(0, 8.0, 0, 0),
-                    ),
-                    Container(
-                      child: Text(
-                        _user.getEmail(),
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 12),
-                      ),
-                      margin: const EdgeInsets.fromLTRB(0, 4.0, 0, 32.0),
-                    )
-                  ],
-                ),
-              ),
-              Positioned(
-                top: 16,
-                right: 16,
-                child: IconButton(
-                  onPressed: () {
-                    isEditing = isEditing ? false : true;
-                  },
-                  icon: Icon(
-                    Icons.edit,
-                    color: Colors.white,
                   ),
+                  Container(
+                    child: Text(
+                      _user.getFullName(),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                    ),
+                    margin: const EdgeInsets.fromLTRB(0, 8.0, 0, 0),
+                  ),
+                  Container(
+                    child: Text(
+                      _user.getEmail(),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12),
+                    ),
+                    margin: const EdgeInsets.fromLTRB(0, 4.0, 0, 32.0),
+                  )
+                ],
+              ),
+            ),
+            Positioned(
+              top: 16,
+              right: 16,
+              child: IconButton(
+                onPressed: () {
+                  isEditing = isEditing ? false : true;
+                },
+                icon: Icon(
+                  !isEditing ? Icons.edit : Icons.cancel,
+                  color: Colors.white,
                 ),
               ),
-            ]
-          ),
+            ),
+          ]),
           const SizedBox(height: 25.0),
           createFields(
               icons,
@@ -181,32 +206,6 @@ class Account extends State<AccountPage> {
               ],
               isEditing,
               controllers),
-          SynthiaButton(
-            text: isEditing ? 'Sauvegarder' : 'Se deconnecter',
-            icon: isEditing ? Icons.save_alt : Icons.power_settings_new,
-            action: isEditing
-                ? () {
-                    List<Function> update = [
-                      _user.setUsername,
-                      _user.setCompany,
-                      _user.setJob,
-                      _user.setPhoneNumber
-                    ];
-                    controllers.forEach((e) {
-                      if (e.text.isNotEmpty) {
-                        update[controllers.indexOf(e)](e.text);
-                      }
-                    });
-                    setState(() {
-                      isEditing = false;
-                    });
-                  }
-                : () async {
-                    await _auth.signOut();
-                    onSignOut();
-                  },
-            backgroundColor: isEditing ? Colors.blueGrey : Colors.red.shade600,
-          ),
         ],
       ),
     );

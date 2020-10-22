@@ -11,6 +11,7 @@ dependencies:
     sdk: flutter
   dio: ^3.0.9
   path_provider: ^1.6.5
+  sliding_switch: ^0.0.3
   percent_indicator: ^2.1.7+3
   permission_handler: ^4.4.0+hotfix.2
   open_file: ^3.0.1

@@ -7,7 +7,7 @@ admin.initializeApp();
 const db = admin.firestore();
 const fcm = admin.messaging();
 
-async function sendEmailTo(email: string, reportUrl: string, title: string) {
+async function sendEmailTo(name: string, email: string, reportUrl: string, title: string, extension: string) {
     const gmailEmail = functions.config().gmail.email;
     const gmailPassword = functions.config().gmail.password;
     const mailTransport = nodemailer.createTransport({
@@ -21,11 +21,11 @@ async function sendEmailTo(email: string, reportUrl: string, title: string) {
       from: 'Synthia',
       to: email,
       subject: 'Votre compte rendu ',
-      text: `Bonjour,\n\nVous trouverez en pièce jointe le compte rendu de votre réunion \'${title}\'.\n\nL\'équipe synthIA`,
+      text: `Bonjour ${name},\n\nVous trouverez en pièce jointe le compte rendu de votre réunion \'${title}\'.\n\nVous avez choisi le format \'${extension}\'.Vous pouvez modifier ce choix à tout moment dans les paramètres de l'application.\n\nL\'équipe synthIA`,
+      html: `Bonjour ${name},<br/><br/>Vous trouverez en pièce jointe le compte rendu de votre réunion <strong>${title}</strong>.<br/><br/>Vous avez choisi le format <strong>${extension}</strong>. Vous pouvez modifier ce choix à tout moment dans les paramètres de l'application.<br/><br/>L\'équipe synthIA`,
       attachments: [{
-        filename: 'compteRendu.pdf',
-        path: reportUrl,
-//        content: file,
+        filename: `compteRendu.${extension}`,
+        path: reportUrl[0].indexOf(extension) != -1 ? reportUrl[0] : reportUrl[1],
       }]
     };
 
@@ -41,7 +41,7 @@ export const sendEmail = functions.firestore
   .document('meetings/{meetingId}')
   .onUpdate(async (snap) => {
     var reportUrl = snap.after.data().reportUrl;
-    if (reportUrl == "" || snap.before.data().reportUrl != "") {
+    if (reportUrl == null || snap.before.data().reportUrl != null) {
       return;
     }
     const meeting = snap.after.data();
@@ -50,7 +50,7 @@ export const sendEmail = functions.firestore
         const permission = await db.collection('users').doc(user.uid).get();
 
         if (permission.data()!['report_email'] == true) {
-          sendEmailTo(value, reportUrl, meeting.title);
+          sendEmailTo(permission.data()!['firstname'], value, reportUrl, meeting.title, permission.data()!['report_extension']);
         }
         return false;
     });

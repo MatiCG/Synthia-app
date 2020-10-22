@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
+import 'package:synthiaapp/Widgets/ModificationDialog.dart';
 import 'package:synthiaapp/Widgets/SynthiaButton.dart';
 import '../Models/User.dart';
 
@@ -42,6 +44,12 @@ class Account extends State<AccountPage> {
     ];
   }
 
+  void setEditing(bool value) {
+    setState(() {
+      isEditing = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
@@ -57,33 +65,6 @@ class Account extends State<AccountPage> {
               return Center(child: CircularProgressIndicator());
             }
           },
-        ),
-        bottomNavigationBar: SynthiaButton(
-          bottom: 32.0,
-          text: isEditing ? 'Sauvegarder' : 'Se deconnecter',
-          leadingIcon: isEditing ? Icons.save_alt : Icons.power_settings_new,
-          onPressed: isEditing
-              ? () {
-                  List<Function> update = [
-                    _user.setUsername,
-                    _user.setCompany,
-                    _user.setJob,
-                    _user.setPhoneNumber
-                  ];
-                  controllers.forEach((e) {
-                    if (e.text.isNotEmpty) {
-                      update[controllers.indexOf(e)](e.text);
-                    }
-                  });
-                  setState(() {
-                    isEditing = false;
-                  });
-                }
-              : () async {
-                  await _auth.signOut();
-                  onSignOut();
-                },
-          color: isEditing ? Colors.blueGrey : Colors.red.shade600,
         ),
       ),
     );
@@ -107,7 +88,8 @@ class Account extends State<AccountPage> {
             transform: Matrix4.translationValues(16, 0.0, 0.0),
             child: Text(
               titles[index],
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+              style: TextStyle(
+                  fontSize: 12, color: Color.fromRGBO(58, 66, 86, 1.0)),
             ),
           ),
           subtitle: Transform(
@@ -137,7 +119,7 @@ class Account extends State<AccountPage> {
           Stack(children: [
             Card(
               elevation: 10,
-              color: Colors.blueAccent,
+              color: Color.fromRGBO(58, 66, 86, 0.9),
               margin: const EdgeInsets.all(16.0),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
@@ -185,7 +167,29 @@ class Account extends State<AccountPage> {
               right: 16,
               child: IconButton(
                 onPressed: () {
-                  isEditing = isEditing ? false : true;
+                  bool hasChange = false;
+                  controllers.forEach((controller) {
+                    if (controller.text.isNotEmpty) {
+                      hasChange = true;
+                    }
+                  });
+
+                  if (isEditing && hasChange) {
+                    showDialog(
+                        context: context,
+                        builder: (_) {
+                          return ModificationDialog(
+                            title: 'Modification en cours',
+                            content:
+                                'Vos modifications ne seront pas sauvegardée !',
+                            controllers: controllers,
+                            setEditing: setEditing,
+                            context: context,
+                          );
+                        });
+                  } else {
+                    setEditing(!isEditing);
+                  }
                 },
                 icon: Icon(
                   !isEditing ? Icons.edit : Icons.cancel,
@@ -206,6 +210,33 @@ class Account extends State<AccountPage> {
               ],
               isEditing,
               controllers),
+          SynthiaButton(
+            top: 64.0,
+            bottom: 32.0,
+            text: isEditing ? 'Sauvegarder' : 'Se deconnecter',
+            leadingIcon: isEditing ? Icons.save_alt : Icons.power_settings_new,
+            onPressed: isEditing
+                ? () {
+                    List<Function> update = [
+                      _user.setUsername,
+                      _user.setCompany,
+                      _user.setJob,
+                      _user.setPhoneNumber
+                    ];
+                    controllers.forEach((e) {
+                      if (e.text.isNotEmpty) {
+                        update[controllers.indexOf(e)](e.text);
+                        e.clear();
+                      }
+                    });
+                    setEditing(false);
+                  }
+                : () async {
+                    await _auth.signOut();
+                    onSignOut();
+                  },
+            color: isEditing ? Colors.blueGrey : Colors.red.shade600,
+          )
         ],
       ),
     );

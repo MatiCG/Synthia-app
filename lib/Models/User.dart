@@ -27,6 +27,12 @@ class User {
   }
 
   // Setters
+  void setReportExtension(bool value) {
+    firestore
+        .document('users/' + _uid)
+        .updateData({'report_extension': value == true ? 'pdf' : 'txt'});
+  }
+
   void setReportEmail(bool value) {
     firestore.document('users/' + _uid).updateData({'report_email': value});
   }
@@ -70,6 +76,11 @@ class User {
   // Getters
   String getUid() {
     return _uid;
+  }
+
+  bool getReportExtension() {
+    final value = _data['report_extension'];
+    return value == 'pdf' ? true : false;
   }
 
   bool getReportEmail() {

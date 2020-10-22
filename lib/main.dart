@@ -67,7 +67,8 @@ class _MyHomePageState extends State<MyHomePage> {
     _saveDeviceToken();
     _fcm.configure(onMessage: (Map<String, dynamic> message) async {
       var test = LocalNotifications();
-      test.showNotification(message['notification']['title'], message['notification']['body']);
+      test.showNotification(
+          message['notification']['title'], message['notification']['body']);
     }, onLaunch: (Map<String, dynamic> message) async {
       print('onLaunch: $message');
     }, onResume: (Map<String, dynamic> message) async {
@@ -78,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ListPage(),
       AccountPage(onSignOut: widget.onSignOut),
 //      TestPage(),
-      SettingsPage(onSignOut: widget.onSignOut),
+      SettingsPage(onSignOut: widget.onSignOut, setIndex: _setIndex),
     ];
   }
 
@@ -98,6 +99,12 @@ class _MyHomePageState extends State<MyHomePage> {
         'platform': Platform.operatingSystem,
       });
     }
+  }
+
+  void _setIndex(index) {
+    setState(() {
+      selectedPage = index;
+    });
   }
 
   @override
@@ -127,12 +134,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         currentIndex: selectedPage,
         onTap: (index) {
-          setState(() {
-            selectedPage = index;
-          });
+          _setIndex(index);
         },
       ),
     );
   }
 }
-

@@ -1,0 +1,64 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
+/// This class control authentification
+/// for firebase's users
+
+class Auth {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  /// Get user status - get differents status
+  /// Return 'SIGNEDIN' - user alreay signIn
+  /// Return NOTSIGNEDIN - user not signIn
+  Future<String> userStatus() async {
+    String status = await this.currentUser();
+    return status == null ? 'NOTSIGNEDIN' : 'SIGNEDIN';
+  }
+
+  /// Create new Firebase user with
+  /// Email & Password comnbinaison
+  Future<String> createUser(String email, String password) async {
+    try {
+      final AuthResult result = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      return result.user.uid;
+    } catch (error) {
+      print('An error occured when creating new user !\n$error');
+      return null;
+    }
+  }
+
+  /// Retrieve the current user logged
+  /// Return NULL in case of any user logged
+  Future<String> currentUser() async {
+    final FirebaseUser _user = await _firebaseAuth.currentUser();
+    return _user != null ? _user.uid : null;
+  }
+
+  /// Retrieve the email of the current user
+  /// Return NULL in case of any user logged
+  Future<String> currentUserEmail() async {
+    final FirebaseUser _user = await _firebaseAuth.currentUser();
+    return _user != null ? _user.email : null;
+  }
+
+  /// SignIn new user
+  Future<String> signIn(String email, String password) async {
+    try {
+      final AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+      return result.user.uid;
+    } catch (error) {
+      print('An error occured when signIn user !\n$error');
+      return null;
+    }
+  }
+
+  /// Loggout the current user
+  void signOut() async {
+    try {
+      _firebaseAuth.signOut();
+    } catch (error) {
+      print('An error occured when signOut user !\n$error');
+    }
+  }
+}

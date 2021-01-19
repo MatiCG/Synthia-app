@@ -27,6 +27,7 @@ dependencies:
   cloud_functions: ^0.5.0
   intl: ^0.16.1
   firebase_messaging: ^5.0.2
+  bottom_navy_bar: ^5.6.0
   zefyr:
     git:
       url: https://github.com/memspace/zefyr.git

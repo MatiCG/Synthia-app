@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:synthiaapp/Classes/utils.dart';
 import 'package:synthiaapp/Controllers/home.dart';
+import 'package:synthiaapp/Views/detail_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage() : super();
@@ -171,6 +173,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+      onTap: () => Utils().pushScreen(context, DetailPage(post: meeting)),
     );
   }
 

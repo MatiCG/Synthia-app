@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:synthiaapp/Classes/auth.dart';
 import 'package:synthiaapp/Models/login.dart';
 
@@ -13,37 +14,42 @@ class LoginController {
 
   /// Authentificate the user. Detecting automatically if
   /// the form is in login or register mode
-  void submitAuthentification(
+  Future<void> submitAuthentification(
       GlobalKey<FormState> key, VoidCallback authStatusController) async {
     final form = key.currentState;
-    print(getFormType());
     if (form.validate()) {
       form.save();
       if (getFormType() == 'login') {
-        _login(authStatusController);
+        _model.setAuthErrorMsg(await _login(authStatusController));
       } else {
-        _register(authStatusController);
+        _model.setAuthErrorMsg(await _register(authStatusController));
       }
     }
   }
 
   /// Login the user
-  void _login(VoidCallback authStatusController) async {
-    String userId =
+  Future<String> _login(VoidCallback authStatusController) async {
+    var result =
         await Auth().signIn(this.getUserEmail(), this.getUserPassword());
-    if (userId != null) {
+    if (result is PlatformException) {
+      return result.message;
+    } else {
       print('The user has been signIn successfully');
       authStatusController();
+      return '';
     }
   }
 
   /// Register the user
-  void _register(VoidCallback authStatusController) async {
-    String userId =
+  Future<String> _register(VoidCallback authStatusController) async {
+    var result =
         await Auth().createUser(this.getUserEmail(), this.getUserPassword());
-    if (userId != null) {
+    if (result is PlatformException) {
+      return result.message;
+    } else {
       print('The user has been created successfully');
       authStatusController();
+      return '';
     }
   }
 
@@ -63,7 +69,17 @@ class LoginController {
     }
   }
 
+  void setAuthErrorMsg(String error) {
+    _model.setAuthErrorMsg(error == null ? '' : error);
+  }
+
   // Getters Region
+
+  /// Return the error message when authentification
+  /// failed
+  String getAuthErrorMsg() {
+    return _model.getAuthErrorMsg();
+  }
 
   /// Return the user email
   String getUserEmail() {

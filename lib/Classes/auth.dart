@@ -16,14 +16,14 @@ class Auth {
 
   /// Create new Firebase user with
   /// Email & Password comnbinaison
-  Future<String> createUser(String email, String password) async {
+  Future<dynamic> createUser(String email, String password) async {
     try {
       final AuthResult result = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
       return result.user.uid;
     } catch (error) {
       print('An error occured when creating new user !\n$error');
-      return null;
+      return error;
     }
   }
 
@@ -42,14 +42,14 @@ class Auth {
   }
 
   /// SignIn new user
-  Future<String> signIn(String email, String password) async {
+  Future<dynamic> signIn(String email, String password) async {
     try {
       final AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
       return result.user.uid;
     } catch (error) {
-      print('An error occured when signIn user !\n$error');
-      return null;
+      print('An error occured when signIn user !\n${error.message}');
+      return error;
     }
   }
 
@@ -58,7 +58,7 @@ class Auth {
     try {
       _firebaseAuth.signOut();
     } catch (error) {
-      print('An error occured when signOut user !\n$error');
+      print('An error occured when signOut user !\n${error.message}');
     }
   }
 }

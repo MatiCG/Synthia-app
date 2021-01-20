@@ -2,8 +2,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:synthiaapp/Classes/auth.dart';
 
 class HomeModel {
+  List<DocumentSnapshot> _meetings;
+
+  HomeModel() {
+    this._meetings = List<DocumentSnapshot>();
+  }
+
+  /// Set the meetings list
+  void setMeetings(List<DocumentSnapshot> meetings) {
+    this._meetings = meetings;
+  }
+
   /// Return the list of the meetings
-  /// of the current user
+  List<DocumentSnapshot> getMeetings() {
+    return this._meetings;
+  }
+
+  /// Return the list of the meetings store in the
+  /// database
   Future<List<DocumentSnapshot>> getMeetingsList() async {
     final Firestore firestore = Firestore.instance;
     QuerySnapshot querySnapshot;

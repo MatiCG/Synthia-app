@@ -83,7 +83,11 @@ class _LoginPageState extends State<LoginPage> {
             decoration: buildBoxDecorationButton(),
             child: FlatButton(
               onPressed: () async {
-                _controller.submitAuthentification(_formKey, widget.authStatusController);
+                await _controller.submitAuthentification(
+                    _formKey, widget.authStatusController);
+                setState(() {
+                  _controller.setAuthErrorMsg(_controller.getAuthErrorMsg());
+                });
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -138,6 +142,19 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ],
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: Container(
+            alignment: Alignment.center,
+            child: Text(
+              _controller.getAuthErrorMsg(),
+              style: TextStyle(
+                color: Colors.red.shade200,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),

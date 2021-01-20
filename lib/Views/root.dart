@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:synthiaapp/Controllers/root.dart';
+import 'package:ff_navigation_bar/ff_navigation_bar.dart';
 
 class RootPage extends StatefulWidget {
   RootPage() : super();
@@ -14,31 +14,42 @@ class _RootPageState extends State<RootPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: _controller.getPages()[_controller.getPageIndex()],
+      body: _controller.getPages()[_controller.getPageIndex()],
+      bottomNavigationBar: buildFfNavigationBar(context),
+    );
+  }
+
+  /// Build the bottom navigation bar for the entire app
+  FFNavigationBar buildFfNavigationBar(BuildContext context) {
+    return FFNavigationBar(
+      theme: FFNavigationBarTheme(
+        barBackgroundColor: Colors.white,
+        selectedItemBorderColor: Colors.transparent,
+        selectedItemBackgroundColor: Theme.of(context).accentColor,
+        selectedItemIconColor: Colors.white,
+        selectedItemLabelColor: Colors.black,
+        showSelectedItemShadow: false,
       ),
-      bottomNavigationBar: BottomNavyBar(
-        selectedIndex: _controller.getPageIndex(),
-        items: [
-          BottomNavyBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Home'),
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.person),
-            title: Text('Account'),
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.settings),
-            title: Text('Settings'),
-          ),
-        ],
-        onItemSelected: (value) {
-          setState(() {
-            _controller.updatePageIndex(value);
-          });
-        },
-      ),
+      selectedIndex: _controller.getPageIndex(),
+      items: [
+        FFNavigationBarItem(
+          iconData: Icons.home,
+          label: 'Home',
+        ),
+        FFNavigationBarItem(
+          iconData: Icons.person,
+          label: 'Account',
+        ),
+        FFNavigationBarItem(
+          iconData: Icons.settings,
+          label: 'Settings',
+        ),
+      ],
+      onSelectTab: (value) {
+        setState(() {
+          _controller.updatePageIndex(value);
+        });
+      },
     );
   }
 }

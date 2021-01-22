@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:synthiaapp/Classes/auth.dart';
@@ -5,11 +7,17 @@ import 'package:synthiaapp/Models/login.dart';
 
 class LoginController {
   final LoginModel _model = LoginModel();
+  dynamic _parent;
+
+  LoginController(dynamic parent) {
+    this._parent = parent;
+  }
 
   void changeFormType() {
     String formType = this.getFormType();
-
-    _model.setFormType(formType == 'login' ? 'register' : 'login');
+    _parent.setState(() {
+      _model.setFormType(formType == 'login' ? 'register' : 'login');
+    });
   }
 
   /// Authentificate the user. Detecting automatically if
@@ -17,13 +25,18 @@ class LoginController {
   Future<void> submitAuthentification(
       GlobalKey<FormState> key, VoidCallback authStatusController) async {
     final form = key.currentState;
+    String messageError;
+
     if (form.validate()) {
       form.save();
       if (getFormType() == 'login') {
-        _model.setAuthErrorMsg(await _login(authStatusController));
+        messageError = await _login(authStatusController);
       } else {
-        _model.setAuthErrorMsg(await _register(authStatusController));
+        messageError = await _register(authStatusController);
       }
+      _parent.setState(() {
+        _model.setAuthErrorMsg(messageError);
+      });
     }
   }
 
@@ -42,12 +55,22 @@ class LoginController {
 
   /// Register the user
   Future<String> _register(VoidCallback authStatusController) async {
+    Firestore firestore = Firestore.instance;
     var result =
         await Auth().createUser(this.getUserEmail(), this.getUserPassword());
     if (result is PlatformException) {
       return result.message;
     } else {
       print('The user has been created successfully');
+      FirebaseUser user = await Auth().getUser();
+      // Create basic data needed !
+      await firestore.document('users/' + user.uid).setData({
+        'settings_meeting_joined': false,
+        'settings_meeting_scheduled': false,
+        'settings_meeting_updated': false,
+        'settings_report_email': false,
+        'settings_report_format': 'pdf',
+      });
       authStatusController();
       return '';
     }

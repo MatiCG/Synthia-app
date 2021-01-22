@@ -3,13 +3,21 @@ import 'package:synthiaapp/Controllers/root.dart';
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
 
 class RootPage extends StatefulWidget {
-  RootPage() : super();
+  RootPage({this.authStatusController}) : super();
+
+  final VoidCallback authStatusController;
 
   _RootPageState createState() => _RootPageState();
 }
 
 class _RootPageState extends State<RootPage> {
-  static final RootController _controller = RootController();
+  static RootController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = RootController(widget.authStatusController);
+  }
 
   @override
   Widget build(BuildContext context) {

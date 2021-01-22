@@ -24,17 +24,18 @@ class HomeController {
 
   /// Get the date when meeting has been created
   String getMeetingDate(DocumentSnapshot meeting) {
-    final DateTime now = DateFormat("dd/MM/yyyy").parse(
-        meeting.data['schedule']);
+    final DateTime now =
+        DateFormat("dd/MM/yyyy").parse(meeting.data['schedule']);
     final DateFormat formatter = DateFormat('d MMM y');
 
     return formatter.format(now);
   }
 
   /// Get the meetings of the day
-  List<dynamic> getTodayMeetings() {
-    return [1, 2, 3];
+  String getTodayMeetings() {
+    if (_model.getMeetings().length == 0) {
+      return 'No meetings !';
+    }
+    return '${_model.getMeetings().length} meetings';
   }
-
-
 }

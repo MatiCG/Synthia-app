@@ -39,10 +39,12 @@ class _AuthStatusState extends State<AuthConroller> {
       future: (new Auth()).userStatus(),
       builder: (context, snapshot) {
         _auth = snapshot.data;
-//        Auth().signOut();
+        //Auth().signOut();
         switch (_auth) {
           case 'SIGNEDIN':
-            return RootPage();
+            return RootPage(
+              authStatusController: () => _updateAuthStatus(),
+            );
           case 'NOTSIGNEDIN':
             return LoginPage(
               authStatusController: () => _updateAuthStatus(),

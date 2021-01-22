@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:synthiaapp/Views/account.dart';
 import 'package:synthiaapp/Views/home.dart';
+import 'package:synthiaapp/Views/settings.dart';
 
 class RootModel {
   int _selectedPage = 0;
   List<Widget> _pages;
 
-  RootModel() {
+  RootModel(VoidCallback authStatusController) {
     this._pages = [
       HomePage(),
-      Text('ok'),
-      Text('ok'),
+      AccountPage(authStatusController: authStatusController),
+      SettingsPage(authStatusController: authStatusController),
     ];
   }
 

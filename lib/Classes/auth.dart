@@ -20,6 +20,9 @@ class Auth {
     try {
       final AuthResult result = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
+      UserUpdateInfo userUpdateInfo = UserUpdateInfo();
+      userUpdateInfo.displayName = 'user${result.user.uid.substring(0, 3).toUpperCase()}';
+      await result.user.updateProfile(userUpdateInfo);
       return result.user.uid;
     } catch (error) {
       print('An error occured when creating new user !\n$error');
@@ -27,11 +30,18 @@ class Auth {
     }
   }
 
-  /// Retrieve the current user logged
+  /// Retrieve the current user object
   /// Return NULL in case of any user logged
-  Future<String> currentUser() async {
+  Future<dynamic> getUser() async {
     final FirebaseUser _user = await _firebaseAuth.currentUser();
-    return _user != null ? _user.uid : null;
+    return _user != null ? _user : null;
+  }
+
+  /// Retrieve the current user uid logged
+  /// Return NULL in case of any user logged
+  Future<dynamic> currentUser() async {
+    final FirebaseUser _user = await _firebaseAuth.currentUser();
+    return _user != null ? _user.uid : null; //.uid : null;
   }
 
   /// Retrieve the email of the current user

@@ -10,7 +10,13 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  static final LoginController _controller = LoginController();
+  static LoginController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = LoginController(this);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,9 +91,6 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () async {
                 await _controller.submitAuthentification(
                     _formKey, widget.authStatusController);
-                setState(() {
-                  _controller.setAuthErrorMsg(_controller.getAuthErrorMsg());
-                });
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -128,9 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                   key: new Key(btnKey),
                   onPressed: () {
                     _formKey.currentState.reset();
-                    setState(() {
-                      _controller.changeFormType();
-                    });
+                    _controller.changeFormType();
                   },
                   child: Text(
                     btnTitle,

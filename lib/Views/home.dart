@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:synthiaapp/Classes/utils.dart';
 import 'package:synthiaapp/Controllers/home.dart';
 import 'package:synthiaapp/Views/detail_page.dart';
@@ -17,9 +18,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).accentColor,
-      appBar: AppBar(
-        elevation: 0,
-      ),
       body: FutureBuilder(
         future: _controller.retrieveMeetingsList(),
         builder: (_, snapshot) {
@@ -30,14 +28,14 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,//.grey.shade50,
+                      color: Colors.white,
                       borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(30.0),
                         topRight: const Radius.circular(30.0),
                       ),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 25),
+                      padding: const EdgeInsets.only(top: 5),
                       child: buildListView(),
                     ),
                   ),
@@ -58,19 +56,17 @@ class _HomePageState extends State<HomePage> {
 
   /// Build header for list view
   Widget buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 50),
-      child: Container(
-        color: Colors.transparent,
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              buildLeftItem(),
-              buildRightItem(),
-            ],
-          ),
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.25,
+      color: Colors.transparent,
+      child: Align(
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            buildLeftItem(),
+            buildRightItem(),
+          ],
         ),
       ),
     );
@@ -114,7 +110,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Text(
-            '${_controller.getTodayMeetings().length} meetings',
+            _controller.getTodayMeetings(),
             style: TextStyle(
               fontSize: 15,
               color: Colors.white60,
@@ -126,12 +122,23 @@ class _HomePageState extends State<HomePage> {
   }
 
   /// Build listview with all meetings
-  ListView buildListView() {
+  Widget buildListView() {
+    if (_controller.getMeetings().length == 0) {
+      return Center(
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.5,
+          width: MediaQuery.of(context).size.width * 0.5,
+          child: LottieBuilder.network(
+            'https://assets7.lottiefiles.com/temporary_files/PH5YkW.json',
+          ),
+        ),
+      );
+    }
     return ListView.builder(
       itemCount: _controller.getMeetings().length,
       itemBuilder: (context, index) {
         return Padding(
-          padding: const EdgeInsets.only(top: 10, left: 8, right: 8),
+          padding: const EdgeInsets.only(bottom: 10, left: 8, right: 8),
           child: Card(
             elevation: 6,
             margin: const EdgeInsets.symmetric(

@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:synthiaapp/Models/root.dart';
 
 class RootController {
-  final RootModel _model = RootModel();
+  RootModel _model;
+
+  RootController(VoidCallback authStatusController) {
+   this._model = RootModel(authStatusController);
+  }
 
   /// Update the PageIndex of the navigationBar
   void updatePageIndex(int value) {

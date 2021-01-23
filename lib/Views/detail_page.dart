@@ -4,6 +4,8 @@ import 'package:synthiaapp/Classes/utils.dart';
 import 'package:synthiaapp/Controllers/detail_page.dart';
 import 'package:synthiaapp/Views/raspberry_communication.dart';
 
+import 'edit_order.dart';
+
 class DetailPage extends StatefulWidget {
   final DocumentSnapshot post;
 
@@ -80,7 +82,7 @@ class _DetailPageState extends State<DetailPage> {
       child: Column(
         children: [
           RaisedButton(
-            //onPressed: () => navigateToEditOrder(widget.post),
+            onPressed: () => Utils().pushScreen(context, EditOrder(post: widget.post)),
             color: Color.fromRGBO(58, 66, 86, 1.0),
             child: Text("SEE AND EDIT ORDER",
                 style: TextStyle(color: Colors.white)),

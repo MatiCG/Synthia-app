@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+
 /// This class control authentification
 /// for firebase's users
 

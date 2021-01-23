@@ -11,7 +11,16 @@ class SynthiaApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Synthia',
-      theme: ThemeData(primaryColor: Colors.blue),
+      theme: ThemeData(
+        primaryColor: Colors.white,
+        accentColor: Colors.cyan[800],
+        primaryColorDark: Colors.black,
+      ),
+      darkTheme: ThemeData(
+        primaryColor: Colors.blueGrey[700],
+        accentColor: Colors.cyan[800]
+      ),
+      themeMode: ThemeMode.light,
       home: AuthConroller(),
     );
   }

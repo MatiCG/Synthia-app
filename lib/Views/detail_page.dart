@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:synthiaapp/Classes/utils.dart';
 import 'package:synthiaapp/Controllers/detail_page.dart';
-
+import 'package:synthiaapp/Views/raspberry_communication.dart';
 
 class DetailPage extends StatefulWidget {
   final DocumentSnapshot post;
@@ -19,22 +20,24 @@ class _DetailPageState extends State<DetailPage> {
     TextEditingController customController = new TextEditingController();
 
     return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Enter Email"),
-            content: TextField(
-              controller: customController,
-            ),
-            actions: <Widget>[
-              MaterialButton(
-                elevation: 5.0,
-                child: Text("Share"),
-                onPressed: () => _controller.shareMeeting(context, widget.post, customController),
-              )
-            ],
-          );
-        });
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Enter Email"),
+          content: TextField(
+            controller: customController,
+          ),
+          actions: <Widget>[
+            MaterialButton(
+              elevation: 5.0,
+              child: Text("Share"),
+              onPressed: () => _controller.shareMeeting(
+                  context, widget.post, customController),
+            )
+          ],
+        );
+      },
+    );
   }
 
   Widget topContentText() {
@@ -79,8 +82,8 @@ class _DetailPageState extends State<DetailPage> {
           RaisedButton(
             //onPressed: () => navigateToEditOrder(widget.post),
             color: Color.fromRGBO(58, 66, 86, 1.0),
-            child:
-            Text("SEE AND EDIT ORDER", style: TextStyle(color: Colors.white)),
+            child: Text("SEE AND EDIT ORDER",
+                style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -155,8 +158,23 @@ class _DetailPageState extends State<DetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        children: <Widget>[topContent(), bottomContent()],
+        children: <Widget>[
+          topContent(),
+          bottomContent(),
+          buildStartMeetingBtn(),
+        ],
       ),
+    );
+  }
+
+  /// Open the page that start the communication
+  /// With the raspberry pi
+  buildStartMeetingBtn() {
+    return FlatButton(
+      child: Text('Start Meeting'),
+      onPressed: () {
+        Utils().pushScreen(context, RspyCommunication());
+      },
     );
   }
 }

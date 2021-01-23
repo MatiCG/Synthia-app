@@ -7,7 +7,6 @@ class DetailPageController {
 
     void shareMeeting (context, DocumentSnapshot post, TextEditingController customController) {
       final Firestore firestore = Firestore.instance;
-
         firestore
             .collection("meetings")
             .where('title', isEqualTo: post.data['title'])

@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:synthiaapp/Classes/utils.dart';
 import 'package:synthiaapp/Controllers/home.dart';
 import 'package:synthiaapp/Views/detail_page.dart';
+import 'package:synthiaapp/Views/meeting_creation.dart';
 
 class HomePage extends StatefulWidget {
   HomePage() : super();
@@ -28,7 +29,7 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(30.0),
                         topRight: const Radius.circular(30.0),
@@ -89,7 +90,12 @@ class _HomePageState extends State<HomePage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        onPressed: () {},
+        onPressed: () async {
+          await Utils().futurePushScreen(context, MeetingCreation());
+          setState(() {
+            _controller.getMeetings();
+          });
+        },
       ),
     );
   }

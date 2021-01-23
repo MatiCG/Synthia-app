@@ -9,21 +9,19 @@ class EditOrderController{
   final Firestore firestore = Firestore.instance;
 
   Future<NotusDocument> loadDocument(DocumentSnapshot post) async {
-    return firestore.collection("meetings").where('title', isEqualTo: post.data['title']).getDocuments().then((QuerySnapshot meetings) {
+     return firestore.collection("meetings").document(post.documentID).get().then((DocumentSnapshot meetings) {
       return NotusDocument.fromJson(
-          jsonDecode(meetings.documents[0].data["order"]));
+          jsonDecode(meetings.data["order"]));
     }).catchError((onError) {
-      final Delta delta = Delta()..insert("Order failed on load\n");
+      final Delta delta = Delta()..insert("New Order\n");
       return NotusDocument.fromDelta(delta);
     });
   }
 
   void saveDocument(context, ZefyrController _zefyrcontroller, DocumentSnapshot post) {
     final contents = jsonEncode(_zefyrcontroller.document);
-    firestore.collection("meetings").where('title', isEqualTo: post.data['title']).getDocuments().then((QuerySnapshot meetings) {
-      firestore.collection("meetings").document(meetings.documents[0].documentID).updateData({"order": contents}).then((_) {
-        Scaffold.of(context).showSnackBar(SnackBar(content : Text("Saved.")));
-      });
+    firestore.collection("meetings").document(post.documentID).updateData({"order": contents}).then((_) {
+      Scaffold.of(context).showSnackBar(SnackBar(content : Text("Saved.")));
     });
   }
 }

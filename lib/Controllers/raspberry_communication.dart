@@ -42,6 +42,7 @@ class RspyCommunicationController {
     return false;
   }
 
+  /// Start scanning for synthia devices
   void startScan() async {
     _bleManager.startPeripheralScan().listen((device) async {
       if (device != null && device.peripheral.name != null) {
@@ -57,7 +58,9 @@ class RspyCommunicationController {
           if (await startConnect(device)) {
             await Future.delayed(Duration(seconds: 2));
             parent.setState(() {
-              model.bleConfig = true;
+              // Notify that the configuration of the BLE
+              // (SCANNING/FOUNDED/CONNECTED) is done
+              model.isBleSetup = true;
             });
           }
         }
@@ -65,14 +68,19 @@ class RspyCommunicationController {
     });
   }
 
+  /// Init BLE library and start scanning if the BLE is on
   void initBLE() {
     _bleManager.createClient().then((value) {
       _bleManager.observeBluetoothState().listen((state) {
         if (state == BluetoothState.POWERED_ON) {
           parent.setState(() {
             this.setBleState(BLE_STATE.SCANNING);
-            model.bleStatus = true;
+            model.isBleOn = true;
             startScan();
+          });
+        } else if (state == BluetoothState.POWERED_OFF) {
+          parent.setState(() {
+            model.isBleOn = false;
           });
         }
       });
@@ -85,7 +93,7 @@ class RspyCommunicationController {
     });
   }
 
-  String getLottieUrl() {
-    return model.getLottieUrl();
+  String getBleAnim() {
+    return model.bleAnim;
   }
 }

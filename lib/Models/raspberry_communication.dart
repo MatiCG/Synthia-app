@@ -6,62 +6,37 @@ enum BLE_STATE {
 }
 
 class RspyCommunicationModel {
+  bool isBleOn = false;
+  bool isBleSetup = false;
+  String _bleAnim;
   BLE_STATE _bleState = BLE_STATE.SCANNING;
-  String _lottieUrl = '';
-  bool bleIsOn = false;
-  bool bleConfigDone = false;
 
-  bool get bleConfig {
-    return bleConfigDone;
-  }
-
-  set bleConfig(bool conf) {
-    bleConfigDone = conf;
-  }
-
-  bool get bleStatus {
-    return bleIsOn;
-  }
-
-  set bleStatus(bool status) {
-    bleIsOn = status;
-  }
-
-  /// Set the value of the ble state
+  /// Set the state of BLE connexion and assign a lottie url for annimation
   void setBleState(BLE_STATE state) {
     _bleState = state;
     switch (_bleState) {
       case BLE_STATE.SCANNING:
-        _lottieUrl =
-            'https://assets2.lottiefiles.com/packages/lf20_W8gUO8.json';
+        _bleAnim = 'https://assets2.lottiefiles.com/packages/lf20_W8gUO8.json';
         break;
       case BLE_STATE.FOUNDED:
-        _lottieUrl =
+        _bleAnim =
             'https://assets5.lottiefiles.com/packages/lf20_ndlvehgz.json';
         break;
       case BLE_STATE.CONNECTED:
-        _lottieUrl =
+        _bleAnim =
             'https://assets5.lottiefiles.com/private_files/lf30_oaskv6es.json';
         break;
       case BLE_STATE.ERROR:
-        _lottieUrl =
+        _bleAnim =
             'https://assets2.lottiefiles.com/private_files/lf30_glnkkfua.json';
         break;
     }
   }
 
-  /// Retrieve the value of the ble state.
-  BLE_STATE getBleState() {
-    return _bleState;
-  }
+  /// Retrieve the url of the lottie animation depending of
+  /// the current state of the BLE
+  String get bleAnim => _bleAnim;
 
-  /// Retrieve the value of the lottie file
-  String getLottieUrl() {
-    return _lottieUrl;
-  }
-
-  /// Set the value of the lottie file
-  void setLottieUrl(String value) {
-    _lottieUrl = value;
-  }
+  /// Set the url of the lottie animation
+  set bleUrl(String value) => _bleAnim = value;
 }

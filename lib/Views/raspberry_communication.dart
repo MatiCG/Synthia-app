@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ble_lib/flutter_ble_lib.dart';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:synthiaapp/Controllers/raspberry_communication.dart';
-import 'package:synthiaapp/Models/raspberry_communication.dart';
 
 class RspyCommunication extends StatefulWidget {
   RspyCommunication({this.meetingID}) : super();
@@ -33,7 +29,7 @@ class _RspyCommunicationState extends State<RspyCommunication> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: _controller.model.bleConfig
+      body: _controller.model.isBleSetup
           ? FlatButton(
               child: Text('Start Meeting'),
               onPressed: () => _controller.sendData(widget.meetingID),
@@ -45,7 +41,7 @@ class _RspyCommunicationState extends State<RspyCommunication> {
 
 /// Build the section of the setup of the bluetooth
 Widget buildBLEConnectionState(RspyCommunicationController _controller) {
-  return !_controller.model.bleIsOn
+  return !_controller.model.isBleOn
       ? Center(
           child: Text(
             'Please enable the bluetooth !',
@@ -60,7 +56,7 @@ Widget buildBLEConnectionState(RspyCommunicationController _controller) {
           children: [
             Align(
               alignment: Alignment.center,
-              child: Lottie.network(_controller.getLottieUrl()),
+              child: Lottie.network(_controller.getBleAnim()),
             ),
           ],
         );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:synthiaapp/main.dart';
 import 'auth.dart';
 import 'login_page.dart';
 import 'main.dart';

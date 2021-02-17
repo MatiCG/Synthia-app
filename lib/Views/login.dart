@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:synthiaapp/Controllers/login.dart';
+import 'package:synthiaapp/Models/login.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({this.authStatusController}) : super();
+  LoginPage() : super();
 
-  final VoidCallback authStatusController;
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -41,13 +41,14 @@ class _LoginPageState extends State<LoginPage> {
 
   /// Build content elemnts for login page
   Column buildContent() {
-    final String ask = _controller.getFormType() == 'login'
+    final String ask = _controller.model.formType == FormType.login
         ? 'Your first time ?'
         : 'Already an account';
-    final String btnKey =
-        _controller.getFormType() == 'login' ? 'need-account' : 'register';
+    final String btnKey = _controller.model.formType == FormType.login
+        ? 'need-account'
+        : 'register';
     final String btnTitle =
-        _controller.getFormType() == 'login' ? 'Sign up' : 'Sign in';
+        _controller.model.formType == FormType.login ? 'Sign up' : 'Sign in';
 
     return Column(
       children: [
@@ -62,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                   return value.isEmpty ? 'Email can\'t be empty.' : null;
                 },
                 (value) {
-                  _controller.setUserEmail(value);
+                  _controller.model.email = value;
                 },
               ),
               Container(height: 20),
@@ -73,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                   return value.isEmpty ? 'Password can\' t be empty.' : null;
                 },
                 (value) {
-                  _controller.setUserPassword(value);
+                  _controller.model.password = value;
                 },
                 isPassword: true,
               ),
@@ -89,8 +90,7 @@ class _LoginPageState extends State<LoginPage> {
             decoration: buildBoxDecorationButton(),
             child: FlatButton(
               onPressed: () async {
-                await _controller.submitAuthentification(
-                    _formKey, widget.authStatusController);
+                await _controller.submitAuthentification(_formKey);
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -151,9 +151,9 @@ class _LoginPageState extends State<LoginPage> {
           child: Container(
             alignment: Alignment.center,
             child: Text(
-              _controller.getAuthErrorMsg(),
+              _controller.model.authErrorMsg,
               style: TextStyle(
-                color: Colors.red.shade200,
+                color: Colors.red,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -206,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
   Row buildHeader() {
     const String synthiaSlogan = 'Synthia\nSimpler meetings\nBetter synthesis';
     final String pageTitle =
-        _controller.getFormType() == 'login' ? 'Sign in' : 'Sign up';
+        _controller.model.formType == FormType.login ? 'Sign in' : 'Sign up';
 
     return Row(
       children: [

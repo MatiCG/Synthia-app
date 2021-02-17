@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:synthiaapp/Classes/auth.dart';
 import 'package:synthiaapp/Models/login.dart';
+import 'package:synthiaapp/config.dart';
 
 class LoginController {
-  final LoginModel _model = LoginModel();
+  final LoginModel model = LoginModel();
   dynamic _parent;
 
   LoginController(dynamic parent) {
@@ -14,113 +13,77 @@ class LoginController {
   }
 
   void changeFormType() {
-    String formType = this.getFormType();
+    FormType formType = model.formType;
+
+    // Before doing the setState check if the widget is mounted to avoid errors
+    if (!_parent.mounted) return;
+
+    // Notify the parent (The view) that the form type has change.
     _parent.setState(() {
-      _model.setFormType(formType == 'login' ? 'register' : 'login');
+      model.form =
+          formType == FormType.login ? FormType.register : FormType.login;
     });
   }
 
   /// Authentificate the user. Detecting automatically if
   /// the form is in login or register mode
-  Future<void> submitAuthentification(
-      GlobalKey<FormState> key, VoidCallback authStatusController) async {
+  Future<void> submitAuthentification(GlobalKey<FormState> key) async {
     final form = key.currentState;
     String messageError;
 
     if (form.validate()) {
       form.save();
-      if (getFormType() == 'login') {
-        messageError = await _login(authStatusController);
+      if (model.formType == FormType.login) {
+        messageError = await _login();
       } else {
-        messageError = await _register(authStatusController);
+        messageError = await _register();
       }
+
+      // Before doing the setState check if the widget is mounted to avoid errors
+      if (!_parent.mounted) return;
+
+      // Notify the parent (The view) that the message error has change.
       _parent.setState(() {
-        _model.setAuthErrorMsg(messageError);
+        model.authError = messageError;
       });
     }
   }
 
   /// Login the user
-  Future<String> _login(VoidCallback authStatusController) async {
-    var result =
-        await Auth().signIn(this.getUserEmail(), this.getUserPassword());
-    if (result is PlatformException) {
+  Future<String> _login() async {
+    dynamic result = await auth.signIn(model.userEmail, model.userPassword);
+
+    if (result is FirebaseAuthException) {
       return result.message;
     } else {
       print('The user has been signIn successfully');
-      authStatusController();
       return '';
     }
   }
 
   /// Register the user
-  Future<String> _register(VoidCallback authStatusController) async {
-    Firestore firestore = Firestore.instance;
-    var result =
-        await Auth().createUser(this.getUserEmail(), this.getUserPassword());
-    if (result is PlatformException) {
+  Future<String> _register() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    dynamic result = await auth.createUser(model.userEmail, model.userPassword);
+
+    if (result is FirebaseAuthException) {
       return result.message;
     } else {
       print('The user has been created successfully');
-      FirebaseUser user = await Auth().getUser();
-      // Create basic data needed !
-      await firestore.document('users/' + user.uid).setData({
-        'settings_meeting_joined': false,
-        'settings_meeting_scheduled': false,
-        'settings_meeting_updated': false,
-        'settings_report_email': false,
-        'settings_report_format': 'pdf',
-      });
-      authStatusController();
+      // Initiate the basics data needed in the database about the user settings
+      try {
+        await firestore.doc('users/' + auth.user.uid).set({
+          'settings_meeting_joined': false,
+          'settings_meeting_scheduled': false,
+          'settings_meeting_updated': false,
+          'settings_report_email': false,
+          'settings_report_format': 'pdf',
+        });
+      } catch (error) {
+        print(
+            'An error occured when trying to set data in the database.\n$error');
+      }
       return '';
     }
-  }
-
-  // Setters Region
-
-  /// Save user email
-  void setUserEmail(String email) {
-    if (email.isNotEmpty) {
-      _model.setUserEmail(email);
-    }
-  }
-
-  /// Save user password
-  void setUserPassword(String password) {
-    if (password.isNotEmpty) {
-      _model.setUserPassword(password);
-    }
-  }
-
-  void setAuthErrorMsg(String error) {
-    _model.setAuthErrorMsg(error == null ? '' : error);
-  }
-
-  // Getters Region
-
-  /// Return the error message when authentification
-  /// failed
-  String getAuthErrorMsg() {
-    return _model.getAuthErrorMsg();
-  }
-
-  /// Return the user email
-  String getUserEmail() {
-    return _model.getUserEmail();
-  }
-
-  // Return the user password
-  String getUserPassword() {
-    return _model.getUserPassword();
-  }
-
-  /// Return the form type. Login or Register
-  String getFormType() {
-    return _model.getFormType();
-  }
-
-  /// Return user status. SIGNEDIN or NOTSIGNEDIN
-  Future<String> getUserAuthStatus() async {
-    return await Auth().currentUser();
   }
 }

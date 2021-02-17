@@ -2,19 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:synthiaapp/Models/meeting_creation.dart';
-import 'package:synthiaapp/Classes/auth.dart';
+import 'package:synthiaapp/config.dart';
 import 'package:uuid/uuid.dart';
 
 class MeetingCreationController {
   MeetingCreationModel model = MeetingCreationModel();
-  final Firestore databaseReference = Firestore.instance;
+  final FirebaseFirestore databaseReference = FirebaseFirestore.instance;
   final dynamic parent;
 
   MeetingCreationController({this.parent}) {
-    Auth().currentUserEmail().then((value) {
-      parent.setState(() {
-        model.addNewMember(value);
-      });
+    parent.setState(() {
+      model.addNewMember(auth.user.email);
     });
   }
 
@@ -32,8 +30,8 @@ class MeetingCreationController {
     } else {
       await databaseReference
           .collection('meetings')
-          .document(Uuid().v1())
-          .setData({
+          .doc(Uuid().v1())
+          .set({
         'title': model.getMeetingTitle(),
         'description': model.getMeetingDescription(),
         'schedule': DateFormat('dd/MM/yyyy').format(DateTime.now()),
@@ -69,7 +67,7 @@ class MeetingCreationController {
     if (value != null && value.isNotEmpty) {
       try {
         dynamic result = await FirebaseAuth.instance
-            .fetchSignInMethodsForEmail(email: value);
+            .fetchSignInMethodsForEmail(value);
         if (result.length > 0 && !model.getMeetingMembers().contains(value)) {
           parent.setState(() {
             model.addNewMember(value);

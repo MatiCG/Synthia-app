@@ -1,35 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:synthiaapp/Classes/auth.dart';
+import 'package:synthiaapp/config.dart';
 
 class HomeModel {
-  List<DocumentSnapshot> _meetings;
+  List<DocumentSnapshot> meetings = List<DocumentSnapshot>();
+  final dynamic parent;
 
-  HomeModel() {
-    this._meetings = List<DocumentSnapshot>();
+  HomeModel({this.parent}) {
+    getMeetings().then((value) {
+      parent.setState(() {
+        meetings = value;
+      });
+    });
   }
 
-  /// Set the meetings list
-  void setMeetings(List<DocumentSnapshot> meetings) {
-    this._meetings = meetings;
-  }
-
-  /// Return the list of the meetings
-  List<DocumentSnapshot> getMeetings() {
-    return this._meetings;
-  }
-
-  /// Return the list of the meetings store in the
-  /// database
-  Future<List<DocumentSnapshot>> getMeetingsList() async {
-    final Firestore firestore = Firestore.instance;
-    QuerySnapshot querySnapshot;
-
+  Future<List<DocumentSnapshot>> getMeetings() async {
     try {
-      querySnapshot = await firestore
+//      List<DocumentSnapshot> result;
+      QuerySnapshot result =
+        await FirebaseFirestore.instance
           .collection('meetings')
-          .where('members', arrayContains: await Auth().currentUserEmail())
-          .getDocuments();
-      return querySnapshot.documents;
+          .where('members', arrayContains: auth.user.email)
+          .get();
+      return result.docs;
     } catch (error) {
       print('An error occured retrieving meetings list. $error');
       return null;

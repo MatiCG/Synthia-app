@@ -1,75 +1,107 @@
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 
+enum userAuthState {
+  CONNECTED,
+  NOT_CONNECTED,
+}
 
-/// This class control authentification
-/// for firebase's users
-
+/// This class control the authentification for
+/// firebase users;
 class Auth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  User _user;
+  // ignore: close_sinks
+  StreamController<userAuthState> _streamController;
+  Stream _stream;
 
-  /// Get user status - get differents status
-  /// Return 'SIGNEDIN' - user alreay signIn
-  /// Return NOTSIGNEDIN - user not signIn
-  Future<String> userStatus() async {
-    String status = await this.currentUser();
-    return status == null ? 'NOTSIGNEDIN' : 'SIGNEDIN';
+  Auth() {
+    // Configuring the stream that listen to the user state
+    _streamController = StreamController<userAuthState>();
+    _stream = _streamController.stream;
+
+    // get the current user status and add the value to the stream.
+    _streamController.add(userStatus);
+
+    // Set the value of the user object to the current user
+    _user = _firebaseAuth.currentUser;
+//    _firebaseAuth.currentUser().then((value) => _user = value);
   }
 
-  /// Create new Firebase user with
-  /// Email & Password comnbinaison
+  /// Create a new firebase user with Email and Password combinaison
   Future<dynamic> createUser(String email, String password) async {
+    UserCredential result;
+
     try {
-      final AuthResult result = await _firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: password);
-      UserUpdateInfo userUpdateInfo = UserUpdateInfo();
-      userUpdateInfo.displayName = 'user${result.user.uid.substring(0, 3).toUpperCase()}';
-      await result.user.updateProfile(userUpdateInfo);
-      return result.user.uid;
-    } catch (error) {
-      print('An error occured when creating new user !\n$error');
-      return error;
-    }
-  }
-
-  /// Retrieve the current user object
-  /// Return NULL in case of any user logged
-  Future<dynamic> getUser() async {
-    final FirebaseUser _user = await _firebaseAuth.currentUser();
-    return _user != null ? _user : null;
-  }
-
-  /// Retrieve the current user uid logged
-  /// Return NULL in case of any user logged
-  Future<dynamic> currentUser() async {
-    final FirebaseUser _user = await _firebaseAuth.currentUser();
-    return _user != null ? _user.uid : null; //.uid : null;
-  }
-
-  /// Retrieve the email of the current user
-  /// Return NULL in case of any user logged
-  Future<String> currentUserEmail() async {
-    final FirebaseUser _user = await _firebaseAuth.currentUser();
-    return _user != null ? _user.email : null;
-  }
-
-  /// SignIn new user
-  Future<dynamic> signIn(String email, String password) async {
-    try {
-      final AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
+      result = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
-      return result.user.uid;
+
+      // Define the user basics information
+      user.updateProfile(
+        displayName: 'user${result.user.uid.substring(0, 3).toUpperCase()}',
+        photoURL:
+            'https://firebasestorage.googleapis.com/v0/b/synthia-app-eip.appspot.com/o/default_profile_picture.png?alt=media&token=7b35cd9e-41cb-490e-9ed8-c35889d3a48c',
+      );
+      await user.reload();
+      this.updateUser();
     } catch (error) {
-      print('An error occured when signIn user !\n${error.message}');
+      print('An error occured when creating a new user.\n${error.message}');
       return error;
     }
+    return result.user.uid;
+  }
+
+  /// SignIn a firebase user with email and password combinaison
+  Future<dynamic> signIn(String email, String password) async {
+    UserCredential result;
+
+    try {
+      result = await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+      this.updateUser();
+    } catch (error) {
+      print('An error occured when signIn user.\n${error.message}');
+      return error;
+    }
+    return result.user.uid;
   }
 
   /// Loggout the current user
   void signOut() async {
     try {
-      _firebaseAuth.signOut();
+      await _firebaseAuth.signOut();
+      this.updateUser();
     } catch (error) {
       print('An error occured when signOut user !\n${error.message}');
     }
+  }
+
+  // Setters
+  set userPhotoUrl(String url) {}
+
+  set user(User user) => this._user = user;
+
+  // Getters
+
+  /// Retrieve the current user object
+  User get user => this._user;
+
+  /// Retrieve the stream of the user authentification
+  Stream get stream => this._stream;
+
+  /// Get the user authentification status. CONNECTED or NOT_CONNECTED
+  userAuthState get userStatus {
+    final User user = this._firebaseAuth.currentUser;
+    return user != null ? userAuthState.CONNECTED : userAuthState.NOT_CONNECTED;
+  }
+
+  // Setters
+
+  /// Set the current user object and update the value for the stream
+  void updateUser() {
+    this._user = _firebaseAuth.currentUser;
+    this._user != null
+        ? _streamController.add(userAuthState.CONNECTED)
+        : _streamController.add(userAuthState.NOT_CONNECTED);
   }
 }

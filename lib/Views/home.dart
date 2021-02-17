@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:synthiaapp/Classes/utils.dart';
 import 'package:synthiaapp/Controllers/home.dart';
 import 'package:synthiaapp/Views/detail_page.dart';
 import 'package:synthiaapp/Views/meeting_creation.dart';
+import 'package:synthiaapp/config.dart';
 
 class HomePage extends StatefulWidget {
   HomePage() : super();
@@ -13,44 +13,38 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final HomeController _controller = HomeController();
+  HomeController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = HomeController(parent: this);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).accentColor,
-      body: FutureBuilder(
-        future: _controller.retrieveMeetingsList(),
-        builder: (_, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return Column(
-              children: [
-                buildHeader(),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(30.0),
-                        topRight: const Radius.circular(30.0),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: buildListView(),
-                    ),
-                  ),
+      body: Column(
+        children: [
+          buildHeader(),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(30.0),
+                  topRight: const Radius.circular(30.0),
                 ),
-              ],
-            );
-          }
-          return Column(
-            children: [
-              Expanded(child: Container()),
-              LinearProgressIndicator(),
-            ],
-          );
-        },
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: buildListView(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -79,22 +73,17 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.only(right: 25, top: 10),
       child: FlatButton(
         padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
-        color: Colors.white,
+        color: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
         child: Text(
           'Create New',
-          style: TextStyle(
-            color: Theme.of(context).accentColor,
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(context).textTheme.headline4,
         ),
         onPressed: () async {
-          await Utils().futurePushScreen(context, MeetingCreation());
-          setState(() {
-            _controller.getMeetings();
-          });
+          await utils.futurePushScreen(context, MeetingCreation());
+          _controller.updateMeetingList();
         },
       ),
     );
@@ -109,18 +98,11 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text(
             'Today',
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+            style: Theme.of(context).textTheme.headline5,
           ),
           Text(
             _controller.getTodayMeetings(),
-            style: TextStyle(
-              fontSize: 15,
-              color: Colors.white60,
-            ),
+            style: Theme.of(context).textTheme.headline1,
           ),
         ],
       ),
@@ -129,7 +111,7 @@ class _HomePageState extends State<HomePage> {
 
   /// Build listview with all meetings
   Widget buildListView() {
-    if (_controller.getMeetings().length == 0) {
+    if (_controller.model.meetings.length == 0) {
       return Center(
         child: Container(
           height: MediaQuery.of(context).size.height * 0.5,
@@ -141,7 +123,7 @@ class _HomePageState extends State<HomePage> {
       );
     }
     return ListView.builder(
-      itemCount: _controller.getMeetings().length,
+      itemCount: _controller.model.meetings.length,
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.only(bottom: 10, left: 8, right: 8),
@@ -156,7 +138,7 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: buildItemList(_controller.getMeetings()[index]),
+              child: buildItemList(_controller.model.meetings[index]),
             ),
           ),
         );
@@ -169,10 +151,14 @@ class _HomePageState extends State<HomePage> {
     return ListTile(
       title: Row(
         children: [
-          Icon(Icons.work_outline),
+          Icon(
+            Icons.work_outline,
+            color: Theme.of(context).primaryColorDark,
+          ),
           Container(width: 20),
           Text(
-            meeting.data['title'],
+            meeting.data()['title'],
+            style: Theme.of(context).textTheme.bodyText2,
           ),
         ],
       ),
@@ -186,7 +172,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      onTap: () => Utils().pushScreen(context, DetailPage(post: meeting)),
+      onTap: () => utils.pushScreen(context, DetailPage(post: meeting)),
     );
   }
 
@@ -197,19 +183,13 @@ class _HomePageState extends State<HomePage> {
       children: [
         Text(
           title,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-            color: Theme.of(context).accentColor,
-          ),
+          style: Theme.of(context).textTheme.headline2,
         ),
         Padding(
           padding: const EdgeInsets.only(top: 5),
           child: Text(
             value,
-            style: TextStyle(
-              color: Colors.black,
-            ),
+            style: Theme.of(context).textTheme.bodyText2,
           ),
         ),
       ],

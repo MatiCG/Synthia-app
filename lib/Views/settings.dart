@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:synthiaapp/Controllers/settings.dart';
+import 'package:synthiaapp/config.dart';
 
 class SettingsPage extends StatefulWidget {
-  SettingsPage({this.authStatusController}) : super();
+  SettingsPage() : super();
 
-  final VoidCallback authStatusController;
   _SettingsPageState createState() => _SettingsPageState();
 }
 
@@ -28,7 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(30.0),
                   topRight: const Radius.circular(30.0),
@@ -43,35 +43,39 @@ class _SettingsPageState extends State<SettingsPage> {
                     buildListItem(
                       'Invitation',
                       'You\'ll receive a notification after being invited to a meeting.',
-                      _controller.isMeetingJoinSelected(),
-                      (bool value) => _controller.setMeetingJoin(value),
+                      _controller.model?.isJoinSelected ?? false,
+                      (bool value) => _controller.model.setJoinSelected = value,
                     ),
                     buildListItem(
                       'Schedule',
                       'You\'ll receive a notification as soon as a meeting is about to start.',
-                      _controller.isMeetingScheduleSelected(),
-                      (bool value) => _controller.setMeetingSchedule(value),
+                      _controller.model?.isScheduleSelected ?? false,
+                      (bool value) =>
+                          _controller.model.setScheduleSelected = value,
                     ),
                     buildListItem(
                       'Updated',
                       'You\'ll receive a notification as soon as a meeting is updated.',
-                      _controller.isMeetingUpdateSelected(),
-                      (bool value) => _controller.setMeetingUpdate(value),
+                      _controller.model?.isUpdateSelected ?? false,
+                      (bool value) =>
+                          _controller.model.setUpdateSelected = value,
                     ),
                     buildTitleSection('Report'),
                     buildListItem(
                       'Mailing Report',
                       'You\'ll receive the report of all the meetings right when it will be available.',
-                      _controller.isReportEmailSelected(),
-                      (bool value) => _controller.setReportEmail(value),
+                      _controller.model?.isMailingReportSelected ?? false,
+                      (bool value) =>
+                          _controller.model.setMailingReportSelected = value,
                     ),
                     buildListItem(
                       'Pdf Format',
                       'If this option is checked you\'ll receive a pdf. Otherwise it will be a txt file.',
-                      _controller.isReportFormatSelected(),
-                      _controller.isReportEmailSelected() == true
-                        ? (bool value) => _controller.setReportFormat(value)
-                        : null,
+                      _controller.model?.isFormatReportSelected ?? false,
+                      _controller.model?.isMailingReportSelected ?? false
+                          ? (bool value) =>
+                              _controller.model.setFormatReportSelected = value
+                          : null,
                     ),
                   ],
                 ),
@@ -89,11 +93,7 @@ class _SettingsPageState extends State<SettingsPage> {
       padding: const EdgeInsets.only(top: 8),
       child: Text(
         title,
-        style: TextStyle(
-          fontWeight: FontWeight.w400,
-          fontSize: 16,
-          color: Theme.of(context).accentColor,
-        ),
+        style: Theme.of(context).textTheme.headline6,
       ),
     );
   }
@@ -112,7 +112,9 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               buildHeaderActionButtons(
                 Icons.wb_sunny_outlined,
-                null,
+                () {
+                  theme.switchTheme();
+                },
                 Colors.yellow.shade900,
               ),
               buildHeaderActionButtons(
@@ -123,7 +125,7 @@ class _SettingsPageState extends State<SettingsPage> {
               buildHeaderActionButtons(
                 Icons.delete_forever_outlined,
                 () {
-                  _controller.deleteAccount(widget.authStatusController);
+                  _controller.deleteAccount();
                 },
                 Colors.red.shade500,
               ),
@@ -164,15 +166,11 @@ class _SettingsPageState extends State<SettingsPage> {
           activeColor: Theme.of(context).accentColor,
           title: Text(
             title,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-            ),
+            style: Theme.of(context).textTheme.headline4,
           ),
           subtitle: Text(
             subtitle,
-            style: TextStyle(
-              fontWeight: FontWeight.w300,
-            ),
+            style: Theme.of(context).textTheme.bodyText2,
           ),
           value: value == null ? false : value,
           onChanged: onChanged,

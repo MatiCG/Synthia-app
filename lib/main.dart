@@ -1,70 +1,97 @@
+import 'dart:async';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:synthiaapp/Views/root.dart';
 import 'package:synthiaapp/Views/login.dart';
-
+import 'package:synthiaapp/config.dart';
 import 'Classes/auth.dart';
 
 void main() => runApp(SynthiaApp());
 
-class SynthiaApp extends StatelessWidget {
+class SynthiaApp extends StatefulWidget {
+  SynthiaApp() : super();
+
+  _SynthiaAppState createState() => _SynthiaAppState();
+}
+
+class _SynthiaAppState extends State<SynthiaApp> {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Synthia',
-      theme: ThemeData(
-        primaryColor: Colors.white,
-        accentColor: Colors.cyan[800],
-        primaryColorDark: Colors.black,
-      ),
-      darkTheme: ThemeData(
-        primaryColor: Colors.blueGrey[700],
-        accentColor: Colors.cyan[800]
-      ),
-      themeMode: ThemeMode.light,
-      home: AuthConroller(),
-    );
-  }
-}
-
-class AuthConroller extends StatefulWidget {
-  AuthConroller() : super();
-
-  _AuthStatusState createState() => _AuthStatusState();
-}
-
-class _AuthStatusState extends State<AuthConroller> {
-  String _auth;
-
-  void _updateAuthStatus() async {
-    String authStatus = await Auth().userStatus();
-    setState(() {
-      _auth = authStatus;
+  void initState() {
+    super.initState();
+    theme.addListener(() {
+      setState(() {});
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: (new Auth()).userStatus(),
-      builder: (context, snapshot) {
-        _auth = snapshot.data;
-        //Auth().signOut();
-        switch (_auth) {
-          case 'SIGNEDIN':
-            return RootPage(
-              authStatusController: () => _updateAuthStatus(),
+    final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
+    return MaterialApp(
+      title: 'Synthia',
+      theme: theme.lightTheme,
+      darkTheme: theme.darkTheme,
+      themeMode: theme.currentTheme(),
+      home: FutureBuilder(
+        future: _initialization,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return AuthController();
+          } else {
+            return Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
             );
-          case 'NOTSIGNEDIN':
-            return LoginPage(
-              authStatusController: () => _updateAuthStatus(),
-            );
-        }
-        return Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      },
+          }
+        },
+      ),
     );
+  }
+}
+
+class AuthController extends StatefulWidget {
+  AuthController() : super();
+
+  _AuthControllerState createState() => _AuthControllerState();
+}
+
+class _AuthControllerState extends State<AuthController> {
+  StreamSubscription _streamSubscription;
+  userAuthState _userStatus = userAuthState.NOT_CONNECTED;
+
+  @override
+  void initState() {
+    super.initState();
+    // Listening for a new value of the user status
+    _streamSubscription = auth.stream.listen((value) {
+      // Change the current value for the userStatus to update view and get
+      // the page corresponding
+      if (this.mounted) {
+        setState(() {
+          _userStatus = value;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    // Stop stream to avoid memory leaks
+    _streamSubscription.cancel();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    switch (_userStatus) {
+      case userAuthState.CONNECTED:
+        return RootPage();
+      case userAuthState.NOT_CONNECTED:
+        return LoginPage();
+      default:
+        return LoginPage();
+    }
   }
 }

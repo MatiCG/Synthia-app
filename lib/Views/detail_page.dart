@@ -59,7 +59,7 @@ class _DetailPageState extends State<DetailPage> {
           ),
           SizedBox(height: 10.0),
           Text(
-            widget.post.data["title"],
+            widget.post.data()["title"],
             style: TextStyle(color: Colors.white, fontSize: 45.0),
           ),
           SizedBox(height: 30.0),
@@ -69,11 +69,35 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget bottomContentText() {
-    return Container(
-      child: Text(
-        widget.post.data["description"],
-        style: TextStyle(fontSize: 18.0),
-      ),
+    return Column(
+      children: [
+        Text(
+          widget.post.data()['description'],
+          style: TextStyle(fontSize: 18.0),
+        ),
+        ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.4,
+            maxWidth: double.infinity,//MediaQuery.of(context).size.width * 0.5,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 25),
+                  child: Text('KEYWORDS'),
+                ),
+                Text(widget.post?.data()['keyWords']),
+                Padding(
+                  padding: const EdgeInsets.only(top: 25, bottom: 25),
+                  child: Text('RESUME'),
+                ),
+                Text(widget.post?.data()['resume']),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -82,7 +106,8 @@ class _DetailPageState extends State<DetailPage> {
       child: Column(
         children: [
           RaisedButton(
-            onPressed: () => Utils().pushScreen(context, EditOrder(post: widget.post)),
+            onPressed: () =>
+                Utils().pushScreen(context, EditOrder(post: widget.post)),
             color: Color.fromRGBO(58, 66, 86, 1.0),
             child: Text("SEE AND EDIT ORDER",
                 style: TextStyle(color: Colors.white)),
@@ -98,7 +123,7 @@ class _DetailPageState extends State<DetailPage> {
       padding: EdgeInsets.all(40.0),
       child: Center(
         child: Column(
-          children: <Widget>[bottomContentText(), bottomContentButton()],
+          children: <Widget>[bottomContentButton(), bottomContentText()],
         ),
       ),
     );
@@ -149,7 +174,7 @@ class _DetailPageState extends State<DetailPage> {
           Positioned(
               right: 8.0,
               bottom: 10,
-              child: Text(widget.post.data["schedule"],
+              child: Text(widget.post.data()["schedule"],
                   style: TextStyle(color: Colors.white)))
         ],
       ),
@@ -175,7 +200,8 @@ class _DetailPageState extends State<DetailPage> {
     return FlatButton(
       child: Text('Start Meeting'),
       onPressed: () {
-        Utils().pushScreen(context, RspyCommunication());
+        Utils().pushScreen(
+            context, RspyCommunication(meetingID: widget.post.id));
       },
     );
   }

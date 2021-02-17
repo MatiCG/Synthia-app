@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:synthiaapp/Controllers/root.dart';
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
+import 'package:synthiaapp/config.dart';
 
 class RootPage extends StatefulWidget {
-  RootPage({this.authStatusController}) : super();
-
-  final VoidCallback authStatusController;
+  RootPage() : super();
 
   _RootPageState createState() => _RootPageState();
 }
@@ -16,13 +15,13 @@ class _RootPageState extends State<RootPage> {
   @override
   void initState() {
     super.initState();
-    _controller = RootController(widget.authStatusController);
+    _controller = RootController();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _controller.getPages()[_controller.getPageIndex()],
+      body: _controller.getPages()[_controller.model.pageIndex],
       bottomNavigationBar: buildFfNavigationBar(context),
     );
   }
@@ -30,15 +29,8 @@ class _RootPageState extends State<RootPage> {
   /// Build the bottom navigation bar for the entire app
   FFNavigationBar buildFfNavigationBar(BuildContext context) {
     return FFNavigationBar(
-      theme: FFNavigationBarTheme(
-        barBackgroundColor: Colors.white,
-        selectedItemBorderColor: Colors.transparent,
-        selectedItemBackgroundColor: Theme.of(context).accentColor,
-        selectedItemIconColor: Colors.white,
-        selectedItemLabelColor: Colors.black,
-        showSelectedItemShadow: false,
-      ),
-      selectedIndex: _controller.getPageIndex(),
+      theme: theme.currentBottomNavBarTheme(),
+      selectedIndex: _controller.model.pageIndex,
       items: [
         FFNavigationBarItem(
           iconData: Icons.home,
@@ -55,7 +47,7 @@ class _RootPageState extends State<RootPage> {
       ],
       onSelectTab: (value) {
         setState(() {
-          _controller.updatePageIndex(value);
+          _controller.model.pageIndex = value;
         });
       },
     );

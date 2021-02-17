@@ -2,26 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:synthiaapp/Models/root.dart';
 
 class RootController {
-  RootModel _model;
-
-  RootController(VoidCallback authStatusController) {
-   this._model = RootModel(authStatusController);
-  }
+  RootModel model = RootModel();
 
   /// Update the PageIndex of the navigationBar
-  void updatePageIndex(int value) {
-    _model.setPageIndex(value);
-  }
+  set pageIndex(int value) => model.pageIndex;
 
   /// Return the list of the Widgets
   /// That are put in the body
   List<Widget> getPages() {
-    return _model.getPages();
-  }
-
-  /// Return the current index of the
-  /// Navigation bar
-  int getPageIndex() {
-    return _model.getPageIndex();
+    return model.getPages();
   }
 }

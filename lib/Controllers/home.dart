@@ -3,29 +3,31 @@ import 'package:intl/intl.dart';
 import 'package:synthiaapp/Models/home.dart';
 
 class HomeController {
-  final HomeModel _model = HomeModel();
+  final dynamic parent;
+  HomeModel model;
 
-  /// Get the list of the meetings from the db
-  ///  and store them in the model
-  Future<void> retrieveMeetingsList() async {
-    List<DocumentSnapshot> meetings = await _model.getMeetingsList();
-    _model.setMeetings(meetings);
+  HomeController({this.parent}) {
+    model = HomeModel(parent: parent);
   }
 
-  /// Get the currents meetings
-  List<DocumentSnapshot> getMeetings() {
-    return _model.getMeetings();
+  /// Update meetings list
+  void updateMeetingList() {
+    model.getMeetings().then((value) {
+      parent.setState(() {
+        model.meetings = value;
+      });
+    });
   }
 
   /// Get the leader of the meeting
   String getMeetingLeader(DocumentSnapshot meeting) {
-    return meeting.data['members'][0];
+    return meeting.data()['members'][0];
   }
 
   /// Get the date when meeting has been created
   String getMeetingDate(DocumentSnapshot meeting) {
     final DateTime now =
-        DateFormat("dd/MM/yyyy").parse(meeting.data['schedule']);
+        DateFormat("dd/MM/yyyy").parse(meeting.data()['schedule']);
     final DateFormat formatter = DateFormat('d MMM y');
 
     return formatter.format(now);
@@ -33,9 +35,9 @@ class HomeController {
 
   /// Get the meetings of the day
   String getTodayMeetings() {
-    if (_model.getMeetings().length == 0) {
+    if (model.meetings.length == 0) {
       return 'No meetings !';
     }
-    return '${_model.getMeetings().length} meetings';
+    return '${model.meetings.length} meetings';
   }
 }

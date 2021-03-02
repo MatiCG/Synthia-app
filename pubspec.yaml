@@ -16,7 +16,9 @@ dependencies:
   firebase_core: ^0.7.0
   firebase_auth: ^0.20.0+1
   firebase_storage: ^7.0.0
+  firebase_messaging: ^8.0.0-dev.14
   cloud_firestore: ^0.16.0
+  cloud_functions: ^0.9.0
   ## Text edition packages
   zefyr:
     git:
@@ -27,6 +29,9 @@ dependencies:
   google_fonts: ^1.1.2
   ff_navigation_bar: ^0.1.4
   lottie: ^0.7.0+1
+  ## Notifications
+  flutter_local_notifications: ^4.0.1+1
+
   ## Bluetooth packages
 #  flutter_ble_lib: ^2.3.1
 

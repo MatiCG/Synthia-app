@@ -1,4 +1,6 @@
+import 'dart:io' show Platform;
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 enum userAuthState {
@@ -36,6 +38,8 @@ class Auth {
       result = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
 
+      //TODO: FIX BELLOW ISSUE
+      /*
       // Define the user basics information
       user.updateProfile(
         displayName: 'user${result.user.uid.substring(0, 3).toUpperCase()}',
@@ -43,9 +47,10 @@ class Auth {
             'https://firebasestorage.googleapis.com/v0/b/synthia-app-eip.appspot.com/o/default_profile_picture.png?alt=media&token=7b35cd9e-41cb-490e-9ed8-c35889d3a48c',
       );
       await user.reload();
+      */
       this.updateUser();
     } catch (error) {
-      print('An error occured when creating a new user.\n${error.message}');
+      print('An error occured when creating a new user.\n${error.toString()}');
       return error;
     }
     return result.user.uid;
@@ -103,5 +108,20 @@ class Auth {
     this._user != null
         ? _streamController.add(userAuthState.CONNECTED)
         : _streamController.add(userAuthState.NOT_CONNECTED);
+  }
+
+  set notificationToken(String token) {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    DocumentReference tokenPath = firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('tokens')
+        .doc(token);
+
+    tokenPath.set({
+      'token': token,
+      'platformDevice': Platform.isAndroid ? 'android': Platform.isIOS ? 'IOS' : 'Not detected',
+      'createAt': FieldValue.serverTimestamp(),
+    });
   }
 }

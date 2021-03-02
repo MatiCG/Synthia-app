@@ -64,7 +64,7 @@ export const UpdatedMeeting = functions.firestore
         var user = await admin.auth().getUserByEmail(value);
         const permission = await db.collection('users').doc(user.uid).get();
 
-        if (permission.data()!['meeting_update'] == true) {
+        if (permission.data()!['settings_meeting_updated'] == true) {
           const fcmToken = await db.collection('users').doc(user.uid).collection('tokens').get();
           const tokens = fcmToken.docs.map(snap => snap.id);
 
@@ -81,8 +81,7 @@ export const NewMeeting = functions.firestore
     meeting.members.forEach(async (value: string) => {
         var user = await admin.auth().getUserByEmail(value);
         const permission = await db.collection('users').doc(user.uid).get();
-
-        if (permission.data()!['meeting_new'] == true) {
+        if (permission.data()!['settings_meeting_joined'] == true) {
           const fcmToken = await db.collection('users').doc(user.uid).collection('tokens').get();
           const tokens = fcmToken.docs.map(snap => snap.id);
           return sendToDevice('Nouvelle réunion', `Vous avez été ajouté à la réunion ${meeting.title}! Rendez vous sur l'application pour l'ordre du jour`, tokens);
@@ -100,6 +99,5 @@ export const NewMeeting = functions.firestore
         click_action: 'FLUTTER_NOTIFICATION_CLICK'
       }
     };
-
     return fcm.sendToDevice(tokens, payload);
   }

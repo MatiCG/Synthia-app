@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:synthiaapp/Classes/download_file.dart';
 import 'package:synthiaapp/Classes/utils.dart';
 import 'package:synthiaapp/Controllers/detail_page.dart';
 import 'package:synthiaapp/Views/raspberry_communication.dart';
@@ -78,7 +79,8 @@ class _DetailPageState extends State<DetailPage> {
         ConstrainedBox(
           constraints: BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height * 0.4,
-            maxWidth: double.infinity,//MediaQuery.of(context).size.width * 0.5,
+            maxWidth:
+                double.infinity, //MediaQuery.of(context).size.width * 0.5,
           ),
           child: SingleChildScrollView(
             child: Column(
@@ -111,6 +113,36 @@ class _DetailPageState extends State<DetailPage> {
             color: Color.fromRGBO(58, 66, 86, 1.0),
             child: Text("SEE AND EDIT ORDER",
                 style: TextStyle(color: Colors.white)),
+          ),
+          RaisedButton(
+            child: Text('Click'),
+            onPressed: () async {
+              // Get the extension of the report file set by the user
+              String reportExtension = await _controller.model.reportExtension;
+              // Get the report url depending of the meeting ID and report Ext
+              String reportUrl = await _controller.model.getReportUrl(
+                meetingID: widget.post.id,
+                reportExtension: reportExtension,
+              );
+              // Setup filename
+              DateTime date = DateTime.now();
+              String filename =
+                  'report_synthia_${date.toString()}.$reportExtension';
+
+              DownloadFile download = DownloadFile();
+
+              if (reportUrl == null) {
+                print('The report is not available or a error occured !');
+                return;
+              }
+              // First init the class [mandatory]
+              await download.init();
+              // Start downloading
+              download.start(
+                url: reportUrl,
+                filename: filename,
+              );
+            },
           ),
         ],
       ),
@@ -200,8 +232,8 @@ class _DetailPageState extends State<DetailPage> {
     return FlatButton(
       child: Text('Start Meeting'),
       onPressed: () {
-        Utils().pushScreen(
-            context, RspyCommunication(meetingID: widget.post.id));
+        Utils()
+            .pushScreen(context, RspyCommunication(meetingID: widget.post.id));
       },
     );
   }

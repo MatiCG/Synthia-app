@@ -49,8 +49,8 @@ export const sendEmail = functions.firestore
         var user = await admin.auth().getUserByEmail(value);
         const permission = await db.collection('users').doc(user.uid).get();
 
-        if (permission.data()!['report_email'] == true) {
-          sendEmailTo(permission.data()!['firstname'], value, reportUrl, meeting.title, permission.data()!['report_extension']);
+        if (permission.data()!['settings_report_email'] == true) {
+          sendEmailTo(permission.data()!['firstname'], value, reportUrl, meeting.title, permission.data()!['settings_report_format']);
         }
         return false;
     });

@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:synthiaapp/Models/detail_page.dart';
 
 class DetailPageController {
-  //final DetailPageModel _model = DetailPageModel();
+  final DetailPageModel model = DetailPageModel();
 
   void shareMeeting(
       context, DocumentSnapshot post, TextEditingController customController) {

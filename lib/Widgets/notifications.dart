@@ -1,6 +1,9 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:synthiaapp/config.dart';
+
+typedef Future<void> MyCallback(String json);
 
 class PushNotificationsHandler {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -9,8 +12,9 @@ class PushNotificationsHandler {
   InitializationSettings initializationSettings;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   bool _initialized = false;
+  MyCallback callback;
 
-  PushNotificationsHandler() {
+  PushNotificationsHandler({this.callback}) {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     androidInitializationSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -20,12 +24,16 @@ class PushNotificationsHandler {
       iOS: iosInitializationSettings,
     );
 
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: (String json) async {
+      return await this.callback(json);
+    });
   }
 
   void showNotification({
-    String title,
-    String body,
+    @required String title,
+    @required String body,
+    String payload,
   }) {
     final android = AndroidNotificationDetails(
         'channelId', 'channelName', 'channelDescription',
@@ -33,7 +41,8 @@ class PushNotificationsHandler {
     final iOS = IOSNotificationDetails();
     final platform = NotificationDetails(android: android, iOS: iOS);
 
-    flutterLocalNotificationsPlugin.show(0, title, body, platform);
+    flutterLocalNotificationsPlugin.show(0, title, body, platform,
+        payload: payload);
   }
 
   Future<void> init() async {

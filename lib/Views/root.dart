@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:synthiaapp/Controllers/root.dart';
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
@@ -13,7 +12,6 @@ class RootPage extends StatefulWidget {
 
 class _RootPageState extends State<RootPage> {
   static RootController _controller;
-//  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
 
   @override
   void initState() {
@@ -21,30 +19,6 @@ class _RootPageState extends State<RootPage> {
     _controller = RootController();
 
     PushNotificationsHandler().init();
-/*
-    try {
-      _fcm.getInitialMessage().then((value) {
-        if (value == null) {
-          print('EMPTY mdjsk fljsdflk jsdflk jsfl ');
-        } else {
-          print('Init message: ' + value.toString());
-        }
-      });
-    } catch (e) {
-      print('Error: ' + e.toString());
-    }
-    // Configure notifications
-    try {
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        print('New message: ' + message.toString());
-        LocalNotifications localNotifications = LocalNotifications();
-        localNotifications.showNotification(
-            message.toString(), message.toString());
-      });
-    } catch (e) {
-      print('Other error : ' + e.toString());
-    }
-*/
   }
 
   @override

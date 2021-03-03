@@ -37,7 +37,7 @@ class MeetingCreationController {
         'schedule': DateFormat('dd/MM/yyyy').format(DateTime.now()),
         'order': model.getMeetingOrder(),
         'members': model.getMeetingMembers(),
-        'reportUrl': null,
+        'report_url': null,
         'keyWords': '',
         'resume': '',
       });

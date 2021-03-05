@@ -1,19 +1,18 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-//import 'package:flutter_ble_lib/flutter_ble_lib.dart';
+import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 import 'package:synthiaapp/Models/raspberry_communication.dart';
 
 class RspyCommunicationController {
   final RspyCommunicationModel model = RspyCommunicationModel();
-//  BleManager _bleManager = BleManager();
+  BleManager _bleManager = BleManager();
   final dynamic parent;
-  //ScanResult _device;
+  ScanResult _device;
 
   RspyCommunicationController({this.parent});
 
   Future<void> sendData(String data) async {
-/*
     await _device.peripheral.discoverAllServicesAndCharacteristics();
     List<Service> services = await _device.peripheral.services();
 
@@ -24,9 +23,7 @@ class RspyCommunicationController {
             Uint8List.fromList(utf8.encode(data)), false);
       });
     });
-    */
   }
-/*
   Future<bool> startConnect(ScanResult device) async {
     try {
       await device.peripheral.connect();
@@ -43,10 +40,8 @@ class RspyCommunicationController {
     }
     return false;
   }
-*/
   /// Start scanning for synthia devices
   void startScan() async {
-    /*
     _bleManager.startPeripheralScan().listen((device) async {
       if (device != null && device.peripheral.name != null) {
         String name = device.peripheral.name;
@@ -69,12 +64,10 @@ class RspyCommunicationController {
         }
       }
     });
-    */
   }
 
   /// Init BLE library and start scanning if the BLE is on
   void initBLE() {
-    /*
     _bleManager.createClient().then((value) {
       _bleManager.observeBluetoothState().listen((state) {
         if (state == BluetoothState.POWERED_ON) {
@@ -90,7 +83,6 @@ class RspyCommunicationController {
         }
       });
     });
-    */
   }
 
   void setBleState(BLE_STATE state) {

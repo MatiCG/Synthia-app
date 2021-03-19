@@ -48,7 +48,7 @@ flutter:
   assets:
     - secrets.json
     - assets/logo.png
-    - assets/Logo_Synthia.jpg
+    - assets/Logo_Synthia.png
     - assets/meeting.jpeg
     - assets/name.png
     - assets/phone.png

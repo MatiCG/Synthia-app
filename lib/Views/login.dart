@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       body: Container(
         decoration: buildBoxDecoration(),
         child: Form(
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
             height: 50,
             width: MediaQuery.of(context).size.width,
             decoration: buildBoxDecorationButton(),
-            child: FlatButton(
+            child: TextButton(
               onPressed: () async {
                 await _controller.submitAuthentification(_formKey);
               },
@@ -126,8 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.white70,
                   ),
                 ),
-                FlatButton(
-                  padding: EdgeInsets.all(0),
+                TextButton(
                   key: new Key(btnKey),
                   onPressed: () {
                     _formKey.currentState.reset();

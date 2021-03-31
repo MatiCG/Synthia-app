@@ -65,7 +65,7 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).accentColor,
       body: Stack(
-        overflow: Overflow.visible,
+        //overflow: Overflow.visible,
         children: [
           Column(
             children: [

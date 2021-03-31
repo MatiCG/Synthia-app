@@ -37,17 +37,6 @@ class Auth {
     try {
       result = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
-
-      //TODO: FIX BELLOW ISSUE
-      /*
-      // Define the user basics information
-      user.updateProfile(
-        displayName: 'user${result.user.uid.substring(0, 3).toUpperCase()}',
-        photoURL:
-            'https://firebasestorage.googleapis.com/v0/b/synthia-app-eip.appspot.com/o/default_profile_picture.png?alt=media&token=7b35cd9e-41cb-490e-9ed8-c35889d3a48c',
-      );
-      await user.reload();
-      */
       this.updateUser();
     } catch (error) {
       print('An error occured when creating a new user.\n${error.toString()}');

@@ -29,7 +29,7 @@ class _RspyCommunicationState extends State<RspyCommunication> {
         ),
       ),
       body: _controller.model.isBleSetup
-          ? FlatButton(
+          ? TextButton(
               child: Text('Start Meeting'),
               onPressed: () => _controller.sendData(widget.meetingID),
             )

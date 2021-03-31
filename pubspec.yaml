@@ -9,16 +9,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  image_picker: ^0.6.7+15
-  uuid: ^2.0.4
-  shared_preferences: ^0.5.12+4
+  image_picker: ^0.7.4
+  uuid: ^3.0.3
+  shared_preferences: ^2.0.5
   ## Firebase packages
-  firebase_core: ^0.7.0
-  firebase_auth: ^0.20.0+1
-  firebase_storage: ^7.0.0
-  firebase_messaging: ^8.0.0-dev.14
-  cloud_firestore: ^0.16.0
-  cloud_functions: ^0.9.0
+  firebase_core: ^1.0.2
+  firebase_auth: ^1.0.1
+  firebase_storage: ^8.0.1
+  firebase_messaging: ^9.1.0
+  cloud_firestore: ^1.0.3
+  cloud_functions: ^1.0.2
   ## Text edition packages
   zefyr:
     git:
@@ -26,16 +26,16 @@ dependencies:
       path: packages/zefyr/
       commit: 9b032d8
   ## Graphics packages
-  google_fonts: ^1.1.2
+  google_fonts: ^2.0.0
   ff_navigation_bar: ^0.1.4
-  lottie: ^0.7.0+1
+  lottie: ^1.0.1
   ## Notifications
-  flutter_local_notifications: ^4.0.1+1
+  flutter_local_notifications: ^5.0.0
   ## Download
-  path_provider: ^1.6.27
-  permission_handler: ^5.1.0+2
-  dio: ^3.0.10
-  open_file: ^3.0.3
+  path_provider: ^2.0.1
+  permission_handler: ^6.1.1
+  dio: ^4.0.0
+  open_file: ^3.1.0
   ## Bluetooth packages
   flutter_ble_lib: ^2.3.2
 

@@ -162,7 +162,7 @@ Widget buildHeaderItem(BuildContext context, String section,
 
   return Padding(
     padding: const EdgeInsets.all(8.0),
-    child: FlatButton(
+    child: TextButton(
       onPressed: () {
         buildModal(
           context,
@@ -244,8 +244,8 @@ class ModalBuilder extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(bottom: 16),
-          child: RaisedButton(
-            color: Theme.of(context).accentColor,
+          child: ElevatedButton(
+//            color: Theme.of(context).accentColor,
             child: Text(
               'Validate',
               style: TextStyle(

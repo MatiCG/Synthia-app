@@ -71,12 +71,14 @@ class _HomePageState extends State<HomePage> {
   Widget buildRightItem() {
     return Padding(
       padding: const EdgeInsets.only(right: 25, top: 10),
-      child: FlatButton(
+      child: TextButton(
+        /*
         padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
         color: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
+        */
         child: Text(
           'Create New',
           style: Theme.of(context).textTheme.headline4,

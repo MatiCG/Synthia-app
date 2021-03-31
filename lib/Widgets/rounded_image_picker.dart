@@ -65,7 +65,7 @@ class _RoundedImagePickerState extends State<RoundedImagePicker> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FlatButton.icon(
+                TextButton.icon(
                   onPressed: () {
                     takePhoto(ImageSource.camera);
                     Navigator.pop(context);
@@ -79,7 +79,7 @@ class _RoundedImagePickerState extends State<RoundedImagePicker> {
                     color: Theme.of(context).primaryColor,
                   ),
                 ),
-                FlatButton.icon(
+                TextButton.icon(
                   onPressed: () {
                     takePhoto(ImageSource.gallery);
                     Navigator.pop(context);

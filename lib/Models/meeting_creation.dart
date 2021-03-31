@@ -2,7 +2,7 @@ class MeetingCreationModel {
   String _meetingTitle = 'Click to modify';
   String _meetingDescription = 'Click to modify';
   String _meetingOrder = 'Click to modify';
-  List<String> _members = List<String>();
+  List<String> _members = [];
 
   /// Add new member
   void addNewMember(String value) {

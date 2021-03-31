@@ -106,14 +106,16 @@ class _DetailPageState extends State<DetailPage> {
     return Container(
       child: Column(
         children: [
-          RaisedButton(
+          ElevatedButton(
             onPressed: () =>
                 Utils().pushScreen(context, EditOrder(post: widget.post)),
-            color: Color.fromRGBO(58, 66, 86, 1.0),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Color.fromRGBO(58, 66, 86, 1.0)),
+            ),
             child: Text("SEE AND EDIT ORDER",
                 style: TextStyle(color: Colors.white)),
           ),
-          RaisedButton(
+          ElevatedButton(
             child: Text('Download report'),
             onPressed: () async => _controller.downloadReport(widget.post.id),
           ),
@@ -202,7 +204,7 @@ class _DetailPageState extends State<DetailPage> {
   /// Open the page that start the communication
   /// With the raspberry pi
   buildStartMeetingBtn() {
-    return FlatButton(
+    return TextButton(
       child: Text('Start Meeting'),
       onPressed: () {
         Utils()

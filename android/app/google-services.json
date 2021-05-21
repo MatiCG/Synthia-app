@@ -30,6 +30,13 @@
             {
               "client_id": "348445979536-cdq9fa1a87i98uj2jnsvv6ma9ujcbdmh.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "348445979536-6kq8llutuv4ases2ietpvvrkhv98nehg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.synthia.synthiaapp"
+              }
             }
           ]
         }

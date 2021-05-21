@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:synthiapp/Animations/screen_transition.dart';
 
 /// All small functions are inside this class
 class Utils {
   /// Future push screen
-  Future<void> futurePushScreen(BuildContext context, Widget screen) async {
-    await Navigator.push(
+  Future futurePushScreen(BuildContext context, Widget screen) async {
+    return await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => screen),
     );
   }
+  /// Push a new screen  with a specific transition
+  void pushScreenTransition(BuildContext context, Widget screen, Transitions transition) {
+    Navigator.of(context).push(
+      ScreenTransition().getTransitionByName(transition, screen)
+    );
+  }
+
   /// Push a new screen
   void pushScreen(BuildContext context, Widget screen) {
     Navigator.push(
@@ -18,17 +25,11 @@ class Utils {
     );
   }
 
-  /// Save string into SharedPreferences
-  void addStringToSF(String _key, String _value) async {
-    SharedPreferences sf = await SharedPreferences.getInstance();
-
-    sf.setString(_key, _value);
-  }
-
-  // Retrieve string value from SharedPreferences
-  Future<String> getStringToSF(String _key) async {
-    SharedPreferences sf = await SharedPreferences.getInstance();
-
-    return sf.getString(_key);
+  /// Push a new screen as first in stack
+  void pushReplacementScreen(BuildContext context, Widget screen) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => screen),
+    );
   }
 }

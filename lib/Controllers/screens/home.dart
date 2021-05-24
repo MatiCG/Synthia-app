@@ -42,6 +42,7 @@ class HomeController {
               ref, UserRefData.fullname);
 
             Meeting newMeeting = Meeting(
+              document: meeting.reference,
               title: (meeting.data() as Map<String, dynamic>)['title'],
               date: (meeting.data() as Map<String, dynamic>)['schedule'],
               master: masterFullName, //'$masterFirstName $masterLastName',

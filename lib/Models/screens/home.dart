@@ -4,11 +4,13 @@ class Meeting {
   final String title;
   final Timestamp date;
   final String master;
+  final DocumentReference document;
 
   Meeting({
     required this.title,
     required this.date,
     required this.master,
+    required this.document,
   });
 }
 

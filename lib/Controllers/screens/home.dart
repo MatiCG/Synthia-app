@@ -29,21 +29,22 @@ class HomeController {
   }
 
   getMeetingList() async {
-    List<DocumentSnapshot>? meetings = await SynthiaFirebase().fetchMeetings();
+    SynthiaFirebase _firebase = SynthiaFirebase();
+    List<DocumentSnapshot>? meetings = await _firebase.fetchMeetings();
 
     if (meetings != null) {
       await Future.wait(
-        meetings.map((meeting) async{
+        meetings.map((meeting) async {
           if (checkKeysExist(meeting, ['title', 'members', 'schedule'])) {
-            var masterFirstName = await SynthiaFirebase().fetchUserRefFirstName(
-                (meeting.data() as Map<String, dynamic>)['members'][0]);
-            var masterLastName = await SynthiaFirebase().fetchUserRefLastName(
-                (meeting.data() as Map<String, dynamic>)['members'][0]);
+            DocumentReference ref = (meeting.data() as Map)['members'][0];
+
+            String masterFullName = await _firebase.fetchUserRefDataByType(
+              ref, UserRefData.fullname);
 
             Meeting newMeeting = Meeting(
               title: (meeting.data() as Map<String, dynamic>)['title'],
               date: (meeting.data() as Map<String, dynamic>)['schedule'],
-              master: '$masterFirstName $masterLastName',
+              master: masterFullName, //'$masterFirstName $masterLastName',
             );
 
             if (parent.mounted &&

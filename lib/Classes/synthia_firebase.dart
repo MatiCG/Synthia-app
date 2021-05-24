@@ -1,45 +1,52 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:synthiapp/config/config.dart';
 
+enum UserRefData {
+  email,
+  firstname,
+  lastname,
+  photoUrl,
+  fullname,
+}
+
+extension UserRefExt on UserRefData {
+  get keys {
+    switch (this) {
+      case UserRefData.email:
+        return ['email'];
+      case UserRefData.firstname:
+        return ['firstname'];
+      case UserRefData.lastname:
+        return ['lastname'];
+      case UserRefData.photoUrl:
+        return ['photoUrl'];
+      case UserRefData.fullname:
+        return ['firstname', 'lastname'];
+    }
+  }
+}
+
 class SynthiaFirebase {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<String> fetchUserRefFullName(DocumentReference ref) async {
-    if (checkSnapshotDocument(await ref.get(),
-        keys: ['firstname', 'lastname'])) {
-      var data = ((await ref.get()).data()! as Map<String, dynamic>);
+  fetchUserRefDataByType(DocumentReference reference, UserRefData type) async {
+    final DocumentSnapshot snapshot = await reference.get();
+    final List<String> keys = type.keys;
 
-      return '${data['firstname']} ${data['lastname']}';
-    }
-    return '';
-  }
+    if (checkSnapshotDocument(snapshot, keys: keys)) {
+      final Map<String, dynamic> data =
+          snapshot.data()! as Map<String, dynamic>;
 
-  Future<String> fetchUserRefEmail(DocumentReference ref) async {
-    if (checkSnapshotDocument(await ref.get(), keys: ['email'])) {
-      return ((await ref.get()).data()! as Map<String, dynamic>)['email'];
-    }
-    return '';
-  }
+      if (keys.length == 1) return data[keys[0]];
+      List<String> values = [];
 
-  Future<String> fetchUserRefPhotoUrl(DocumentReference ref) async {
-    if (checkSnapshotDocument(await ref.get(), keys: ['photoUrl'])) {
-      return ((await ref.get()).data()! as Map<String, dynamic>)['photoUrl'];
-    }
-    return '';
-  }
+      keys.forEach((key) {
+        values.add(data[key]);
+      });
 
-  Future<String> fetchUserRefFirstName(DocumentReference ref) async {
-    if (checkSnapshotDocument(await ref.get(), keys: ['firstname'])) {
-      return ((await ref.get()).data()! as Map<String, dynamic>)['firstname'];
+      return values.join(' ');
     }
-    return '';
-  }
-
-  Future<String> fetchUserRefLastName(DocumentReference ref) async {
-    if (checkSnapshotDocument(await ref.get(), keys: ['lastname'])) {
-      return ((await ref.get()).data()! as Map<String, dynamic>)['lastname'];
-    }
-    return '';
+    return 'error fetch';
   }
 
   Future findRightsInDocuments({

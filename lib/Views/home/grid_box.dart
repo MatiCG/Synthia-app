@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Controllers/screens/home.dart';
 import 'package:synthiapp/Views/Screens/invitations.dart';

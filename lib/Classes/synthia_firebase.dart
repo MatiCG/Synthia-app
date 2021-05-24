@@ -81,6 +81,18 @@ class SynthiaFirebase {
     return null;
   }
 
+  Future<DocumentSnapshot?> fetchMeetingById(String meetingId) async {
+    if (user.data != null) {
+      DocumentSnapshot? meetings = await FirebaseFirestore.instance
+          .collection('meetings')
+          .doc(meetingId)
+          .get();
+
+      return meetings;
+    }
+    return null;
+  }
+
   Future<List<DocumentSnapshot>?> fetchInvitations() async {
     DocumentReference userRef =
         FirebaseFirestore.instance.collection('users').doc(user.uid);

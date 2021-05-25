@@ -49,9 +49,10 @@ class _DetailMeetingPageState extends State<DetailMeetingPage> {
           body: SafeArea(
             child: Wrap(
               children: [
-                meetingTitle(),
+                meetingText(this._controller!.model.title, 30, 30.0, 0.0, true),
                 meetingDate(),
-                meetingDescription(),
+                meetingText(
+                    this._controller!.model.description, 12, 30.0, 40.0, false),
               ],
             ),
           ),
@@ -69,7 +70,11 @@ class _DetailMeetingPageState extends State<DetailMeetingPage> {
           body: SafeArea(
             child: Wrap(
               children: [
-                meetingTitle(),
+                meetingText(this._controller!.model.title, 30, 30.0, 0.0, true),
+                meetingHandleChips(),
+                meetingText("Voici Votre compte-rendu :", 17, 30.0, 40.0, true),
+                meetingText(
+                    this._controller!.model.resume, 10, 30.0, 0.0, false),
               ],
             ),
           ),
@@ -78,19 +83,9 @@ class _DetailMeetingPageState extends State<DetailMeetingPage> {
     }
   }
 
-  Widget meetingTitle() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 50.0),
-      child: Text(
-        this._controller!.model.title,
-        style: _textStyle(30, true),
-      ),
-    );
-  }
-
   Widget meetingDate() {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 50.0),
+        padding: EdgeInsets.symmetric(horizontal: 40.0),
         child: Wrap(children: [
           Icon(Icons.access_time, color: Colors.black, size: 12.0),
           Text(
@@ -102,12 +97,13 @@ class _DetailMeetingPageState extends State<DetailMeetingPage> {
         ]));
   }
 
-  Widget meetingDescription() {
+  Widget meetingText(
+      String text, double size, double padH, double padV, bool bold) {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 50.0, vertical: 40.0),
+        padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
         child: Text(
-          this._controller!.model.description,
-          style: _textStyle(12, false),
+          text,
+          style: _textStyle(size, bold),
         ));
   }
 
@@ -124,6 +120,38 @@ class _DetailMeetingPageState extends State<DetailMeetingPage> {
                 onPressed: buttonPressed,
               ),
             )));
+  }
+
+  Widget meetingHandleChips() {
+    return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 30),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            meetingChip("Terminée", this._controller!.isMeetingComplete()),
+            meetingChip("CR envoyé par mail", true)
+          ],
+        ));
+  }
+
+  Widget meetingChip(String text, bool shouldDisplay) {
+    if (shouldDisplay)
+      return Chip(
+        label: Text(text,
+            style: TextStyle(
+              color: Colors.white,
+            )),
+        backgroundColor: Colors.green,
+        avatar: CircleAvatar(
+          child: Icon(
+            Icons.check,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+    else
+      return SizedBox.shrink();
   }
 
   TextStyle _textStyle(double fontSize, bool bold) {

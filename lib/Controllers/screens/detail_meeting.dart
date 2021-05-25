@@ -36,6 +36,12 @@ class DetailMeetingController {
                 (meeting.data() as Map<String, dynamic>)['description'];
             model.setOrder = (meeting.data() as Map<String, dynamic>)['order'];
             model.setNote = (meeting.data() as Map<String, dynamic>)['note'];
+            model.setResume =
+                (meeting.data() as Map<String, dynamic>)['resume'];
+            model.setKeywords =
+                (meeting.data() as Map<String, dynamic>)['keywords'];
+            model.setDate =
+                (meeting.data() as Map<String, dynamic>)['schedule'];
           });
         }
       }
@@ -54,5 +60,10 @@ class DetailMeetingController {
       }
     });
     return notMissingOne;
+  }
+
+  bool isMeetingComplete() {
+    if (model.resume != '' || model.keywords != '') return true;
+    return false;
   }
 }

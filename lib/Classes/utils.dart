@@ -26,10 +26,16 @@ class Utils {
   }
 
   /// Push a new screen as first in stack
-  void pushReplacementScreen(BuildContext context, Widget screen) {
+  void pushReplacementScreen(BuildContext context, Widget screen, {Duration duration = const Duration(seconds: 0)}) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => screen),
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => screen,
+        transitionDuration: duration,
+      ),
+      /*
+      MaterialPageRoute(builder: (context) => screen, ),
+      */
     );
   }
 }

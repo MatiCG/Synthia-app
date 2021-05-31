@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:synthiapp/Views/Screens/meeting_connexion.dart';
+import 'package:synthiapp/config/config.dart';
 
 class SynthiaGridBox extends StatelessWidget {
   SynthiaGridBox({
@@ -52,14 +54,18 @@ class SynthiaGridBox extends StatelessWidget {
               child: topRightBox,
             ),
             SizedBox(height: 5),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-                color: Colors.green.shade600,
+            // Inkwell temporay
+            InkWell(
+              onTap: () => utils.pushScreen(context, MeetingConnexion()),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: Colors.green.shade600,
+                ),
+                height: MediaQuery.of(context).size.width * 0.2,
+                width: double.infinity,
+                child: bottomRightBox,
               ),
-              height: MediaQuery.of(context).size.width * 0.2,
-              width: double.infinity,
-              child: bottomRightBox,
             ),
           ],
         ),

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:synthiapp/Animations/screen_transition.dart';
 import 'package:synthiapp/Controllers/screens/detail_meeting.dart';
 import 'package:intl/intl.dart';
+import 'package:synthiapp/Views/Screens/meeting_connexion.dart';
 import 'package:synthiapp/Widgets/button.dart';
+import 'package:synthiapp/config/config.dart';
 
 class DetailMeetingPage extends StatefulWidget {
   final String _meetingId;
@@ -56,7 +59,10 @@ class _DetailMeetingPageState extends State<DetailMeetingPage> {
               ],
             ),
           ),
-          bottomSheet: meetingButton("Commencer", () => print("start")),
+          bottomSheet: meetingButton("Commencer", () {
+            utils.pushScreenTransition(
+                context, MeetingConnexion(), Transitions.UP_TO_DOWN);
+          }),
         );
       else
         return Scaffold(

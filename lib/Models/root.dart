@@ -8,7 +8,7 @@ class RootModel {
       'title': 'Accueil',
       'icon': Icons.home_outlined,
       'selected_icon': Icons.home,
-      'page': HomePage(),
+      'page': const HomePage(),
     },
     {
       // An item not instanciate will be considerate has a sizebox
@@ -17,7 +17,7 @@ class RootModel {
       'title': 'Settings',
       'icon': Icons.settings_outlined,
       'selected_icon': Icons.settings,
-      'page': SettingsPage(),
+      'page': const SettingsPage(),
     }
   ];
 }

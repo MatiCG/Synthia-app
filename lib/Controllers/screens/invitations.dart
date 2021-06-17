@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Models/screens/invitations.dart';
+import 'package:synthiapp/config/config.dart';
 
 class InvitationController {
   final State<StatefulWidget> parent;
@@ -20,42 +23,41 @@ class InvitationController {
   }
 
   /// Delete the [invitation] in the database.
-  void dismissInvitation(DocumentSnapshot invitation) async {
+  Future  dismissInvitation(DocumentSnapshot invitation) async {
     const String collection = 'invitations';
     final String document = invitation.id;
 
     try {
       await _firestore.collection(collection).doc(document).delete();
     } catch (error) {
-      print('[error invitation delete] $error');
+      log('[error invitation delete] $error');
     }
   }
 
   /// Add the current who accept the [invitation] in the list of
   /// participants
   /// Also delete the [invitation] in the database
-  void acceptInvitation(DocumentSnapshot invitation) async {
+  Future acceptInvitation(DocumentSnapshot invitation) async {
     final List<String> keys = ['meeting', 'user'];
 
     /// Check if the [invitation] snapshot is valid and contains the [keys]
     if (_firebase.checkSnapshotDocument(invitation, keys: keys)) {
-      final Map<String, dynamic> data =
-          (invitation.data()! as Map<String, dynamic>);
-      final DocumentReference meeting = data['meeting'];
-      final DocumentReference user = data['user'];
+      final data = invitation.data()! as Map<String, dynamic>;
+      final DocumentReference meeting = data['meeting'] as DocumentReference;
+      final DocumentReference user = data['user'] as DocumentReference;
 
       try {
         await _firestore.doc(meeting.path).update({
           'members': FieldValue.arrayUnion([user]),
         });
-        this.dismissInvitation(invitation);
+        dismissInvitation(invitation);
       } catch (error) {
-        print('[error invitation accept] $error');
+        log('[error invitation accept] $error');
       }
     }
   }
 
-  void initInvitationTile() async {
+  Future initInvitationTile() async {
     final DocumentSnapshot<Object?>? invitation = model.invitationSelected;
 
     if (invitation == null) return;
@@ -66,9 +68,10 @@ class InvitationController {
   }
 
   /// Function associated to [initInvitationTile]
-  _fetchInvitationDate(DocumentSnapshot<Object?> invitation) async {
+  Future _fetchInvitationDate(DocumentSnapshot<Object?> invitation) async {
     if (_firebase.checkSnapshotDocument(invitation, keys: ['timestamp'])) {
-      Timestamp time = (invitation.data()! as Map)['timestamp'];
+      final Timestamp time =
+          (invitation.data()! as Map)['timestamp'] as Timestamp;
 
       // ignore: invalid_use_of_protected_member
       parent.setState(() {
@@ -81,19 +84,19 @@ class InvitationController {
   /// Retrieve data from the [meeting]
   ///   - title
   ///   - date
-  _fetchDataFromMeeting(DocumentSnapshot<Object?> invitation) async {
+  Future _fetchDataFromMeeting(DocumentSnapshot<Object?> invitation) async {
     if (_firebase.checkSnapshotDocument(invitation, keys: ['meeting'])) {
-      DocumentReference meeting =
-          (invitation.data()! as Map<String, dynamic>)['meeting'];
-      DocumentSnapshot snapshot = await meeting.get();
+      final data = invitation.data()! as Map<String, dynamic>;
+      final DocumentReference meeting = data['meeting'] as DocumentReference;
+      final DocumentSnapshot snapshot = await meeting.get();
 
       if (_firebase
           .checkSnapshotDocument(snapshot, keys: ['schedule', 'title'])) {
-        Timestamp date = (snapshot.data()! as Map)['schedule'];
-        String title = (snapshot.data()! as Map)['title'];
+        final data = snapshot.data()! as Map;
+        final Timestamp date = data['schedule'] as Timestamp;
+        final String title = data['title'] as String;
 
-        // ignore: invalid_use_of_protected_member
-        parent.setState(() {
+        utils.updateView(parent, update: () {
           model
             ..meetingTitle = title
             ..meetingDate =
@@ -107,17 +110,17 @@ class InvitationController {
   /// Retrieve data from the [master].
   ///   - fullname
   ///   - photoUrl
-  _fetchDataFromMaster(DocumentSnapshot<Object?> invitation) async {
+  Future _fetchDataFromMaster(DocumentSnapshot<Object?> invitation) async {
     if (_firebase.checkSnapshotDocument(invitation, keys: ['master'])) {
-      Map<String, dynamic> data = invitation.data()! as Map<String, dynamic>;
+      final data = invitation.data()! as Map<String, dynamic>;
+      final DocumentReference masterRef = data['master'] as DocumentReference;
 
-      String fullname = await _firebase.fetchUserRefDataByType(
-          data['master'], UserRefData.fullname);
-      String photoUrl = await _firebase.fetchUserRefDataByType(
-          data['master'], UserRefData.photoUrl);
+      final String fullname = await _firebase.fetchUserRefDataByType(
+          masterRef, UserRefData.fullname);
+      final String photoUrl = await _firebase.fetchUserRefDataByType(
+          masterRef, UserRefData.photoUrl);
 
-      // ignore: invalid_use_of_protected_member
-      parent.setState(() {
+      utils.updateView(parent, update: () {
         model
           ..masterFullname = fullname
           ..masterPhotoUrl = photoUrl;

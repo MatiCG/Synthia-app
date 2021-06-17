@@ -6,7 +6,7 @@ import 'package:synthiapp/config/config.dart';
 class ListSettingsItem extends StatelessWidget {
   final SettingsItem item;
 
-  ListSettingsItem({
+  const ListSettingsItem({
     required this.item,
   }) : super();
 
@@ -14,29 +14,27 @@ class ListSettingsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => item.screen != null
-        ? utils.pushScreenTransition(context, item.screen!, Transitions.RIGHT_TO_LEFT)//utils.pushScreen(context, item.screen!)
+        ? utils.pushScreenTransition(context, item.screen!, Transitions.rightToLeft)
         : null,
-      child: Container(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                item.title,
-                style: TextStyle(
-                  color: Color(0XFF969696),
-                  fontSize: 20,
-                ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              item.title,
+              style: const TextStyle(
+                color: Color(0xff969696),
+                fontSize: 20,
               ),
-              IconButton(
-                icon: Icon(Icons.chevron_right),
-                onPressed: () => item.screen != null
-                  ? utils.pushScreenTransition(context, item.screen!, Transitions.RIGHT_TO_LEFT)//utils.pushScreen(context, item.screen!)
-                  : null,
-              ),
-            ],
-          ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.chevron_right),
+              onPressed: () => item.screen != null
+                ? utils.pushScreenTransition(context, item.screen!, Transitions.rightToLeft)
+                : null,
+            ),
+          ],
         ),
       ),
     );

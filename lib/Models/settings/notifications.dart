@@ -16,10 +16,11 @@ class SettingsNotificationItem {
     required this.subtitle,
     required this.onValueChange,
   }) {
-    this.value = user.hasRight(this.id.asString);
+    value = user.hasRight(id.asString);
   }
 
-  set switchValue(bool newValue) =>  value = newValue;
+  set switchValue(bool newValue) => value = newValue;
+  bool get switchValue => value;
 }
 
 class SettingsNotificationsModel {
@@ -27,45 +28,45 @@ class SettingsNotificationsModel {
   final BuildContext context;
   List<ScrollSection> sections = [];
   List<String> notificationsStatus = [];
-  final Function(RightID id, bool value) callback;
+  final Function({required RightID id, required bool value}) callback;
 
   SettingsNotificationsModel(this.parent, this.callback, this.context) {
     sections.add(_globalNotifications());
     sections.add(_meetingsNotifications());
   }
 
-  _meetingsNotifications() {
+  ScrollSection _meetingsNotifications() {
     return ScrollSection(title: 'Notifications de réunions', items: [
       SettingsNotificationItem(
         title: 'Invitation',
         subtitle:
             'Vous receverez une notification dès que vous serez inviter à rejoindre une réunion.',
-        id: RightID.MEETING_INVITATION,
-        onValueChange: (id, value) => callback(id, value),
+        id: RightID.meetingInvitation,
+        onValueChange: (id, value) => callback(id: id, value: value),
       ),
       SettingsNotificationItem(
         title: 'Jour J',
         subtitle: 'Vous receverez une notification dès qu’une réunion a lieu.',
-        id: RightID.MEETING_REMEMBER,
-        onValueChange: (id, value) => callback(id, value),
+        id: RightID.meetingRemember,
+        onValueChange: (id, value) => callback(id: id, value: value),
       ),
       SettingsNotificationItem(
         title: 'Mis à jour',
         subtitle:
             'Vous receverez une notification dès qu’une réunion est modifiée.',
-        id: RightID.MEETING_UPDATED,
-        onValueChange: (id, value) => callback(id, value),
+        id: RightID.meetingUpdated,
+        onValueChange: (id, value) => callback(id: id, value: value),
       ),
     ]);
   }
 
-  _globalNotifications() {
+  ScrollSection _globalNotifications() {
     return ScrollSection(title: 'Notifications', items: [
       SettingsNotificationItem(
         title: 'Aucune notifications',
         subtitle: 'Suspendre les notifications jusqu’à leur ré-activation',
-        id: RightID.ANY_NOTIFICATIONS,
-        onValueChange: (id, value) => callback(id, value),
+        id: RightID.anyNotifications,
+        onValueChange: (id, value) => callback(id: id, value: value),
       ),
     ]);
   }

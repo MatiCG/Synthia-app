@@ -7,7 +7,7 @@ import 'package:synthiapp/Widgets/button.dart';
 import 'package:synthiapp/Widgets/textfield.dart';
 
 class RegisterPage extends StatefulWidget {
-  RegisterPage({
+  const RegisterPage({
     required this.streamController,
   }) : super();
 
@@ -55,7 +55,7 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Form(
           key: _controller.model.formKey,
           child: ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: _controller.model.fields.length + 1,
             itemBuilder: (context, index) {
@@ -79,13 +79,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               color: Colors.black,
                               fontSize: screenHeight * 0.035),
                           children: [
-                            TextSpan(text: 'J\'accepte le '),
+                            const TextSpan(text: "J'accepte le "),
                             TextSpan(
-                              text: 'Contrat d\'utilisateur',
+                              text: "Contrat d'utilisateur",
                               style: TextStyle(
                                   color: Theme.of(context).accentColor),
                             ),
-                            TextSpan(text: ' et la '),
+                            const TextSpan(text: ' et la '),
                             TextSpan(
                               text: 'Politique de confidentialité',
                               style: TextStyle(
@@ -116,8 +116,8 @@ class _RegisterPageState extends State<RegisterPage> {
       top: 0,
       child: IconButton(
         padding: const EdgeInsets.all(16.0),
-        icon: Icon(Icons.close),
-        onPressed: () => widget.streamController.add(screenStatus.HOME),
+        icon: const Icon(Icons.close),
+        onPressed: () => widget.streamController.add(screenStatus.home),
       ),
     );
   }
@@ -132,7 +132,7 @@ class _RegisterPageState extends State<RegisterPage> {
         text: TextSpan(
           style: TextStyle(color: Colors.black, fontSize: screenHeight * 0.030),
           children: [
-            TextSpan(text: 'Créer votre compte '),
+            const TextSpan(text: 'Créer votre compte '),
             TextSpan(
               text: 'SynthIA',
               style: TextStyle(color: Theme.of(context).accentColor),

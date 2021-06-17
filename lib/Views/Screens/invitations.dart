@@ -5,7 +5,7 @@ import 'package:synthiapp/Widgets/app_bar.dart';
 import 'package:synthiapp/Widgets/list.dart';
 
 class InvitationsPage extends StatefulWidget {
-  InvitationsPage() : super();
+  const InvitationsPage() : super();
 
   @override
   _InvitationsPageState createState() => _InvitationsPageState();
@@ -25,13 +25,13 @@ class _InvitationsPageState extends State<InvitationsPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (controller == null) return Scaffold();
+    if (controller == null) return const Scaffold();
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: SynthiaAppBar(
         title: 'Réunions invitation',
         closeIcon: Icons.close,
-        returnValue: controller!.model.invitations,
+        returnValue: controller!.model.invitations ?? [],
       ),
       body: SynthiaList(
         itemCount: controller!.model.invitations?.length ?? 0,

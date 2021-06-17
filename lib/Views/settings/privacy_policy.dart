@@ -6,19 +6,20 @@ import 'package:synthiapp/Widgets/app_bar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class PrivacyPolicy extends StatefulWidget {
-  PrivacyPolicy() : super();
+  const PrivacyPolicy() : super();
 
+  @override
   _PrivacyPolicyState createState() => _PrivacyPolicyState();
 }
 
 class _PrivacyPolicyState extends State<PrivacyPolicy> {
-  WebViewController? _controller;
+  late WebViewController _controller;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      appBar: SynthiaAppBar(
+      appBar: const SynthiaAppBar(
         title: 'Confidentialité',
       ),
       body: SafeArea(
@@ -36,9 +37,9 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
     );
   }
 
-  _loadHtmlFromAssets() async {
-    String fileText = await rootBundle.loadString('assets/privacy_policy.html');
-    _controller!.loadUrl(Uri.dataFromString(fileText,
+  Future _loadHtmlFromAssets() async {
+    final String fileText = await rootBundle.loadString('assets/privacy_policy.html');
+    _controller.loadUrl(Uri.dataFromString(fileText,
             mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
         .toString());
   }

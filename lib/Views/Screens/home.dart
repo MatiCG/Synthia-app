@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Controllers/screens/home.dart';
 import 'package:synthiapp/Views/home/grid_box.dart';
 import 'package:synthiapp/Views/home/home_header.dart';
@@ -9,7 +11,7 @@ import 'package:synthiapp/Widgets/list_meeting_item.dart';
 import 'package:synthiapp/config/config.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage() : super();
+  const HomePage() : super();
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -29,8 +31,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_controller == null)
+    if (_controller == null) {
       return Scaffold(backgroundColor: Theme.of(context).primaryColor);
+    }
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: SafeArea(
@@ -60,6 +63,51 @@ class _HomePageState extends State<HomePage> {
         },
         child: Material(
           color: Theme.of(context).primaryColor,
+          child: StreamBuilder(
+              stream: SynthiaFirebase().fetchStreamMeetings(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) return const Text('Something went wrong');
+                return FutureBuilder(
+                  future: _controller!.getMeetingListFromSnapshot(snapshot.data?.docs),
+                  builder: (context, builder) {
+                    return SynthiaList(
+                      isScrollable: false,
+                      itemCount: _controller!.model.meetings.length,
+                      itemBuilder: (index) => ListMeetingItem(
+                        meeting: _controller!.model.meetings[index],
+                      ),
+                      header: HeaderSection(
+                        title: 'Réunions',
+                        trailing: _buildSectionTrailing(context),
+                      ),
+                    );
+                  },
+                );
+              }),
+          /*
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Something went wrong');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Text("Loading");
+          }
+
+          return new ListView(
+            children: snapshot.data.docs.map((DocumentSnapshot document) {
+            Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+              return new ListTile(
+                title: new Text(data['full_name']),
+                subtitle: new Text(data['company']),
+              );
+            }).toList(),
+          );
+        },
+      );
+          */
+          /*
           child: SynthiaList(
             isScrollable: false,
             itemCount: _controller!.model.meetings.length,
@@ -71,6 +119,7 @@ class _HomePageState extends State<HomePage> {
               trailing: _buildSectionTrailing(context),
             ),
           ),
+          */
         ),
       ),
     );
@@ -88,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                 controller: _controller!,
               ));
         },
-        child: Text(
+        child: const Text(
           'Voir tout',
           style: TextStyle(
             color: Colors.blue,

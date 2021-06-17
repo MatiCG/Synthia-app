@@ -1,8 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:synthiapp/Models/screens/detail_meeting.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
+import 'package:synthiapp/Models/screens/home.dart';
 
+enum PageStatus {
+  progress,
+  completed,
+}
+
+class DetailMeetingController {
+  final State<StatefulWidget> parent;
+  final Meeting meeting;
+
+  DetailMeetingController({required this.parent, required this.meeting});
+
+  Future<PageStatus> getPageStatus() async {
+    final data = await FirebaseFirestore.instance.doc(meeting.document.path).get();
+
+    if (SynthiaFirebase().checkSnapshotDocument(data, keys: ['resume'])) {
+      if (((data.data()!)['resume'] as String).isNotEmpty) {
+        return PageStatus.completed;
+      }
+    }
+    return PageStatus.progress;
+  }
+}
+/*
 class DetailMeetingController {
   final String meetingId;
   final State<StatefulWidget> parent;
@@ -12,36 +35,32 @@ class DetailMeetingController {
     getMeeting();
   }
 
-  getMeeting() async {
-    SynthiaFirebase _firebase = SynthiaFirebase();
-    DocumentSnapshot? meeting = await _firebase.fetchMeetingById(meetingId);
+  Future getMeeting() async {
+    final SynthiaFirebase _firebase = SynthiaFirebase();
+    final DocumentSnapshot? meeting = await _firebase.fetchMeetingById(meetingId);
 
     if (meeting != null) {
       if (checkKeysExist(meeting,
           ['title', 'members', 'schedule', 'order', 'description', 'note'])) {
-        List<dynamic> members = (meeting.data() as Map)['members'];
-        List<String> membersName = [];
+        final data = meeting.data()! as Map<String, dynamic>;
+        final List<dynamic> members = data['members'] as List;
+        final List<String> membersName = [];
 
-        members.forEach((element) async {
-          String memberName = await _firebase.fetchUserRefDataByType(
-              element, UserRefData.fullname);
-          print(memberName);
+        for (final member in members as List<DocumentReference>) {
+          final String memberName = await _firebase.fetchUserRefDataByType(
+              member, UserRefData.fullname);
           membersName.add(memberName);
-        });
+        }
         if (parent.mounted) {
-          parent.setState(() {
+          utils.updateView(parent, update: () {
             model.setMembers = membersName;
-            model.setTitle = (meeting.data() as Map<String, dynamic>)['title'];
-            model.setDescription =
-                (meeting.data() as Map<String, dynamic>)['description'];
-            model.setOrder = (meeting.data() as Map<String, dynamic>)['order'];
-            model.setNote = (meeting.data() as Map<String, dynamic>)['note'];
-            model.setResume =
-                (meeting.data() as Map<String, dynamic>)['resume'];
-            model.setKeywords =
-                (meeting.data() as Map<String, dynamic>)['keywords'];
-            model.setDate =
-                (meeting.data() as Map<String, dynamic>)['schedule'];
+            model.setTitle = data['title'] as String;
+            model.setDescription = data['description'] as String;
+            model.setOrder = data['order'] as String;
+            model.setNote = data['note'] as String;
+            model.setResume = data['resume'] as String;
+            model.setKeywords = data['keywords'] as String;
+            model.setDate = data['schedule'] as Timestamp;
           });
         }
       }
@@ -53,12 +72,12 @@ class DetailMeetingController {
     Map<String, dynamic> data;
 
     if (document.data() == null) return false;
-    data = document.data() as Map<String, dynamic>;
-    keys.forEach((key) {
+    data = document.data()! as Map<String, dynamic>;
+    for (final key in keys) {
       if (!data.containsKey(key)) {
         notMissingOne = false;
       }
-    });
+    }
     return notMissingOne;
   }
 
@@ -67,3 +86,4 @@ class DetailMeetingController {
     return false;
   }
 }
+*/

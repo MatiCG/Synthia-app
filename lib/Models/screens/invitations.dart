@@ -14,9 +14,8 @@ class InvitationModel {
   InvitationModel();
 
   DocumentSnapshot<Object?>? get invitationSelected =>
-      invitations?.elementAt(selected) ?? null;
+      invitations?.elementAt(selected);
 
-  set removeInvitation(int index) => invitations?.removeAt(index);
-
+  void removeInvitation(int index) => invitations?.removeAt(index);
   void removeCurrentInvitation() => invitations?.removeAt(selected);
 }

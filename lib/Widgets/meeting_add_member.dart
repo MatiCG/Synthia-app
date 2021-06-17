@@ -1,8 +1,10 @@
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:synthiapp/Views/creation_meeting/handle_members.dart';
-import 'package:synthiapp/Widgets/build_avatar.dart';
+import 'package:synthiapp/Widgets/add_members.dart';
+import 'package:synthiapp/Widgets/list_members.dart';
 
 class MeetingAddMembersItem {
   final List<DocumentReference> members;
@@ -17,7 +19,7 @@ class MeetingAddMembersItem {
 class MeetingAddMembers extends StatefulWidget {
   final MeetingAddMembersItem item;
 
-  MeetingAddMembers({required this.item}) : super();
+  const MeetingAddMembers({required this.item}) : super();
 
   @override
   _MeetingAddMembersState createState() => _MeetingAddMembersState();
@@ -29,18 +31,15 @@ class _MeetingAddMembersState extends State<MeetingAddMembers> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 32.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 0.0),
-            child: Text(
-              'Ajouter des participants',
-            ),
+          const Text(
+            'Ajouter des participants',
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              /*
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Stack(
@@ -49,35 +48,32 @@ class _MeetingAddMembersState extends State<MeetingAddMembers> {
                       widget.item.members.length >= 5
                           ? 6
                           : widget.item.members.length + 1, (index) {
-                    if (index == 0)
+                    if (index == 0) {
                       return Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25.0),
-                          border: Border.all(
-                            width: 1,
-                            color: Colors.black,
-                          ),
+                          border: Border.all(),
                         ),
                         child: IconButton(
-                          icon: Icon(Icons.add),
+                          icon: const Icon(Icons.add),
                           onPressed: () async {
                             await showModalBottomSheet(
-                                isScrollControlled: true,
-                                context: context,
-                                builder: (context) {
-                                  return Padding(
-                                    padding: MediaQuery.of(context).viewInsets,
-                                    child: HandleMembers(widget.item.members),
-                                  );
-                                });
-                            setState(() {
-//                              widget.item.members.add(newMemeber);
-                              // add new member here
-//                              widget.item.members.add('ok');
-                            });
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (context) {
+                                return Padding(
+                                  padding: MediaQuery.of(context).viewInsets,
+                                  child: HandleMembers(
+                                    members: widget.item.members,
+                                  ),
+                                );
+                              },
+                            );
+                            setState(() {});
                           },
                         ),
                       );
+                    }
                     index -= 1;
                     if (index + 1 > 4) {
                       return Positioned(
@@ -91,7 +87,7 @@ class _MeetingAddMembersState extends State<MeetingAddMembers> {
                           ),
                           child: Center(
                             child: Text('+${widget.item.members.length - 4}',
-                                style: TextStyle(color: Colors.white)),
+                                style: const TextStyle(color: Colors.white)),
                           ),
                         ),
                       );
@@ -116,12 +112,12 @@ class _MeetingAddMembersState extends State<MeetingAddMembers> {
                                       ConnectionState.done) {
                                 return BuildAvatar(
                                   isRounded: true,
-                                  path: (snapshot.data as DocumentSnapshot<
+                                  path: (snapshot.data! as DocumentSnapshot<
                                           Map<String, dynamic>>)
-                                      .data()?['photoUrl'],
+                                      .data()?['photoUrl'] as String?,
                                 );
                               }
-                              return CircularProgressIndicator();
+                              return const CircularProgressIndicator();
                             },
                           ),
                         ),
@@ -129,6 +125,40 @@ class _MeetingAddMembersState extends State<MeetingAddMembers> {
                     );
                   }),
                 ),
+              ),
+              */
+              AddMembers(
+                members: widget.item.members,
+                onLeadingPress: () async {
+                  await showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (context) {
+                      return Padding(
+                        padding: MediaQuery.of(context).viewInsets,
+                        child: HandleMembers(
+                          members: widget.item.members,
+                        ),
+                      );
+                    },
+                  );
+                  setState(() {});
+                },
+                onTrailingPress: () async {
+                  await showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (context) {
+                      return Padding(
+                        padding: MediaQuery.of(context).viewInsets,
+                        child: ListMembers(
+                          members: widget.item.members,
+                        ),
+                      );
+                    },
+                  );
+                  setState(() {});
+                },
               ),
               Container(
                 width: MediaQuery.of(context).size.width * 0.3,
@@ -147,7 +177,7 @@ class _MeetingAddMembersState extends State<MeetingAddMembers> {
                       firstDate: DateTime.now(),
                       lastDate: DateTime(2100),
                     );
-                    print('Date: $date');
+                    log('Date: $date');
                     if (date != null) {
                       time = await showTimePicker(
                         context: context,
@@ -167,14 +197,14 @@ class _MeetingAddMembersState extends State<MeetingAddMembers> {
                       children: [
                         Text(
                           '${widget.item.time.day}',
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontSize: 30,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          '${DateFormat('MMMM').format(widget.item.time)}',
-                          style: TextStyle(
+                          DateFormat('MMMM').format(widget.item.time),
+                          style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
                               fontWeight: FontWeight.w600),
@@ -184,7 +214,7 @@ class _MeetingAddMembersState extends State<MeetingAddMembers> {
                           child: Text(
                             'à ${DateFormat("H_m").format(widget.item.time)}'
                                 .replaceAll('_', 'h'),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500),

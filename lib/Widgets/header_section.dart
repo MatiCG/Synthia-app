@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HeaderSection extends StatelessWidget {
-  HeaderSection({
+  const HeaderSection({
     required this.title,
     this.trailing,
     this.subtitle,

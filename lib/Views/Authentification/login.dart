@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ import 'package:synthiapp/Widgets/list.dart';
 import 'package:synthiapp/Widgets/textfield.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({
+  const LoginPage({
     required this.streamController,
   }) : super();
 
@@ -58,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 24.0),
                 child: SynthiaTextField(
-                  field: controller.data[index],
+                  field: controller.data[index] as SynthiaTextFieldItem,
                 ),
               );
             },
@@ -78,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
         text: TextSpan(
           style: TextStyle(color: Colors.black, fontSize: screenHeight * 0.030),
           children: [
-            TextSpan(text: 'Se connecter à '),
+            const TextSpan(text: 'Se connecter à '),
             TextSpan(
               text: 'SynthIA',
               style: TextStyle(color: Theme.of(context).accentColor),
@@ -94,8 +95,8 @@ class _LoginPageState extends State<LoginPage> {
       top: 0,
       child: IconButton(
         padding: const EdgeInsets.all(16.0),
-        icon: Icon(Icons.close),
-        onPressed: () => widget.streamController.add(screenStatus.HOME),
+        icon: const Icon(Icons.close),
+        onPressed: () => widget.streamController.add(screenStatus.home),
       ),
     );
   }
@@ -115,13 +116,12 @@ class _LoginPageState extends State<LoginPage> {
   Positioned buildLegalMention(BuildContext context) {
     return Positioned(
       bottom: MediaQuery.of(context).size.height * 0.3,
-      child: Container(
+      child: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Align(
-          alignment: Alignment.center,
           child: Column(
             children: [
-              Text(
+              const Text(
                 'En continuant vous acceptez notre',
                 style: TextStyle(
                   color: Color.fromRGBO(183, 183, 183, 1.0),
@@ -131,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                 text: TextSpan(
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      print('Ouvrir la politique de confidentialité');
+                      log('Ouvrir la politique de confidentialité');
                     },
                   text: 'politique de confidentialité',
                   style: TextStyle(

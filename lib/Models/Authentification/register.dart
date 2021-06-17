@@ -7,24 +7,24 @@ class RegisterModel {
   // Form Fields
   List<SynthiaTextFieldItem> fields = [
     SynthiaTextFieldItem(
-      id: FieldsID.FIRSTNAME,
+      id: FieldsID.firstname,
       title: 'Prénom',
       hint: 'Prénom',
     ),
     SynthiaTextFieldItem(
-      id: FieldsID.LASTNAME,
+      id: FieldsID.lastname,
       title: 'Nom',
       hint: 'Nom',
     ),
     SynthiaTextFieldItem(
-      id: FieldsID.EMAIL,
-      type: types.EMAIL,
+      id: FieldsID.email,
+      type: types.email,
       title: 'E-mail',
       hint: 'Adresse e-mail',
     ),
     SynthiaTextFieldItem(
-      id: FieldsID.PASSWORD,
-      type: types.PASSWORD,
+      id: FieldsID.password,
+      type: types.password,
       title: 'Mot de passe',
       hint: '8 caractères minimum',
     ),

@@ -1,29 +1,29 @@
 enum RightID {
-  ANY_NOTIFICATIONS,
-  MEETING_INVITATION,
-  MEETING_UPDATED,
-  MEETING_REMEMBER,
-  REPORT_SEND_EMAIL,
-  REPORT_PDF_FILE,
-  REPORT_TXT_FILE,
+  anyNotifications,
+  meetingInvitation,
+  meetingUpdated,
+  meetingRemember,
+  reportSendEmail,
+  reportPdfFile,
+  reportTxtFile,
 }
 
 extension RightExt on RightID {
-  get asString {
+  String get asString {
     switch (this) {
-      case RightID.ANY_NOTIFICATIONS:
+      case RightID.anyNotifications:
         return 'any_notifications';
-      case RightID.MEETING_INVITATION:
+      case RightID.meetingInvitation:
         return 'meeting_invitation';
-      case RightID.MEETING_UPDATED:
+      case RightID.meetingUpdated:
         return 'meeting_updated';
-      case RightID.MEETING_REMEMBER:
+      case RightID.meetingRemember:
         return 'meeting_remember';
-      case RightID.REPORT_SEND_EMAIL:
+      case RightID.reportSendEmail:
         return 'report_send_email';
-      case RightID.REPORT_PDF_FILE:
+      case RightID.reportPdfFile:
         return 'report_pdf_file';
-      case RightID.REPORT_TXT_FILE:
+      case RightID.reportTxtFile:
         return 'report_txt_file';
     }
   }

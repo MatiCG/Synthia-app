@@ -12,10 +12,10 @@ class ScrollSection {
 
 class SynthiaScrollList extends StatelessWidget {
   final List<ScrollSection> sections;
-  final Function(int index) headerBuilder;
-  final Function(int headerIndex, int index) itemBuilder;
+  final Widget Function(int index) headerBuilder;
+  final Widget Function(int headerIndex, int index) itemBuilder;
 
-  SynthiaScrollList({
+  const SynthiaScrollList({
     required this.sections,
     required this.headerBuilder,
     required this.itemBuilder,
@@ -27,7 +27,6 @@ class SynthiaScrollList extends StatelessWidget {
       children: List.generate(
         sections.length,
         (headerIndex) => Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             headerBuilder(headerIndex),

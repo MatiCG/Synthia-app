@@ -11,7 +11,7 @@ import 'package:synthiapp/config/config.dart';
 class HomeHeader extends StatelessWidget {
   final HomeController controller;
 
-  HomeHeader({
+  const HomeHeader({
     required this.controller,
   }) : super();
 
@@ -22,8 +22,8 @@ class HomeHeader extends StatelessWidget {
 
     return HeaderSection(
       title: 'Bonjour ${controller.getUserFirstname()}',
-      subtitle: '${formatter.format(date)}',
-      trailing: Container(
+      subtitle: formatter.format(date),
+      trailing: SizedBox(
         height: 75,
         width: 75,
         child: InkWell(
@@ -33,19 +33,18 @@ class HomeHeader extends StatelessWidget {
                 builder: (context) {
                   return Container(
                     height: MediaQuery.of(context).size.height * 0.35,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(25.0),
-                        topRight: const Radius.circular(25.0),
+                        topLeft: Radius.circular(25.0),
+                        topRight: Radius.circular(25.0),
                       ),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(24.0),
+                        const Padding(
+                          padding: EdgeInsets.all(24.0),
                           child: Text(
                             'Compte',
                             style: TextStyle(

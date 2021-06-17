@@ -6,7 +6,7 @@ import 'package:synthiapp/Widgets/button.dart';
 import 'package:synthiapp/config/config.dart';
 
 class MeetingConnexion extends StatefulWidget {
-  MeetingConnexion() : super();
+  const MeetingConnexion() : super();
 
   @override
   _MeetingConnexionState createState() => _MeetingConnexionState();
@@ -24,11 +24,11 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
 
   @override
   Widget build(BuildContext context) {
-    if (_controller == null) return Scaffold();
+    if (_controller == null) return const Scaffold();
     final steps = _controller!.model.steps;
 
     return Scaffold(
-      appBar: SynthiaAppBar(
+      appBar: const SynthiaAppBar(
         title: '',
         closeIcon: Icons.close,
       ),
@@ -36,10 +36,13 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
       body: Column(
         children: [
           ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: steps.length,
             itemBuilder: (context, index) {
+              if (index == 0) {
+                steps[index].action!();
+              }
               return StepText(
                   title: steps[index].title, status: steps[index].status);
             },
@@ -49,7 +52,8 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
               alignment: Alignment.center,
               child: Text(
                 _controller!.model.currentStep.errorMessage ?? '',
-                style: TextStyle(
+                textAlign: TextAlign.center,
+                style: const TextStyle(
                   color: Colors.red,
                 ),
               ),
@@ -60,7 +64,8 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
               text: 'Recommencer',
               textColor: Theme.of(context).primaryColor,
               color: Colors.red,
-              onPressed: () => utils.pushReplacementScreen(context, MeetingConnexion()),
+              onPressed: () => utils.pushReplacementScreen(
+                  context, const MeetingConnexion()),
             ),
           if (!_controller!.model.currentStep.onError)
             SynthiaButton(
@@ -80,11 +85,11 @@ class StepText extends StatelessWidget {
   final String title;
   final StepStatus status;
 
-  StepText({required this.title, required this.status}) : super();
+  const StepText({required this.title, required this.status}) : super();
 
   @override
   Widget build(BuildContext context) {
-    Color color = status == StepStatus.stack
+    final Color color = status == StepStatus.stack
         ? Colors.grey.shade500
         : status == StepStatus.done
             ? Colors.green
@@ -98,11 +103,11 @@ class StepText extends StatelessWidget {
         style: TextStyle(color: color),
       ),
       trailing: status == StepStatus.done
-          ? Icon(Icons.check_circle_outlined, color: Colors.green)
+          ? const Icon(Icons.check_circle_outlined, color: Colors.green)
           : status == StepStatus.error
-              ? Icon(Icons.error, color: Colors.red)
+              ? const Icon(Icons.error, color: Colors.red)
               : status == StepStatus.progress
-                  ? CircularProgressIndicator()
+                  ? const CircularProgressIndicator()
                   : null,
     );
   }

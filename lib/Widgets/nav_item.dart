@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class NavItem extends StatefulWidget {
-  NavItem({
+  const NavItem({
     required this.title,
     required this.icon,
     required this.isSelected,
@@ -11,7 +11,7 @@ class NavItem extends StatefulWidget {
   final String title;
   final IconData icon;
   final bool isSelected;
-  final dynamic onTap;
+  final Function()? onTap;
 
   @override
   _NavItemState createState() => _NavItemState();
@@ -34,18 +34,17 @@ class _NavItemState extends State<NavItem> {
                   ? Theme.of(context).accentColor
                   : Colors.grey,
             ),
-            Container(
+            SizedBox(
               height: 20,
               width: 100,
               child: Align(
-                alignment: Alignment.center,
                 child: AnimatedDefaultTextStyle(
                   curve: Curves.bounceInOut,
-                  child: Text(widget.title),
                   style: widget.isSelected
                       ? _selectedTextStyle()
                       : _unselectedTextStyle(),
-                  duration: Duration(milliseconds: 100),
+                  duration: const Duration(milliseconds: 100),
+                  child: Text(widget.title),
                 ),
               ),
             ),

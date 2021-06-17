@@ -6,14 +6,14 @@ import 'package:synthiapp/Widgets/meeting_add_member.dart';
 import 'package:synthiapp/Widgets/textfield.dart';
 
 class CreationMeetingPage extends StatefulWidget {
-  CreationMeetingPage() : super();
+  const CreationMeetingPage() : super();
 
   @override
   _CreationMeetingPageState createState() => _CreationMeetingPageState();
 }
 
 class _CreationMeetingPageState extends State<CreationMeetingPage> {
-  CreateMeetingController _controller = CreateMeetingController();
+  final CreateMeetingController _controller = CreateMeetingController();
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class _CreationMeetingPageState extends State<CreationMeetingPage> {
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -41,34 +41,32 @@ class _CreationMeetingPageState extends State<CreationMeetingPage> {
                   child: Center(
                     child: Form(
                       key: _controller.model.formKey,
-                      child: Container(
-                        child: SynthiaList(
-                          isScrollable: false,
-                          itemCount: _controller.model.fields.length,
-                          itemBuilder: (index) {
-                            if (_controller.model.fields[index]
-                                is SynthiaTextFieldItem) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 24.0),
-                                child: SynthiaTextField(
-                                  field: _controller.model.fields[index],
-                                ),
-                              );
-                            } else if (_controller.model.fields[index]
-                                is MeetingAddMembersItem) {
-                              return MeetingAddMembers(
-                                  item: _controller.model.fields[index]);
-                            }
-                            return _controller.model.fields[index];
-                          },
-                          footer: Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            child: SynthiaButton(
-                              color: Theme.of(context).accentColor,
-                              textColor: Theme.of(context).primaryColor,
-                              text: 'Créer la réunion',
-                              onPressed: () => _controller.submit(context),
-                            ),
+                      child: SynthiaList(
+                        isScrollable: false,
+                        itemCount: _controller.model.fields.length,
+                        itemBuilder: (index) {
+                          if (_controller.model.fields[index]
+                              is SynthiaTextFieldItem) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 24.0),
+                              child: SynthiaTextField(
+                                field: _controller.model.fields[index] as SynthiaTextFieldItem,
+                              ),
+                            );
+                          } else if (_controller.model.fields[index]
+                              is MeetingAddMembersItem) {
+                            return MeetingAddMembers(
+                                item: _controller.model.fields[index] as MeetingAddMembersItem);
+                          }
+                          return _controller.model.fields[index] as Widget;
+                        },
+                        footer: Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: SynthiaButton(
+                            color: Theme.of(context).accentColor,
+                            textColor: Theme.of(context).primaryColor,
+                            text: 'Créer la réunion',
+                            onPressed: () => _controller.submit(context),
                           ),
                         ),
                       ),
@@ -89,9 +87,9 @@ class _CreationMeetingPageState extends State<CreationMeetingPage> {
       left: 16,
       child: RichText(
         text: TextSpan(
-          style: TextStyle(color: Colors.black, fontSize: 24),
+          style: const TextStyle(color: Colors.black, fontSize: 24),
           children: [
-            TextSpan(text: 'Créer votre réunion '),
+            const TextSpan(text: 'Créer votre réunion '),
             TextSpan(
               text: 'SynthIA',
               style: TextStyle(color: Theme.of(context).accentColor),

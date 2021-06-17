@@ -14,7 +14,8 @@ class SettingsItem {
     this.screen,
   });
 
-  set newScreen(Widget newScreen) => screen = newScreen;
+  set newScreen(Widget? newScreen) => screen = newScreen;
+  Widget? get newScreen => screen;
 }
 
 class SettingsModel {
@@ -30,10 +31,10 @@ class SettingsModel {
     return ScrollSection(title: 'Compte', items: [
       SettingsItem(
           title: 'Paramètres de notifications',
-          screen: SettingsNotifications()),
+          screen: const SettingsNotifications()),
       SettingsItem(
-          title: 'Paramètres de compte rendu', screen: SettingsReport()),
-      SettingsItem(title: 'Confidentialité', screen: PrivacyPolicy()),
+          title: 'Paramètres de compte rendu', screen: const SettingsReport()),
+      SettingsItem(title: 'Confidentialité', screen: const PrivacyPolicy()),
     ]);
   }
 

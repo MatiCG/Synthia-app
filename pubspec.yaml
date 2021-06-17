@@ -7,19 +7,16 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
+  circular_reveal_animation: ^2.0.0
+  cloud_firestore: ^2.2.1
+  cupertino_icons: ^1.0.2
+  firebase_auth: ^1.3.0
+  firebase_core: ^1.3.0
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
+  flutter_blue: ^0.8.0
   intl: ^0.17.0
   webview_flutter: ^2.0.4
-  ## UI
-  circular_reveal_animation: ^2.0.0
-  ## Firebase
-  firebase_core: ^1.1.0
-  firebase_auth: ^1.1.3
-  cloud_firestore: ^2.0.0
-  ## BLE
-  flutter_blue: ^0.8.0
 
 dev_dependencies:
   flutter_test:

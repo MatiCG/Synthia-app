@@ -5,7 +5,7 @@ class BuildAvatar extends StatelessWidget {
   final String? path;
   final bool isRounded;
 
-  BuildAvatar({
+  const BuildAvatar({
     required this.path,
     this.onPressed,
     this.isRounded = false,
@@ -27,8 +27,8 @@ class BuildAvatar extends StatelessWidget {
     );
   }
 
-  _imageProvider() {
-    if (path == null) return AssetImage('assets/avatars/avatar_01.png');
+  ImageProvider _imageProvider() {
+    if (path == null) return const AssetImage('assets/avatars/avatar_01.png');
     if (path!.contains('http') || path!.contains('https')) {
       return NetworkImage(path!);
     }

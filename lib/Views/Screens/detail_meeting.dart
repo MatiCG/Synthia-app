@@ -1,4 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:synthiapp/Controllers/screens/detail_meeting.dart';
+import 'package:synthiapp/Models/screens/home.dart';
+import 'package:synthiapp/Views/details_meeting/meeting_completed.dart';
+import 'package:synthiapp/Views/details_meeting/meeting_in_progress.dart';
+
+class DetailMeetingPage extends StatefulWidget {
+  final Meeting meeting;
+
+  const DetailMeetingPage({required this.meeting}) : super();
+
+  @override
+  _DetailMeetingPageState createState() => _DetailMeetingPageState();
+}
+
+class _DetailMeetingPageState extends State<DetailMeetingPage> {
+  late DetailMeetingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = DetailMeetingController(
+      parent: this,
+      meeting: widget.meeting,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _controller.getPageStatus(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          if (snapshot.data == PageStatus.progress) {
+            return DetailMeetingProgress(
+              controller: _controller,
+            );
+          } else {
+            return DetailMeetingCompleted(
+              controller: _controller,
+            );
+          }
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+  }
+}
+/*
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
 import 'package:synthiapp/Animations/screen_transition.dart';
 import 'package:synthiapp/Controllers/screens/detail_meeting.dart';
 import 'package:intl/intl.dart';
@@ -9,7 +61,7 @@ import 'package:synthiapp/config/config.dart';
 class DetailMeetingPage extends StatefulWidget {
   final String _meetingId;
 
-  DetailMeetingPage(this._meetingId) : super();
+  const DetailMeetingPage(this._meetingId) : super();
 
   @override
   _DetailMeetingPageState createState() => _DetailMeetingPageState();
@@ -29,82 +81,83 @@ class _DetailMeetingPageState extends State<DetailMeetingPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_controller == null)
+    if (_controller == null) {
       return Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
         appBar: AppBar(
             elevation: 0,
             leading: IconButton(
-              icon: Icon(Icons.close, color: Colors.black),
+              icon: const Icon(Icons.close, color: Colors.black),
               onPressed: () => Navigator.pop(context),
             )),
       );
-    else {
-      if (this._controller!.isMeetingComplete() == false)
+    } else {
+      if (_controller!.isMeetingComplete() == false) {
         return Scaffold(
           backgroundColor: Theme.of(context).primaryColor,
           appBar: AppBar(
               elevation: 0,
               leading: IconButton(
-                icon: Icon(Icons.close, color: Colors.black),
+                icon: const Icon(Icons.close, color: Colors.black),
                 onPressed: () => Navigator.pop(context),
               )),
           body: SafeArea(
             child: Wrap(
               children: [
-                meetingText(this._controller!.model.title, 30, 30.0, 0.0, true),
+                meetingText(_controller!.model.title, 30, 30.0, 0.0, bold: true),
                 meetingDate(),
                 meetingText(
-                    this._controller!.model.description, 12, 30.0, 40.0, false),
+                    _controller!.model.description, 12, 30.0, 40.0, bold: false),
               ],
             ),
           ),
           bottomSheet: meetingButton("Commencer", () {
             utils.pushScreenTransition(
-                context, MeetingConnexion(), Transitions.UP_TO_DOWN);
+                context, const MeetingConnexion(), Transitions.upToDown);
           }),
         );
-      else
+      } else {
         return Scaffold(
           backgroundColor: Theme.of(context).primaryColor,
           appBar: AppBar(
               elevation: 0,
               leading: IconButton(
-                icon: Icon(Icons.close, color: Colors.black),
+                icon: const Icon(Icons.close, color: Colors.black),
                 onPressed: () => Navigator.pop(context),
               )),
           body: SafeArea(
             child: Wrap(
               children: [
-                meetingText(this._controller!.model.title, 30, 30.0, 0.0, true),
+                meetingText(_controller!.model.title, 30, 30.0, 0.0, bold: true),
                 meetingHandleChips(),
-                meetingText("Voici Votre compte-rendu :", 17, 30.0, 40.0, true),
-                meetingText(
-                    this._controller!.model.resume, 10, 30.0, 0.0, false),
+                meetingText("Voici Votre compte-rendu :", 17, 30.0, 40.0, bold: true),
+                meetingText(_controller!.model.resume, 10, 30.0, 0.0, bold: false),
               ],
             ),
           ),
-          bottomSheet: meetingButton("Télécharger", () => print("Télécharger")),
+          bottomSheet: meetingButton("Télécharger", () => log("Télécharger")),
         );
+      }
     }
   }
 
   Widget meetingDate() {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 40.0),
+        padding: const EdgeInsets.symmetric(horizontal: 40.0),
         child: Wrap(children: [
-          Icon(Icons.access_time, color: Colors.black, size: 12.0),
+          const Icon(Icons.access_time, color: Colors.black, size: 12.0),
           Text(
             DateFormat.yMMMd('en_US')
                 .add_jm()
-                .format(this._controller!.model.date.toDate()),
+                .format(_controller!.model.date.toDate()),
             style: _textStyle(12, false),
           ),
         ]));
   }
 
-  Widget meetingText(
-      String text, double size, double padH, double padV, bool bold) {
+  // ignore: avoid_positional_boolean_parameters
+  Widget meetingText(String text, double size, double padH, double padV,
+      {required bool bold}) {
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
         child: Text(
@@ -130,34 +183,37 @@ class _DetailMeetingPageState extends State<DetailMeetingPage> {
 
   Widget meetingHandleChips() {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            meetingChip("Terminée", this._controller!.isMeetingComplete()),
-            meetingChip("CR envoyé par mail", true)
+            meetingChip("Terminée",
+                shouldDisplay: _controller!.isMeetingComplete()),
+            meetingChip("CR envoyé par mail", shouldDisplay: true)
           ],
         ));
   }
 
-  Widget meetingChip(String text, bool shouldDisplay) {
-    if (shouldDisplay)
+  Widget meetingChip(String text, {required bool shouldDisplay}) {
+    if (shouldDisplay) {
       return Chip(
         label: Text(text,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
             )),
         backgroundColor: Colors.green,
-        avatar: CircleAvatar(
+        avatar: const CircleAvatar(
+          backgroundColor: Colors.green,
           child: Icon(
             Icons.check,
             color: Colors.white,
           ),
-          backgroundColor: Colors.green,
         ),
       );
-    else
-      return SizedBox.shrink();
+    }
+    else {
+      return const SizedBox.shrink();
+    }
   }
 
   TextStyle _textStyle(double fontSize, bool bold) {
@@ -168,3 +224,4 @@ class _DetailMeetingPageState extends State<DetailMeetingPage> {
     );
   }
 }
+*/

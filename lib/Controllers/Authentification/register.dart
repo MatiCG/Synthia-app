@@ -4,7 +4,7 @@ import 'package:synthiapp/config/config.dart';
 class RegisterController {
   RegisterModel model = RegisterModel();
 
-  submit() {
+  void submit() {
     if (model.formKey.currentState!.validate()) {
       user.register(data: model.fields);
     }

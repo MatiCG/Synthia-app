@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:synthiapp/Views/Screens/meeting_connexion.dart';
-import 'package:synthiapp/config/config.dart';
 
 class SynthiaGridBox extends StatelessWidget {
-  SynthiaGridBox({
+  const SynthiaGridBox({
     required this.leftBox,
     required this.bottomRightBox,
     required this.topRightBox,
@@ -23,7 +21,7 @@ class SynthiaGridBox extends StatelessWidget {
     );
   }
 
-  _buildLeftBox(BuildContext context) {
+  Widget _buildLeftBox(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 8.0, 16.0),
       child: Container(
@@ -38,7 +36,7 @@ class SynthiaGridBox extends StatelessWidget {
     );
   }
 
-  _buildRightBoxes(BuildContext context) {
+  Widget _buildRightBoxes(BuildContext context) {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(8.0, 16.0, 16.0, 16.0),
@@ -53,19 +51,15 @@ class SynthiaGridBox extends StatelessWidget {
               width: double.infinity,
               child: topRightBox,
             ),
-            SizedBox(height: 5),
-            // Inkwell temporay
-            InkWell(
-              onTap: () => utils.pushScreen(context, MeetingConnexion()),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  color: Colors.green.shade600,
-                ),
-                height: MediaQuery.of(context).size.width * 0.2,
-                width: double.infinity,
-                child: bottomRightBox,
+            const SizedBox(height: 5),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                color: Colors.green.shade600,
               ),
+              height: MediaQuery.of(context).size.width * 0.2,
+              width: double.infinity,
+              child: bottomRightBox,
             ),
           ],
         ),

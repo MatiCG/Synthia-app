@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:synthiapp/Models/settings/pictures.dart';
 
 class ProfilePictureItem extends StatelessWidget {
-  ProfilePictureItem({
+  const ProfilePictureItem({
     required this.profileImage,
     required this.onPressed,
   }) : super();

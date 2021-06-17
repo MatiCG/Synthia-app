@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MeetingsPage extends StatefulWidget {
-  MeetingsPage() : super();
+  const MeetingsPage() : super();
 
   @override
   _MeetingsPageState createState() => _MeetingsPageState();
@@ -10,7 +10,7 @@ class MeetingsPage extends StatefulWidget {
 class _MeetingsPageState extends State<MeetingsPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.purple,
     );
   }

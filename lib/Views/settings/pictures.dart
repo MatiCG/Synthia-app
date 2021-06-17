@@ -5,21 +5,21 @@ import 'package:synthiapp/Widgets/profile_picture_item.dart';
 import 'package:synthiapp/config/config.dart';
 
 class SettingsPictures extends StatefulWidget {
-  SettingsPictures() : super();
+  const SettingsPictures() : super();
 
   @override
   _SettingsPicturesState createState() => _SettingsPicturesState();
 }
 
 class _SettingsPicturesState extends State<SettingsPictures> {
-  SettingsPicturesController _controller = SettingsPicturesController();
+  final SettingsPicturesController _controller = SettingsPicturesController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: SynthiaAppBar(
-        title: 'Modifier l\'avatar',
+        title: "Modifier l'avatar",
         closeIcon: Icons.close,
         returnValue: _controller.model.images
             .where((element) => element.isSelected)
@@ -29,14 +29,14 @@ class _SettingsPicturesState extends State<SettingsPictures> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(top: 32.0),
-          child: Container(
+          child: SizedBox(
             width: double.infinity,
             child: Wrap(
               alignment: WrapAlignment.center,
               children: List.generate(_controller.model.images.length, (index) {
-                String userPicture =
+                final String userPicture =
                     user.data?.photoURL ?? 'assets/avatars/avatar_01.png';
-                String selectedPicutre = _controller.model.images[index].path;
+                final String selectedPicutre = _controller.model.images[index].path;
 
                 if (userPicture == selectedPicutre) {
                   return Hero(

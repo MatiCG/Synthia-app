@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 class DetailMeetingModel {
   String _title = '';
@@ -22,12 +21,20 @@ class DetailMeetingModel {
   String get keywords => _keywords;
   Timestamp get date => _date;
 
+  // ignore: avoid_setters_without_getters
   set setTitle(String title) => _title = title;
+  // ignore: avoid_setters_without_getters
   set setMembers(List<String> members) => _members = members;
+  // ignore: avoid_setters_without_getters
   set setDescription(String descritpion) => _description = descritpion;
+  // ignore: avoid_setters_without_getters
   set setNote(String note) => _note = note;
+  // ignore: avoid_setters_without_getters
   set setOrder(String order) => _order = order;
+  // ignore: avoid_setters_without_getters
   set setResume(String resume) => _resume = resume;
+  // ignore: avoid_setters_without_getters
   set setKeywords(String keywords) => _keywords = keywords;
+  // ignore: avoid_setters_without_getters
   set setDate(Timestamp date) => _date = date;
 }

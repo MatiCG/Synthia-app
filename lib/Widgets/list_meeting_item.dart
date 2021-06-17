@@ -19,6 +19,8 @@ class ListMeetingItem extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
         child: InkWell(
+          onTap: () => utils.pushScreenTransition(context,
+              DetailMeetingPage(meeting: meeting), Transitions.upToDown),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.grey.shade200,
@@ -31,7 +33,7 @@ class ListMeetingItem extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     meeting.title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -42,11 +44,11 @@ class ListMeetingItem extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      Icon(Icons.access_time_outlined),
-                      SizedBox(width: 5),
+                      const Icon(Icons.access_time_outlined),
+                      const SizedBox(width: 5),
                       Text(
-                        '${DateFormat('d MMMM y à').add_Hm().format(meeting.date.toDate())}',
-                        style: TextStyle(
+                        DateFormat('d MMMM y à').add_Hm().format(meeting.date.toDate()),
+                        style: const TextStyle(
                           color: Colors.black,
                           fontSize: 10,
                         ),
@@ -61,7 +63,7 @@ class ListMeetingItem extends StatelessWidget {
                       Expanded(
                         child: RichText(
                             text: TextSpan(
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.black,
                                 ),
                                 children: [
@@ -71,7 +73,7 @@ class ListMeetingItem extends StatelessWidget {
                                     color: Theme.of(context).accentColor,
                                     fontWeight: FontWeight.bold,
                                   )),
-                              TextSpan(
+                              const TextSpan(
                                 text: ' dirige la réunion',
                               ),
                             ])),
@@ -80,13 +82,13 @@ class ListMeetingItem extends StatelessWidget {
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
-                          color: _getCountDown(meeting.date)['color'],
+                          color: _getCountDown(meeting.date)['color'] as Color?,
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            _getCountDown(meeting.date)['text'],
-                            style: TextStyle(
+                            _getCountDown(meeting.date)['text'] as String,
+                            style: const TextStyle(
                               color: Colors.white,
                             ),
                           ),
@@ -98,8 +100,6 @@ class ListMeetingItem extends StatelessWidget {
               ],
             ),
           ),
-          onTap: () => utils.pushScreenTransition(context,
-              DetailMeetingPage(meeting.document.id), Transitions.UP_TO_DOWN),
         ));
   }
 
@@ -109,15 +109,15 @@ class ListMeetingItem extends StatelessWidget {
   ///   - Orange : X days
   ///   - Green : > 1 month
   ///   - Brown : Past
-  _getCountDown(Timestamp meetingTime) {
-    var timeleft = meetingTime.toDate().difference(DateTime.now());
+  Map _getCountDown(Timestamp meetingTime) {
+    final timeleft = meetingTime.toDate().difference(DateTime.now());
 
     if (timeleft.isNegative) {
       return {'color': Colors.brown, 'text': 'Passé'};
     } else if (timeleft.inDays >= 31 && timeleft.inHours > 24) {
-      return {'color': Colors.green, 'text': 'Plus d\'un mois'};
-    } else if (timeleft.inHours <= 24) {
-      return {'color': Colors.red, 'text': 'Aujourd\'hui'};
+      return {'color': Colors.green, 'text': "Plus d'un mois"};
+    } else if (meetingTime.toDate().day == DateTime.now().day && timeleft.inHours <= 24) {
+      return {'color': Colors.red, 'text': "Aujourd'hui"};
     } else {
       return {'color': Colors.orange, 'text': '${timeleft.inDays + 1} jours'};
     }

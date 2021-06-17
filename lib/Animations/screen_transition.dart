@@ -3,23 +3,23 @@ import 'package:synthiapp/Animations/transitions/down_to_up.dart';
 import 'package:synthiapp/Animations/transitions/right_to_left.dart';
 
 enum Transitions {
-  UP_TO_DOWN,
-  RIGHT_TO_LEFT,
+  upToDown,
+  rightToLeft,
 }
 
 extension TransitionExtensions on Transitions {
-  of(screen) {
+  PageRouteBuilder of(Widget screen) {
     switch (this) {
-      case Transitions.UP_TO_DOWN:
+      case Transitions.upToDown:
         return UpToDown(screen: screen).transition;
-      case Transitions.RIGHT_TO_LEFT:
+      case Transitions.rightToLeft:
         return RightToLeft(screen: screen).transition;
     }
   }
 }
 
 class ScreenTransition {
-  getTransitionByName(Transitions transition, Widget screen) {
+  PageRouteBuilder getTransitionByName(Transitions transition, Widget screen) {
     return transition.of(screen);
   }
 }

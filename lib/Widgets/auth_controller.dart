@@ -8,7 +8,7 @@ import 'splashscreen.dart';
 /// This widget send the user to the right screen if there are logged or not
 
 class AuthController extends StatefulWidget {
-  AuthController() : super();
+  const AuthController() : super();
 
   @override
   _AuthControllerState createState() => _AuthControllerState();
@@ -19,11 +19,11 @@ class _AuthControllerState extends State<AuthController> {
   @override
   void initState() {
     super.initState();
-    if (this.mounted) {
+    if (mounted) {
       user.searchRights.listen((right) {
-          setState(() {
-            user.addNewRight(right);
-          });
+        setState(() {
+          user.addNewRight(right as String);
+        });
       });
     }
   }
@@ -36,18 +36,17 @@ class _AuthControllerState extends State<AuthController> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           if (snapshot.data != null) {
-            selectedWidget = Root();
-          } else if (snapshot.data == null) {
-            selectedWidget = HomeAuthScreen();
+            selectedWidget = const Root();
+          } else {
+            selectedWidget = const HomeAuthScreen();
           }
         } else {
           selectedWidget = Scaffold(body: SplashScreen());
         }
 
-        if (!(selectedWidget is Root) && !(selectedWidget is SplashScreen)) {
+        if (selectedWidget is! Root && selectedWidget is! SplashScreen) {
           return AnimatedSwitcher(
-            child: selectedWidget,
-            duration: Duration(milliseconds: 500),
+            duration: const Duration(milliseconds: 500),
             transitionBuilder: (child, animation) {
               return FadeTransition(
                 opacity: Tween(begin: 1.0, end: 1.0).animate(animation),
@@ -57,11 +56,11 @@ class _AuthControllerState extends State<AuthController> {
             layoutBuilder: (currentChild, previousChildren) {
               return currentChild!;
             },
+            child: selectedWidget,
           );
         } else {
           return AnimatedSwitcher(
-            child: selectedWidget,
-            duration: Duration(milliseconds: 500),
+            duration: const Duration(milliseconds: 500),
             transitionBuilder: (child, animation) {
               return FadeTransition(
                 opacity: Tween(begin: 1.0, end: 1.0).animate(animation),
@@ -69,15 +68,16 @@ class _AuthControllerState extends State<AuthController> {
               );
             },
             layoutBuilder: (currentChild, previousChildren) {
-              if (currentChild != null && previousChildren.length > 0) {
+              if (currentChild != null && previousChildren.isNotEmpty) {
                 return CircularCloseAnimation(
-                  duration: Duration(milliseconds: 500),
+                  duration: const Duration(milliseconds: 500),
                   landingWidget: currentChild,
                   closeWidget: previousChildren[0],
                 );
               }
               return currentChild!;
             },
+            child: selectedWidget,
           );
         }
       },
@@ -86,15 +86,16 @@ class _AuthControllerState extends State<AuthController> {
 }
 
 class Test extends StatefulWidget {
-  Test() : super();
+  const Test() : super();
 
+  @override
   _TestState createState() => _TestState();
 }
 
 class _TestState extends State<Test> {
   @override
   Widget build(BuildContext context) {
-    String? test = user.data?.displayName;
+    final String? test = user.data?.displayName;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -104,8 +105,8 @@ class _TestState extends State<Test> {
           children: [
             Text('Bonjour ${test?.split(' ')[0] ?? 'error'}'),
             ElevatedButton(
-              child: Text('Sign-out'),
-              onPressed: user.signOut(),
+              onPressed: user.signOut,
+              child: const Text('Sign-out'),
             ),
           ],
         ),

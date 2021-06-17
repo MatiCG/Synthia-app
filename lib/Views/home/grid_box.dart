@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Controllers/screens/home.dart';
 import 'package:synthiapp/Views/Screens/invitations.dart';
 import 'package:synthiapp/Widgets/grid_box.dart';
@@ -7,7 +8,7 @@ import 'package:synthiapp/config/config.dart';
 class HomeGridBox extends StatefulWidget {
   final HomeController controller;
 
-  HomeGridBox({
+  const HomeGridBox({
     required this.controller,
   }) : super();
 
@@ -24,12 +25,16 @@ class _HomeGridBoxState extends State<HomeGridBox> {
 
     if (WidgetsBinding.instance != null) {
       WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-        widget.controller.getInvitations().then((value) {
-          if (this.mounted) {
-            setState(() {
-              invitationLenght = value;
-            });
-          }
+        SynthiaFirebase().fetchStreamInvitations().listen((event) {
+          widget.controller
+              .getInvitationsFromSnapshot(event.docs)
+              .then((value) {
+            if (mounted) {
+              setState(() {
+                invitationLenght = value;
+              });
+            }
+          });
         });
       });
     }
@@ -40,18 +45,17 @@ class _HomeGridBoxState extends State<HomeGridBox> {
     return SynthiaGridBox(
       leftBox: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             widget.controller.getMeetingsOfTheDay().toString(),
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 60,
             ),
           ),
-          Text(
-            'réunions\naujourd\'hui',
+          const Text(
+            "réunions\naujourd'hui",
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,
@@ -70,7 +74,7 @@ class _HomeGridBoxState extends State<HomeGridBox> {
       child: Stack(
         alignment: AlignmentDirectional.center,
         children: [
-          Align(
+          const Align(
             alignment: Alignment.topCenter,
             child: Text(
               'Statistiques',
@@ -80,12 +84,24 @@ class _HomeGridBoxState extends State<HomeGridBox> {
                   fontWeight: FontWeight.bold),
             ),
           ),
-          Text(
-            'Vous avez participer à ${widget.controller.getAllMeetings()} réunions',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 10,
-            ),
+          FutureBuilder(
+            future: widget.controller.getAllMeetings(),
+            builder: (context, snapshot) {
+              String text = "Vous n'avez pas participé à des réunions";
+
+              if (snapshot.hasData) {
+                text =
+                    'Vous avez participer à ${snapshot.data} réunions';
+              }
+
+              return Text(
+                text,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -98,12 +114,12 @@ class _HomeGridBoxState extends State<HomeGridBox> {
       child: InkWell(
         onTap: () async {
           if (invitationLenght > 0) {
-            var result =
-                await utils.futurePushScreen(context, InvitationsPage());
+            final result =
+                await utils.futurePushScreen(context, const InvitationsPage());
 
             if (result != null) {
               setState(() {
-                invitationLenght = result.lenght;
+                invitationLenght = result.lenght as int;
               });
             }
           }
@@ -113,7 +129,7 @@ class _HomeGridBoxState extends State<HomeGridBox> {
           child: Stack(
             alignment: AlignmentDirectional.center,
             children: [
-              Align(
+              const Align(
                 alignment: Alignment.topCenter,
                 child: Text(
                   'Invitations',
@@ -124,8 +140,8 @@ class _HomeGridBoxState extends State<HomeGridBox> {
                 ),
               ),
               if (invitationLenght <= 0)
-                Text(
-                  'Vous n\'avez pas d\'invitation',
+                const Text(
+                  "Vous n'avez pas d'invitation",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 10,
@@ -135,12 +151,18 @@ class _HomeGridBoxState extends State<HomeGridBox> {
                 Text.rich(
                   TextSpan(
                     children: [
-                      TextSpan(text: 'Vous avez '),
-                      TextSpan(text: invitationLenght.toString(), style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                      TextSpan(text: ' invitation${invitationLenght > 1 ? 's' : ''}'),
+                      const TextSpan(text: 'Vous avez '),
+                      TextSpan(
+                          text: invitationLenght.toString(),
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
+                      TextSpan(
+                          text:
+                              ' invitation${invitationLenght > 1 ? 's' : ''}'),
                     ],
                   ),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
                   ),

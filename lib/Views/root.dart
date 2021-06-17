@@ -6,7 +6,7 @@ import 'package:synthiapp/Widgets/nav_item.dart';
 import 'package:synthiapp/config/config.dart';
 
 class Root extends StatefulWidget {
-  Root() : super();
+  const Root() : super();
 
   @override
   _RootState createState() => _RootState();
@@ -22,12 +22,12 @@ class _RootState extends State<Root> {
       extendBody: true,
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).primaryColor,
-      body: _controller.model.pages[selectedPage]['page'],
+      body: _controller.model.pages[selectedPage]['page'] as Widget,
       floatingActionButton: FloatingActionButton(
         elevation: 0,
-        child: Icon(Icons.add),
-        onPressed: () => utils.pushScreenTransition(context, CreationMeetingPage(), Transitions.UP_TO_DOWN),
+        onPressed: () => utils.pushScreenTransition(context, const CreationMeetingPage(), Transitions.upToDown),
         backgroundColor: Theme.of(context).accentColor,
+        child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: _buildBottomNavigationBar(),
@@ -35,17 +35,17 @@ class _RootState extends State<Root> {
   }
 
   List<dynamic> _buildNavItems() {
-    List<dynamic> items = [];
+    final List<dynamic> items = [];
 
     _controller.model.pages.asMap().forEach((index, page) {
       if (page.isEmpty) {
         items.add(
-          SizedBox(width: 48),
+          const SizedBox(width: 48),
         );
       } else {
         items.add(NavItem(
-          title: page['title'],
-          icon: selectedPage == index ? page['selected_icon'] : page['icon'],
+          title: page['title'] as String,
+          icon: (selectedPage == index ? page['selected_icon'] : page['icon']) as IconData,
           isSelected: selectedPage == index,
           onTap: () {
             setState(() {
@@ -59,16 +59,16 @@ class _RootState extends State<Root> {
     return items;
   }
 
-  _buildBottomNavigationBar() {
-    List<dynamic> items = _buildNavItems();
+  Widget _buildBottomNavigationBar() {
+    final List<dynamic> items = _buildNavItems();
 
     return BottomAppBar(
-      shape: CircularNotchedRectangle(),
+      shape: const CircularNotchedRectangle(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: List.generate(
           items.length,
-          (index) => items[index],
+          (index) => items[index] as Widget,
         ),
       ),
     );

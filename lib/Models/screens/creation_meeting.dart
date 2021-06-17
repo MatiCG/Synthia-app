@@ -19,12 +19,12 @@ class CreationMeetingModel {
     );
     fields = [
       SynthiaTextFieldItem(
-          id: FieldsID.MEETING_TITLE, title: 'Nom de la réunion'),
+          id: FieldsID.meetingTitle, title: 'Nom de la réunion'),
       MeetingAddMembersItem(members: members, time: meetingTime),
-      SynthiaTextFieldItem(id: FieldsID.MEETING_ORDER, title: 'Ordre du jour'),
+      SynthiaTextFieldItem(id: FieldsID.meetingOrder, title: 'Ordre du jour'),
       SynthiaTextFieldItem(
-          id: FieldsID.MEETING_DESCRIPTION, title: 'Description'),
-      SynthiaTextFieldItem(id: FieldsID.MEETING_NOTES, title: 'Notes'),
+          id: FieldsID.meetingDescription, title: 'Description'),
+      SynthiaTextFieldItem(id: FieldsID.meetingNotes, title: 'Notes'),
     ];
   }
 }

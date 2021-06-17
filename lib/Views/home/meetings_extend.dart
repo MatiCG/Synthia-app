@@ -7,7 +7,7 @@ import 'package:synthiapp/Widgets/list_meeting_item.dart';
 class HomeMeetingExtend extends StatefulWidget {
   final HomeController controller;
 
-  HomeMeetingExtend({required this.controller}) : super();
+  const HomeMeetingExtend({required this.controller}) : super();
 
   @override
   _HomeMeetingExtendState createState() => _HomeMeetingExtendState();
@@ -36,7 +36,7 @@ class _HomeMeetingExtendState extends State<HomeMeetingExtend> {
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.close, color: Colors.black),
+          icon: const Icon(Icons.close, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -50,7 +50,7 @@ class _HomeMeetingExtendState extends State<HomeMeetingExtend> {
             itemBuilder: (index) => ListMeetingItem(
               meeting: widget.controller.model.meetings[index],
             ),
-            header: HeaderSection(
+            header: const HeaderSection(
               title: 'Réunions',
             ),
           ),

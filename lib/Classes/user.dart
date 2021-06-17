@@ -1,4 +1,3 @@
-
 /// This class is used to handle and retrieve data of the user
 /// anywhere.
 /// All variables must have getter and be private.
@@ -33,13 +32,13 @@ class SynthiaUser {
   }
 
   /// Search all the rights that the user have
-  fetchUserRights() async {
+  Future fetchUserRights() async {
     final SynthiaFirebase myFunctions = SynthiaFirebase();
     final DocumentSnapshot document =
         await _firestore.collection('users').doc(user.uid).get();
 
     myFunctions.findRightsInDocuments(
-      documents: document['rights'],
+      documents: document['rights'] as List,
       callback: (right) {
         _rightsController.add(right);
       },
@@ -47,7 +46,7 @@ class SynthiaUser {
   }
 
   /// Sign in the user into firebase. Email/Password
-  signIn({required final String email, required final String password}) async {
+  Future signIn({required final String email, required final String password}) async {
     try {
       await _auth.signInWithEmailAndPassword(
         email: email,
@@ -58,7 +57,7 @@ class SynthiaUser {
     }
   }
 
-  _getDataById(List<SynthiaTextFieldItem> data, FieldsID id) {
+  String _getDataById(List<SynthiaTextFieldItem> data, FieldsID id) {
     return data
         .firstWhere((element) => element.id == id)
         .controller
@@ -67,25 +66,27 @@ class SynthiaUser {
   }
 
   /// Register a new user into firebase
-  register({required final List<SynthiaTextFieldItem> data}) async {
+  Future register({required final List<SynthiaTextFieldItem> data}) async {
     try {
-      UserCredential userCredential =
+      final UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
-        email: getDataById(FieldsID.EMAIL, data),
-        password: getDataById(FieldsID.PASSWORD, data),
+        email: getDataById(FieldsID.email, data),
+        password: getDataById(FieldsID.password, data),
       );
 
       if (userCredential.user != null) {
-        userCredential.user!.updateProfile(
-          displayName:
-              '${getDataById(FieldsID.FIRSTNAME, data)} ${getDataById(FieldsID.LASTNAME, data)}',
-          photoURL: 'assets/avatars/blank.png',
-        );
-        FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
-          'email': _getDataById(data, FieldsID.EMAIL),
+        userCredential.user!.updateDisplayName(
+            '${getDataById(FieldsID.firstname, data)} ${getDataById(FieldsID.lastname, data)}');
+        userCredential.user!.updatePhotoURL('assets/avatars/blank.png');
+
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .set({
+          'email': _getDataById(data, FieldsID.email),
           'photoUrl': 'assets/avatars/blank.png',
-          'firstname': _getDataById(data, FieldsID.FIRSTNAME),
-          'lastname': _getDataById(data, FieldsID.LASTNAME),
+          'firstname': _getDataById(data, FieldsID.firstname),
+          'lastname': _getDataById(data, FieldsID.lastname),
           'rights': [],
         });
       }
@@ -96,26 +97,23 @@ class SynthiaUser {
 
   Future updateProfilePath(String path) async {
     if (_auth.currentUser != null) {
-      await _auth.currentUser!.updateProfile(
-        photoURL: path,
-      );
+      await _auth.currentUser!.updatePhotoURL(path);
     }
   }
 
-  getDataById(FieldsID id, List<SynthiaTextFieldItem> fields) {
+  String getDataById(FieldsID id, List<SynthiaTextFieldItem> fields) {
     return fields.where((element) => element.id == id).first.controller.text;
   }
 
   /// Check if the user has the [right]
-  bool hasRight(String right) {
+  bool hasRight(String givenRight) {
     bool exist = false;
 
-    _rights.forEach((userRight) {
-      if (userRight.id == right) {
+    for (final right in _rights) {
+      if (right.id == givenRight) {
         exist = true;
       }
-    });
-
+    }
     return exist;
   }
 
@@ -123,19 +121,18 @@ class SynthiaUser {
   Stream get stream => _auth.authStateChanges();
 
   /// Sign out user
-  signOut() {
+  void signOut() {
     _auth.signOut();
   }
 
   // Setters
 
   /// Add a new right to the user
-  addNewRight(String right, {bool upload = false}) async {
+  Future addNewRight(String right, {bool upload = false}) async {
     _rights.add(Right(id: right));
     if (upload) {
-      var tmp = await _firestore.collection('rights').get();
-
-      List<DocumentReference> rightsRef = [];
+      final tmp = await _firestore.collection('rights').get();
+      final List<DocumentReference> rightsRef = [];
 
       tmp.docs
           .where((element) => element.data()['title'] == right)
@@ -150,13 +147,12 @@ class SynthiaUser {
   }
 
   /// Add a new right to the user
-  removeRight(String right, {bool upload = false}) async {
+  Future removeRight(String right, {bool upload = false}) async {
     _rights.removeWhere((element) => element.id == right);
 
     if (upload) {
-      var tmp = await _firestore.collection('rights').get();
-
-      List<DocumentReference> rightsRef = [];
+      final tmp = await _firestore.collection('rights').get();
+      final List<DocumentReference> rightsRef = [];
 
       tmp.docs
           .where((element) => element.data()['title'] == right)

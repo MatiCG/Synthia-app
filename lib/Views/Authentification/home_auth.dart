@@ -14,7 +14,7 @@ import '../../Widgets/button.dart';
 import 'login.dart';
 
 class HomeAuthScreen extends StatefulWidget {
-  HomeAuthScreen() : super();
+  const HomeAuthScreen() : super();
 
   @override
   _HomeAuthScreenState createState() => _HomeAuthScreenState();
@@ -39,15 +39,15 @@ class _HomeAuthScreenState extends State<HomeAuthScreen> {
 
         if (!snapshot.hasData) return SplashScreen();
         switch (snapshot.data) {
-          case screenStatus.HOME:
+          case screenStatus.home:
             selectedWiget = LandingPage(controller: controller);
             break;
-          case screenStatus.LOGIN:
+          case screenStatus.login:
             selectedWiget = LoginPage(
               streamController: controller.streamController,
             );
             break;
-          case screenStatus.REGISTER:
+          case screenStatus.register:
             selectedWiget = RegisterPage(
               streamController: controller.streamController,
             );
@@ -68,9 +68,9 @@ class LandingPage extends StatelessWidget {
   // Color for the gradient background [identical to the
   // splashscreen background]
   final List<Color> gradientColors = [
-    Color.fromRGBO(49, 115, 216, 1),
-    Color.fromRGBO(34, 136, 255, 1),
-    Color.fromRGBO(49, 115, 216, 1),
+    const Color.fromRGBO(49, 115, 216, 1),
+    const Color.fromRGBO(34, 136, 255, 1),
+    const Color.fromRGBO(49, 115, 216, 1),
   ];
 
   @override
@@ -124,7 +124,7 @@ class LandingPage extends StatelessWidget {
       child: Image(
         height: screenHeight * 0.4,
         width: screenWidth * 0.4,
-        image: AssetImage('assets/logo.png'),
+        image: const AssetImage('assets/logo.png'),
       ),
     );
   }

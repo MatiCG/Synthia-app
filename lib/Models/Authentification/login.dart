@@ -7,12 +7,12 @@ class LoginModel {
   // Form Fields
   List<SynthiaTextFieldItem> fields = [
     SynthiaTextFieldItem(
-      type: types.EMAIL,
+      type: types.email,
       title: 'E-mail',
       hint: 'Adresse e-mail',
     ),
     SynthiaTextFieldItem(
-      type: types.PASSWORD,
+      type: types.password,
       title: 'Mot de passe',
       hint: '8 caractères minimum',
     ),

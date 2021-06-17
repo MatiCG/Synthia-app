@@ -5,16 +5,17 @@ import 'package:synthiapp/Animations/screen_transition.dart';
 class Utils {
   /// Future push screen
   Future futurePushScreen(BuildContext context, Widget screen) async {
-    return await Navigator.push(
+    return Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => screen),
     );
   }
+
   /// Push a new screen  with a specific transition
-  void pushScreenTransition(BuildContext context, Widget screen, Transitions transition) {
-    Navigator.of(context).push(
-      ScreenTransition().getTransitionByName(transition, screen)
-    );
+  void pushScreenTransition(
+      BuildContext context, Widget screen, Transitions transition) {
+    Navigator.of(context)
+        .push(ScreenTransition().getTransitionByName(transition, screen));
   }
 
   /// Push a new screen
@@ -26,7 +27,8 @@ class Utils {
   }
 
   /// Push a new screen as first in stack
-  void pushReplacementScreen(BuildContext context, Widget screen, {Duration duration = const Duration(seconds: 0)}) {
+  void pushReplacementScreen(BuildContext context, Widget screen,
+      {Duration duration = const Duration()}) {
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
@@ -37,5 +39,17 @@ class Utils {
       MaterialPageRoute(builder: (context) => screen, ),
       */
     );
+  }
+
+  /// Update something in the view with the given parent
+  ///
+  /// Check automatticaly if the parent is mounted
+  void updateView(State<StatefulWidget> parent, {Function? update}) {
+    if (parent.mounted && update != null) {
+      // ignore: invalid_use_of_protected_member
+      parent.setState(() {
+        update();
+      });
+    }
   }
 }

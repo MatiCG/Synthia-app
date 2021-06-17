@@ -7,14 +7,14 @@ import 'package:synthiapp/Widgets/scroll_list.dart';
 import 'package:synthiapp/config/config.dart';
 
 class SettingsPage extends StatefulWidget {
-  SettingsPage() : super();
+  const SettingsPage() : super();
 
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  SettingsController _controller = SettingsController();
+  final SettingsController _controller = SettingsController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class _SettingsPageState extends State<SettingsPage> {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.only(left: 16.0, top: 16.0, right: 4.0),
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
               height: MediaQuery.of(context).size.height,
               child: Stack(
@@ -49,12 +49,12 @@ class _SettingsPageState extends State<SettingsPage> {
       child: SynthiaScrollList(
         sections: _controller.model.sections,
         headerBuilder: (index) {
-          ScrollSection section = _controller.model.sections[index];
+          final ScrollSection section = _controller.model.sections[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 16.0, top: 16.0),
             child: Text(
               section.title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.w500,
               ),
@@ -62,8 +62,8 @@ class _SettingsPageState extends State<SettingsPage> {
           );
         },
         itemBuilder: (headerIndex, index) {
-          SettingsItem item =
-              _controller.model.sections[headerIndex].items[index];
+          final SettingsItem item =
+              _controller.model.sections[headerIndex].items[index] as SettingsItem;
           return ListSettingsItem(item: item);
         },
       ),
@@ -75,18 +75,18 @@ class _SettingsPageState extends State<SettingsPage> {
       top: MediaQuery.of(context).size.height * 0.15,
       left: 0,
       right: 0,
-      child: Container(
+      child: SizedBox(
         height: 75,
         width: 75,
         child: InkWell(
           onTap: () async {
-            String newPath = await Navigator.push(
+            final String newPath = await Navigator.push(
                 context,
                 PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) =>
-                        SettingsPictures(),
-                    transitionDuration: Duration(milliseconds: 500),
-                    reverseTransitionDuration: Duration(milliseconds: 300)));
+                        const SettingsPictures(),
+                    transitionDuration: const Duration(milliseconds: 500),
+                    reverseTransitionDuration: const Duration(milliseconds: 300))) as String;
             setState(() {
               _controller.model.userPicture = newPath;
             });
@@ -109,11 +109,11 @@ class _SettingsPageState extends State<SettingsPage> {
       children: [
         Text(
           user.data?.email ?? '',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w300),
         ),
         Text(
           user.data?.displayName ?? '',
-          style: TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
         ),
       ],
     );

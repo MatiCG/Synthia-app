@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SynthiaButton extends StatelessWidget {
-  SynthiaButton({
+  const SynthiaButton({
     required this.text,
     required this.onPressed,
     this.textOnly = false,
@@ -26,7 +26,7 @@ class SynthiaButton extends StatelessWidget {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     Color buttonColor = color == null ? Theme.of(context).primaryColor : color!;
-    Color txtColor =
+    final Color txtColor =
         textColor == null ? Theme.of(context).accentColor : textColor!;
 
     buttonColor = textOnly ? Colors.transparent : buttonColor;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SynthiaList extends StatelessWidget {
-  SynthiaList({
+  const SynthiaList({
     required this.itemCount,
     required this.itemBuilder,
     this.header,
@@ -13,7 +13,7 @@ class SynthiaList extends StatelessWidget {
 
   final int itemCount;
   final bool shrinkWrap;
-  final Function(int index) itemBuilder;
+  final Widget Function(int index) itemBuilder;
   final Widget? header;
   final bool isScrollable;
   final ScrollController? scrollController;
@@ -23,8 +23,9 @@ class SynthiaList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       controller: scrollController,
-      physics: isScrollable ? null : NeverScrollableScrollPhysics(),
+      physics: isScrollable ? null : const NeverScrollableScrollPhysics(),
       shrinkWrap: !shrinkWrap
+          // ignore: avoid_bool_literals_in_conditional_expressions
           ? isScrollable
               ? false
               : true

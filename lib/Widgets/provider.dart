@@ -5,15 +5,13 @@ import 'package:synthiapp/config/config.dart';
 class Provider extends StatefulWidget {
   final Widget child;
 
-  Provider({required this.child}) : super();
+  const Provider({required this.child}) : super();
 
   @override
   _ProviderState createState() => _ProviderState();
 
   static _ProviderState of(BuildContext context) {
-    return (context.dependOnInheritedWidgetOfExactType<_Provider>()
-            as _Provider)
-        .providerData;
+    return context.dependOnInheritedWidgetOfExactType<_Provider>()!.providerData;
   }
 }
 
@@ -24,11 +22,11 @@ class _ProviderState extends State<Provider> {
 
   }
 
-  addUserRight(RightID right) {
+  void addUserRight(RightID right) {
     user.addNewRight(right.asString, upload: true);
   }
 
-  removeUserRight(RightID right) {
+  void removeUserRight(RightID right) {
     user.removeRight(right.asString, upload: true);
   }
 
@@ -44,7 +42,7 @@ class _ProviderState extends State<Provider> {
 class _Provider extends InheritedWidget {
   final _ProviderState providerData;
 
-  _Provider({
+  const _Provider({
     required this.providerData,
     required Widget child,
   }) : super(child: child);

@@ -8,6 +8,7 @@ class ProfileImage {
   });
 
   set selection(bool selection) => isSelected = selection;
+  bool get selection => isSelected;
 }
 
 class SettingsPicturesModel {

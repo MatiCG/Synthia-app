@@ -7,20 +7,20 @@ class SettingsPicturesController {
   SettingsPicturesModel model = SettingsPicturesModel();
 
   SettingsPicturesController() {
-    model.images.forEach((element) {
-      if (element.path ==
+    for (final image in model.images) {
+      if (image.path ==
           (user.data?.photoURL ?? 'assets/avatars/blank.png')) {
-        element.isSelected = true;
+        image.isSelected = true;
       }
-    });
+    }
   }
 
-  updateSelection(int index, State<StatefulWidget> parent) {
+  void updateSelection(int index, State<StatefulWidget> parent) {
     // ignore: invalid_use_of_protected_member
     parent.setState(() {
-      model.images.forEach((element) {
-        element.selection = false;
-      });
+      for (final image in model.images) {
+        image.selection = false;
+      }
       model.images[index].selection = true;
       model.updating = true;
     });

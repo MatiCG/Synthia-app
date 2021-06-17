@@ -18,22 +18,26 @@ class SynthiaStep {
 
   SynthiaStep(this.title, {this.action, this.status = StepStatus.stack});
 
-  set setError(String? message) {
-    this.status = StepStatus.error;
-    if (message != null)
-      this.errorMessage = message;
-    this.onError = true;
+  void setError(String? message) {
+    status = StepStatus.error;
+    if (message != null) errorMessage = message;
+    onError = true;
   }
 }
 
 class MeetingConnexionModel {
   final FlutterBlue bleManager = FlutterBlue.instance;
+  BluetoothDevice? synthiaHome;
   List<SynthiaStep> steps = [];
   int stepIndex = 0;
 
   void nextStep() {
     steps[stepIndex].status = StepStatus.done;
     stepIndex++;
+    if (stepIndex + 1 <= steps.length) {
+      steps[stepIndex].status = StepStatus.progress;
+      if (steps[stepIndex].action != null) steps[stepIndex].action!();
+    }
   }
 
   SynthiaStep get currentStep => steps[stepIndex];

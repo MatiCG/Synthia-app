@@ -1,27 +1,27 @@
 import 'dart:async';
 
 enum screenStatus {
-  HOME,
-  LOGIN,
-  REGISTER,
+  home,
+  login,
+  register,
 }
 
 class HomeAuthController {
-  StreamController<screenStatus> _streamController =
+  final StreamController<screenStatus> _streamController =
       StreamController<screenStatus>();
 
   HomeAuthController() {
-    _streamController.add(screenStatus.HOME);
+    _streamController.add(screenStatus.home);
   }
 
   /// Update stream for displayed LOGIN screen
-  login() {
-    _streamController.add(screenStatus.LOGIN);
+  void login() {
+    _streamController.add(screenStatus.login);
   }
 
   /// Update stream for displayed REGISTER screen
-  register() {
-    _streamController.add(screenStatus.REGISTER);
+  void register() {
+    _streamController.add(screenStatus.register);
   }
 
   /// Retrieve stream

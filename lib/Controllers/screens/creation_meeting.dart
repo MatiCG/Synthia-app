@@ -7,13 +7,13 @@ import 'package:synthiapp/Widgets/textfield.dart';
 class CreateMeetingController {
   CreationMeetingModel model = CreationMeetingModel();
 
-  submit(BuildContext context) async {
+  Future submit(BuildContext context) async {
     if (model.formKey.currentState!.validate()) {
-      var ref = await FirebaseFirestore.instance.collection('meetings').add({
-        'title': getValueById(FieldsID.MEETING_TITLE),
-        'description': getValueById(FieldsID.MEETING_DESCRIPTION),
-        'order': getValueById(FieldsID.MEETING_ORDER),
-        'note': getValueById(FieldsID.MEETING_NOTES),
+      final ref = await FirebaseFirestore.instance.collection('meetings').add({
+        'title': getValueById(FieldsID.meetingTitle),
+        'description': getValueById(FieldsID.meetingDescription),
+        'order': getValueById(FieldsID.meetingOrder),
+        'note': getValueById(FieldsID.meetingNotes),
         'members': [model.members[0]],
         'schedule': model.fields
             .firstWhere((element) => element is MeetingAddMembersItem)
@@ -25,7 +25,7 @@ class CreateMeetingController {
       });
 
       await Future.wait(model.members.map((e) async {
-        var index = model.members.indexOf(e);
+        final index = model.members.indexOf(e);
         if (index >= 1) {
           await FirebaseFirestore.instance.collection('invitations').add({
             'user': model.members[index],

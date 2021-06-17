@@ -1,36 +1,34 @@
 import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/material.dart';
 
-/*
- * This is a animation for two widget.
- * It close the CLOSEWIDGET and land in the LANDINGWIDGET
- *
- * Example of use :
- * AnimatedSwitcher(
- *   child: selectedWidget,
- *   duration: Duration.zero,
- *   reverseDuration: Duration(milliseconds: 600),
- *   transitionBuilder: (child, animation) {
- *     return FadeTransition(
- *       opacity: Tween(begin: 1.0, end: 1.0).animate(animation),
- *       child: child,
- *     );
- *   },
- *   layoutBuilder: (currentChild, previousChildren) {
- *     if (currentChild != null && previousChildren.length > 0) {
- *       return CircularCloseAnimation(
- *         duration: Duration(milliseconds: 600),
- *         landingWidget: currentChild,
- *        closeWidget: previousChildren[0],
- *       );
- *    }
- *     return currentChild!;
- *   },
- * )
- */
-
+/// This is a animation for two widget.
+/// It close the CLOSEWIDGET and land in the LANDINGWIDGET
+///
+/// ```dart
+/// AnimatedSwitcher(
+///   child: selectedWidget,
+///   duration: Duration.zero,
+///   reverseDuration: Duration(milliseconds: 600),
+///   transitionBuilder: (child, animation) {
+///     return FadeTransition(
+///       opacity: Tween(begin: 1.0, end: 1.0).animate(animation),
+///       child: child,
+///     );
+///   },
+///   layoutBuilder: (currentChild, previousChildren) {
+///     if (currentChild != null && previousChildren.length > 0) {
+///       return CircularCloseAnimation(
+///         duration: Duration(milliseconds: 600),
+///         landingWidget: currentChild,
+///        closeWidget: previousChildren[0],
+///       );
+///    }
+///     return currentChild!;
+///   },
+/// )
+/// ```
 class CircularCloseAnimation extends StatefulWidget {
-  CircularCloseAnimation({
+  const CircularCloseAnimation({
     required this.closeWidget,
     required this.landingWidget,
     this.duration = const Duration(seconds: 1),
@@ -72,7 +70,7 @@ class _CircularCloseAnimationState extends State<CircularCloseAnimation>
     startAnimation();
   }
 
-  startAnimation() async {
+  Future startAnimation() async {
     if (animationController == null) return;
 
     await animationController!.forward();
@@ -93,7 +91,6 @@ class _CircularCloseAnimationState extends State<CircularCloseAnimation>
           children: [
             widget.landingWidget,
             CircularRevealAnimation(
-              child: widget.closeWidget,
               animation: CurvedAnimation(
                 parent: animationController!,
                 curve: Curves.easeInSine,
@@ -101,6 +98,7 @@ class _CircularCloseAnimationState extends State<CircularCloseAnimation>
               minRadius: 5,
               maxRadius: screenHeight,
               centerOffset: Offset(x, y),
+              child: widget.closeWidget,
             ),
           ],
         );

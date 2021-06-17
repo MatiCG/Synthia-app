@@ -6,23 +6,24 @@ import 'package:synthiapp/Widgets/build_avatar.dart';
 class InvitationTile extends StatefulWidget {
   final InvitationController controller;
 
-  InvitationTile({
+  const InvitationTile({
     required this.controller,
   }) : super();
 
   @override
-  _InvitationTileState createState() => _InvitationTileState(controller);
+  _InvitationTileState createState() => _InvitationTileState();
 }
 
 class _InvitationTileState extends State<InvitationTile> {
-  final InvitationController controller;
+  late InvitationController controller;
 
-  _InvitationTileState(this.controller);
+  _InvitationTileState();
 
   @override
   void initState() {
     super.initState();
 
+    controller = widget.controller;
     controller.initInvitationTile();
   }
 
@@ -31,21 +32,20 @@ class _InvitationTileState extends State<InvitationTile> {
     return Dismissible(
       confirmDismiss: (DismissDirection direction) async {
         if (direction == DismissDirection.endToStart) {
-          // TODO: Modify this dialog
-          return await showDialog(
+          return showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text("Confirm"),
-                content: const Text("DELETE THIS INVITATION ?"),
+                title: const Text('Suppression'),
+                content: const Text('Vous êtes sur le point de supprimer une invitation à rejoindre une réunion. Vous devrez demander une nouvelle invitation pour la rejoindre.'),
                 actions: <Widget>[
                   TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: const Text("DELETE")),
-                  TextButton(
                     onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text("CANCEL"),
+                    child: const Text("Annuler"),
                   ),
+                  TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: const Text('Continuer')),
                 ],
               );
             },
@@ -54,7 +54,7 @@ class _InvitationTileState extends State<InvitationTile> {
         return true;
       },
       onDismissed: (direction) {
-        DocumentSnapshot<Object?>? invitation =
+        final DocumentSnapshot<Object?>? invitation =
             controller.model.invitationSelected;
 
         if (invitation == null) return;
@@ -65,11 +65,32 @@ class _InvitationTileState extends State<InvitationTile> {
         }
 
         controller.model.removeCurrentInvitation();
-        if ((controller.model.invitations?.length ?? 0) <= 0) Navigator.pop(context);
+        if ((controller.model.invitations?.length ?? 0) <= 0) {
+          Navigator.pop(context);
+        }
       },
       key: ValueKey(controller.model.invitationSelected?.id ?? ''),
+      background: Container(
+        alignment: Alignment.centerLeft,
+        color: Colors.green,
+        child: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Icon(Icons.check, color: Colors.white),
+        ),
+      ),
+      secondaryBackground: Container(
+        alignment: Alignment.centerRight,
+        color: Colors.red,
+        child: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Icon(
+            Icons.delete_forever,
+            color: Colors.white,
+          ),
+        ),
+      ),
       child: ListTile(
-        leading: Container(
+        leading: SizedBox(
           height: 50,
           width: 50,
           child: BuildAvatar(
@@ -78,9 +99,9 @@ class _InvitationTileState extends State<InvitationTile> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(controller.model.meetingTitle, style: TextStyle(fontSize: 18)),
+            Text(controller.model.meetingTitle, style: const TextStyle(fontSize: 18)),
             Text(controller.model.invitationDate,
-                style: TextStyle(fontSize: 12)),
+                style: const TextStyle(fontSize: 12)),
           ],
         ),
         subtitle: Padding(
@@ -88,31 +109,12 @@ class _InvitationTileState extends State<InvitationTile> {
           child: Text.rich(TextSpan(children: [
             TextSpan(
                 text: controller.model.masterFullname,
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            TextSpan(text: ' vous à invité à une réunion. Elle aura lieu le '),
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+            const TextSpan(text: ' vous à invité à une réunion. Elle aura lieu le '),
             TextSpan(
                 text: controller.model.meetingDate,
-                style: TextStyle(fontWeight: FontWeight.bold)),
+                style: const TextStyle(fontWeight: FontWeight.bold)),
           ])),
-        ),
-      ),
-      background: Container(
-        alignment: Alignment.centerLeft,
-        color: Colors.green,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Icon(Icons.check, color: Colors.white),
-        ),
-      ),
-      secondaryBackground: Container(
-        alignment: Alignment.centerRight,
-        color: Colors.red,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Icon(
-            Icons.delete_forever,
-            color: Colors.white,
-          ),
         ),
       ),
     );

@@ -3,9 +3,9 @@ import 'package:synthiapp/Models/Authentification/login.dart';
 import 'package:synthiapp/config/config.dart';
 
 class LoginController {
-  LoginModel _model = LoginModel();
+  final LoginModel _model = LoginModel();
 
-  submit() {
+  void submit() {
     if (_model.formKey.currentState!.validate()) {
       user.signIn(
         email: _model.fields[0].controller.text,

@@ -8,7 +8,7 @@ class SynthiaAppBar extends StatelessWidget implements PreferredSizeWidget {
   final dynamic returnValue;
   final IconData closeIcon;
 
-  SynthiaAppBar({
+  const SynthiaAppBar({
     required this.title,
     this.returnValue,
     this.closeIcon = Icons.chevron_left,
@@ -23,19 +23,19 @@ class SynthiaAppBar extends StatelessWidget implements PreferredSizeWidget {
           width: 50,
         ),
       ],
-      leading: Container(
+      leading: SizedBox(
         width: 50,
         child: IconButton(
           icon: Icon(closeIcon),
           onPressed: () => Navigator.pop(context, returnValue),
         ),
       ),
-      title: Container(
+      title: SizedBox(
         width: double.infinity,
         child: Text(
           title,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 14,
           ),
         ),

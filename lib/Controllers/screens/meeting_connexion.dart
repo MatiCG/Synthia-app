@@ -6,7 +6,6 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'package:synthiapp/Models/screens/home.dart';
 //import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:synthiapp/Models/screens/meeting_connexion.dart';
-import 'package:synthiapp/config/config.dart';
 
 class MeetingConnexionController {
   final State<StatefulWidget> parent;

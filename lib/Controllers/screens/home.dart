@@ -13,6 +13,39 @@ class HomeController {
     getMeetingList();
   }
 
+  Future<void> deleteAccount() async {
+    final DocumentReference userRef = SynthiaFirebase().getUserReference();
+    final _firestore = FirebaseFirestore.instance;
+
+    final docs = (await _firestore
+            .collection('invitations')
+            .where('user', isEqualTo: userRef)
+            .get())
+        .docs;
+
+    // Delete every invitations
+    for (final document in docs) {
+      await _firestore.doc(document.reference.path).delete();
+    }
+    // Delete the users document
+    await _firestore.doc(userRef.path).delete();
+
+    final meetingDocs = (await _firestore
+            .collection('meetings')
+            .where('members', arrayContains: userRef)
+            .get())
+        .docs;
+
+    // Delete the user in every meeting that is participate
+    for (final document in meetingDocs) {
+      await _firestore.doc(document.reference.path).update({
+        'members': FieldValue.arrayRemove([userRef])
+      });
+    }
+    await user.data?.delete();
+    user.signOut();
+  }
+
   bool checkKeysExist(DocumentSnapshot document, List<String> keys) {
     bool notMissingOne = true;
     late Map<String, dynamic> data;
@@ -65,7 +98,14 @@ class HomeController {
     if (meetings != null) {
       await Future.wait(
         meetings.map((meeting) async {
-          if (checkKeysExist(meeting, ['title', 'description', 'members', 'resume', 'members', 'schedule'])) {
+          if (checkKeysExist(meeting, [
+            'title',
+            'description',
+            'members',
+            'resume',
+            'members',
+            'schedule'
+          ])) {
             final data = meeting.data()! as Map;
             final DocumentReference ref =
                 data['members'][0] as DocumentReference;
@@ -81,7 +121,10 @@ class HomeController {
               master: masterFullName,
             );
 
-            if (parent.mounted && model.meetings.where((element) => element.title == newMeeting.title).isEmpty) {
+            if (parent.mounted &&
+                model.meetings
+                    .where((element) => element.title == newMeeting.title)
+                    .isEmpty) {
               utils.updateView(parent, update: () {
                 model.addNewMeeting(newMeeting);
                 model.meetings.sort((a, b) => a.date.compareTo(b.date));
@@ -100,11 +143,19 @@ class HomeController {
     if (meetings != null) {
       await Future.wait(
         meetings.map((meeting) async {
-          if (checkKeysExist(meeting, ['title', 'description', 'members', 'resume', 'members', 'schedule'])) {
+          if (checkKeysExist(meeting, [
+            'title',
+            'description',
+            'members',
+            'resume',
+            'members',
+            'schedule'
+          ])) {
             final data = meeting.data()! as Map<String, dynamic>;
-            final DocumentReference ref = data['members'][0] as DocumentReference;
-            final String masterFullName = await _firebase.fetchUserRefDataByType(
-                ref, UserRefData.fullname);
+            final DocumentReference ref =
+                data['members'][0] as DocumentReference;
+            final String masterFullName = await _firebase
+                .fetchUserRefDataByType(ref, UserRefData.fullname);
             final Meeting newMeeting = Meeting(
               document: meeting.reference,
               title: data['title'] as String,
@@ -115,7 +166,10 @@ class HomeController {
               master: masterFullName,
             );
 
-            if (parent.mounted && model.meetings.where((element) => element.title == newMeeting.title).isEmpty) {
+            if (parent.mounted &&
+                model.meetings
+                    .where((element) => element.title == newMeeting.title)
+                    .isEmpty) {
               // ignore: invalid_use_of_protected_member
               parent.setState(() {
                 model.addNewMeeting(newMeeting);
@@ -185,6 +239,8 @@ class HomeController {
 
   /// Get the user's photo path
   String getUserPhotoPath() {
-    return user.data?.photoURL?.contains('https') == true ? 'assets/avatars/avatar_05.png' : user.data?.photoURL ?? 'assets/avatars/avatar_05.png';
+    return user.data?.photoURL?.contains('https') == true
+        ? 'assets/avatars/avatar_05.png'
+        : user.data?.photoURL ?? 'assets/avatars/avatar_05.png';
   }
 }

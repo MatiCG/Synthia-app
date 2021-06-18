@@ -65,10 +65,12 @@ class HomeHeader extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: SynthiaButton(
-                            text: 'Supprimer votre compte',
-                            textColor: Colors.red[900],
-                            onPressed: () {},
-                          ),
+                              text: 'Supprimer votre compte',
+                              textColor: Colors.red[900],
+                              onPressed: () async {
+                                await controller.deleteAccount();
+                                Navigator.pop(context);
+                              }),
                         ),
                       ],
                     ),

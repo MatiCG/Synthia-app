@@ -30,11 +30,19 @@ class MeetingConnexionModel {
   BluetoothDevice? synthiaHome;
   List<SynthiaStep> steps = [];
   int stepIndex = 0;
+  bool configurationEnded = false;
+  bool bleInitiated = false;
+
+  void endOfSteps() {
+    steps[stepIndex].status = StepStatus.done;
+    configurationEnded = true;
+  }
 
   void nextStep() {
+    if (stepIndex >= steps.length) return;
     steps[stepIndex].status = StepStatus.done;
-    stepIndex++;
-    if (stepIndex + 1 <= steps.length) {
+    if (stepIndex + 1 < steps.length) {
+      stepIndex++;
       steps[stepIndex].status = StepStatus.progress;
       if (steps[stepIndex].action != null) steps[stepIndex].action!();
     }

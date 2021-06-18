@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:synthiapp/Controllers/screens/detail_meeting.dart';
+import 'package:synthiapp/Views/Screens/meeting_connexion.dart';
 import 'package:synthiapp/Views/creation_meeting/handle_members.dart';
 import 'package:synthiapp/Widgets/add_members.dart';
 import 'package:synthiapp/Widgets/button.dart';
 import 'package:synthiapp/Widgets/list_members.dart';
+import 'package:synthiapp/config/config.dart';
 
 class DetailMeetingProgress extends StatefulWidget {
   final DetailMeetingController controller;
@@ -95,9 +97,10 @@ class _DetailMeetingProgressState extends State<DetailMeetingProgress> {
             alignment: Alignment.bottomCenter,
             child: SynthiaButton(
               text: 'Commencer',
+              enable: widget.controller.isTodaysDate(),
               color: Theme.of(context).accentColor,
               textColor: Theme.of(context).primaryColor,
-              onPressed: () {},
+              onPressed: () => utils.pushScreen(context, MeetingConnexion(meeting: widget.controller.meeting,)),
             ),
           ),
         ],

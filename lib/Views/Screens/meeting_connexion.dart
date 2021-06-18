@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Controllers/screens/meeting_connexion.dart';
+import 'package:synthiapp/Models/screens/home.dart';
 import 'package:synthiapp/Models/screens/meeting_connexion.dart';
 import 'package:synthiapp/Widgets/app_bar.dart';
 import 'package:synthiapp/Widgets/button.dart';
 import 'package:synthiapp/config/config.dart';
 
 class MeetingConnexion extends StatefulWidget {
-  const MeetingConnexion() : super();
+  final Meeting meeting;
+
+  const MeetingConnexion({required this.meeting}) : super();
 
   @override
   _MeetingConnexionState createState() => _MeetingConnexionState();
@@ -19,7 +22,7 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
   void initState() {
     super.initState();
 
-    _controller = MeetingConnexionController(this);
+    _controller = MeetingConnexionController(this, widget.meeting);
   }
 
   @override
@@ -40,8 +43,9 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
             shrinkWrap: true,
             itemCount: steps.length,
             itemBuilder: (context, index) {
-              if (index == 0) {
+              if (index == 0 && !_controller!.model.bleInitiated) {
                 steps[index].action!();
+                _controller!.model.bleInitiated = true;
               }
               return StepText(
                   title: steps[index].title, status: steps[index].status);
@@ -64,16 +68,19 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
               text: 'Recommencer',
               textColor: Theme.of(context).primaryColor,
               color: Colors.red,
-              onPressed: () => utils.pushReplacementScreen(
-                  context, const MeetingConnexion()),
+              onPressed: () {
+                _controller!.model.bleInitiated = false;
+                utils.pushReplacementScreen(
+                  context, MeetingConnexion(meeting: widget.meeting));
+              },
             ),
           if (!_controller!.model.currentStep.onError)
             SynthiaButton(
               text: 'Commencer',
               textColor: Theme.of(context).primaryColor,
               color: Theme.of(context).accentColor,
-              enable: false,
-              onPressed: () {},
+              enable: _controller?.model.configurationEnded ?? false,
+              onPressed: () => _controller!.startMeeting(),
             ),
         ],
       ),

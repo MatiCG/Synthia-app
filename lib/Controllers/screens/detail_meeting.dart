@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Models/screens/home.dart';
 
@@ -14,8 +15,21 @@ class DetailMeetingController {
 
   DetailMeetingController({required this.parent, required this.meeting});
 
+  /// Check if the date of the meeting match with the current date
+  bool isTodaysDate() {
+    final date = DateTime.now();
+    final meetingDate = meeting.date.toDate();
+
+    if (DateFormat('yyyy-MM-dd').format(date) ==
+        DateFormat('yyyy-MM-dd').format(meetingDate)) {
+      return true;
+    }
+    return false;
+  }
+
   Future<PageStatus> getPageStatus() async {
-    final data = await FirebaseFirestore.instance.doc(meeting.document.path).get();
+    final data =
+        await FirebaseFirestore.instance.doc(meeting.document.path).get();
 
     if (SynthiaFirebase().checkSnapshotDocument(data, keys: ['resume'])) {
       if (((data.data()!)['resume'] as String).isNotEmpty) {

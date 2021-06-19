@@ -28,9 +28,11 @@ class _DetailMeetingCompletedState extends State<DetailMeetingCompleted> {
       body: SafeArea(
         child: Wrap(
           children: [
-            meetingText(widget.controller.meeting.title, 30, 20.0, 0.0, bold: true),
+            meetingText(widget.controller.meeting.title, 30, 20.0, 0.0,
+                bold: true),
             meetingHandleChips(),
-            meetingText('Voici votre compte-rendu:', 16, 20.0, 15.0, bold: true),
+            meetingText('Voici votre compte-rendu:', 16, 20.0, 15.0,
+                bold: true),
             Align(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -50,7 +52,10 @@ class _DetailMeetingCompletedState extends State<DetailMeetingCompleted> {
           text: 'Télécharger',
           color: Theme.of(context).accentColor,
           textColor: Theme.of(context).primaryColor,
-          onPressed: () {},
+          onPressed: () {
+            widget.controller.createPDF(widget.controller.meeting.resume,
+                widget.controller.meeting.title);
+          },
         ),
       ),
     );

@@ -36,7 +36,19 @@ class _InvitationsPageState extends State<InvitationsPage> {
       body: SynthiaList(
         itemCount: controller!.model.invitations?.length ?? 0,
         itemBuilder: (index) {
-          return InvitationTile(controller: controller!);
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              color: Colors.white,
+              elevation: 6,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: InvitationTile(
+                controller: controller!,
+              ),
+            ),
+          );
         },
       ),
     );

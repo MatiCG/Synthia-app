@@ -45,7 +45,7 @@ class SynthiaGridBox extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20.0),
-                color: Colors.orange.shade700,
+                color: Colors.orange.shade800,
               ),
               height: MediaQuery.of(context).size.width * 0.2,
               width: double.infinity,

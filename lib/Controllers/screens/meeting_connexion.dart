@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert' show utf8;
 import 'dart:developer';
 import 'dart:typed_data';
@@ -194,16 +195,21 @@ class MeetingConnexionController {
           .setError("L'appareil synthia n'est pas disponible..."));
     }
     try {
-      await model.synthiaHome!.connect().onError((error, stackTrace) {
-        log('errors: $error stack: $stackTrace');
-        _update(() => model.currentStep.setError("$error"));
-      });
+      await model.synthiaHome!.connect(timeout: const Duration(minutes: 1));
       _update(() => model.nextStep());
       log('device connected');
+    } on TimeoutException {
+      log('Timeout when connect to the device');
+      _update(() => model.currentStep.setError(
+          "Une erreur c'est produite lors de la connnexion à l'appareil."));
+    } on Exception {
+      log('Timeout when connect to the device');
+      _update(() => model.currentStep.setError(
+          "Une erreur c'est produite lors de la connnexion à l'appareil."));
     } catch (error) {
       log('An error occured when connect to the new device');
       _update(() => model.currentStep.setError(
-          "Une erreur c'est produite lors de la connnexion à l'appareil. "));
+          "Une erreur c'est produite lors de la connnexion à l'appareil."));
     }
     /*
     await Future.delayed(const Duration(seconds: 2)).then((value) async {
@@ -241,6 +247,7 @@ class MeetingConnexionController {
       }
     }
     log('sended');
+    _update(() => model.meetingStarted = true);
   }
 
   Future _configuration() async {
@@ -252,8 +259,7 @@ class MeetingConnexionController {
       final servChar = service.characteristics;
 
       for (final element in servChar) {
-        final message =
-            Uint8List.fromList(utf8.encode('CONFIG ${meeting.document.id}'));
+        final message = Uint8List.fromList(utf8.encode('CONFIGURATION ENDED'));
         element.write(message, withoutResponse: true);
       }
     }

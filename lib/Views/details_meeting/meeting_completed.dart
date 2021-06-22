@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:synthiapp/Classes/right.dart';
 import 'package:synthiapp/Controllers/screens/detail_meeting.dart';
 import 'package:synthiapp/Widgets/button.dart';
 import 'package:synthiapp/Widgets/chip.dart';
+import 'package:synthiapp/config/config.dart';
 
 class DetailMeetingCompleted extends StatefulWidget {
   final DetailMeetingController controller;
+  final String? resume;
 
   const DetailMeetingCompleted({
     required this.controller,
+    this.resume,
   }) : super();
 
   @override
@@ -28,14 +32,16 @@ class _DetailMeetingCompletedState extends State<DetailMeetingCompleted> {
       body: SafeArea(
         child: Wrap(
           children: [
-            meetingText(widget.controller.meeting.title, 30, 20.0, 0.0, bold: true),
+            meetingText(widget.controller.meeting.title, 30, 20.0, 0.0,
+                bold: true),
             meetingHandleChips(),
-            meetingText('Voici votre compte-rendu:', 16, 20.0, 15.0, bold: true),
+            meetingText('Voici votre compte-rendu:', 16, 20.0, 15.0,
+                bold: true),
             Align(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  widget.controller.meeting.resume,
+                  widget.resume ?? widget.controller.meeting.resume,
                   textAlign: TextAlign.justify,
                   style: _textStyle(12, false),
                 ),
@@ -50,7 +56,7 @@ class _DetailMeetingCompletedState extends State<DetailMeetingCompleted> {
           text: 'Télécharger',
           color: Theme.of(context).accentColor,
           textColor: Theme.of(context).primaryColor,
-          onPressed: () {},
+          onPressed: () => widget.controller.downloadCR(),
         ),
       ),
     );
@@ -58,16 +64,16 @@ class _DetailMeetingCompletedState extends State<DetailMeetingCompleted> {
 
   Widget meetingHandleChips() {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 15),
+        padding: const EdgeInsets.symmetric(vertical: 15),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            SynthiaChip(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const SynthiaChip(
               text: 'Terminée',
             ),
             SynthiaChip(
               text: 'Compte-rendu envoyé par email',
-              display: false,
+              display: user.hasRight(RightID.reportSendEmail),
             ),
           ],
         ));

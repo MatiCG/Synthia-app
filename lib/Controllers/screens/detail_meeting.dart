@@ -15,6 +15,9 @@ class DetailMeetingController {
 
   DetailMeetingController({required this.parent, required this.meeting});
 
+  /// Create and Download the CR.
+  void downloadCR() {}
+
   /// Check if the date of the meeting match with the current date
   bool isTodaysDate() {
     final date = DateTime.now();
@@ -27,7 +30,27 @@ class DetailMeetingController {
     return false;
   }
 
-  Future<PageStatus> getPageStatus() async {
+  String? getResumeFromSnapshot(Object data) {
+    if (data is DocumentSnapshot<Map<String, dynamic>> &&
+        SynthiaFirebase().checkSnapshotDocument(data, keys: ['resume'])) {
+      final String resume = data.data()!['resume'] as String;
+
+      if (resume.isNotEmpty) {
+        return resume;
+      }
+    }
+    return null;
+  }
+
+  PageStatus getPageStatus(Object data) {
+    if (data is DocumentSnapshot<Map<String, dynamic>> &&
+        SynthiaFirebase().checkSnapshotDocument(data, keys: ['resume'])) {
+      if ((data.data()!['resume'] as String).isNotEmpty) {
+        return PageStatus.completed;
+      }
+    }
+    return PageStatus.progress;
+    /*
     final data =
         await FirebaseFirestore.instance.doc(meeting.document.path).get();
 
@@ -37,6 +60,7 @@ class DetailMeetingController {
       }
     }
     return PageStatus.progress;
+    */
   }
 }
 /*

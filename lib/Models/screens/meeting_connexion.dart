@@ -31,6 +31,7 @@ class MeetingConnexionModel {
   List<SynthiaStep> steps = [];
   int stepIndex = 0;
   bool configurationEnded = false;
+  bool meetingStarted = false;
   bool bleInitiated = false;
 
   void endOfSteps() {

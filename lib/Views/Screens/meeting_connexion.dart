@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Controllers/screens/meeting_connexion.dart';
 import 'package:synthiapp/Models/screens/home.dart';
 import 'package:synthiapp/Models/screens/meeting_connexion.dart';
@@ -23,6 +24,17 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
     super.initState();
 
     _controller = MeetingConnexionController(this, widget.meeting);
+    SynthiaFirebase()
+        .fetchReportResumeStream(widget.meeting.document)
+        .listen((event) {
+      if (_controller!.model.meetingStarted) {
+        if (SynthiaFirebase().checkSnapshotDocument(event, keys: ['resume'])) {
+          if ((event.data()!['resume'] as String).isNotEmpty) {
+            Navigator.pop(context);
+          }
+        }
+      }
+    });
   }
 
   @override
@@ -38,19 +50,34 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
       backgroundColor: Theme.of(context).primaryColor,
       body: Column(
         children: [
-          ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: steps.length,
-            itemBuilder: (context, index) {
-              if (index == 0 && !_controller!.model.bleInitiated) {
-                steps[index].action!();
-                _controller!.model.bleInitiated = true;
-              }
-              return StepText(
-                  title: steps[index].title, status: steps[index].status);
-            },
-          ),
+          if (_controller!.model.meetingStarted)
+            const Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Enregistrement de la réunion en cours ....',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontSize: 40,
+                  ),
+                ),
+              ),
+            ),
+          if (!_controller!.model.meetingStarted)
+            ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: steps.length,
+              itemBuilder: (context, index) {
+                if (index == 0 && !_controller!.model.bleInitiated) {
+                  steps[index].action!();
+                  _controller!.model.bleInitiated = true;
+                }
+                return StepText(
+                    title: steps[index].title, status: steps[index].status);
+              },
+            ),
           Flexible(
             child: Container(
               alignment: Alignment.center,
@@ -71,10 +98,11 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
               onPressed: () {
                 _controller!.model.bleInitiated = false;
                 utils.pushReplacementScreen(
-                  context, MeetingConnexion(meeting: widget.meeting));
+                    context, MeetingConnexion(meeting: widget.meeting));
               },
             ),
-          if (!_controller!.model.currentStep.onError)
+          if (!_controller!.model.currentStep.onError &&
+              !_controller!.model.meetingStarted)
             SynthiaButton(
               text: 'Commencer',
               textColor: Theme.of(context).primaryColor,

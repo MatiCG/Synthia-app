@@ -29,7 +29,6 @@ extension UserRefExt on UserRefData {
 class SynthiaFirebase {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-
   /// Send a invitation to the [targetUser].
   /// Must give the [master] and the [meeting] reference
   Future sendInvitation({
@@ -37,14 +36,12 @@ class SynthiaFirebase {
     required DocumentReference masterRef,
     required DocumentReference meetingRef,
   }) async {
-    await FirebaseFirestore.instance
-      .collection('invitations')
-      .add({
-        'user': targetRef,
-        'master': masterRef,
-        'meeting': meetingRef,
-        'timestamp': Timestamp.now(),
-      });
+    await FirebaseFirestore.instance.collection('invitations').add({
+      'user': targetRef,
+      'master': masterRef,
+      'meeting': meetingRef,
+      'timestamp': Timestamp.now(),
+    });
   }
 
   /// Fetch all the invitations of the [userRef] for the [meetingRef]
@@ -154,6 +151,10 @@ class SynthiaFirebase {
 
   DocumentReference getUserReference() {
     return _firestore.collection('users').doc(user.uid);
+  }
+
+  Stream<DocumentSnapshot<Map<String, dynamic>>> fetchReportResumeStream(DocumentReference meeting) {
+    return _firestore.doc(meeting.path).snapshots(includeMetadataChanges: true);
   }
 
   Stream<QuerySnapshot> fetchStreamMeetings() {

@@ -16,7 +16,7 @@ class SettingsNotificationItem {
     required this.subtitle,
     required this.onValueChange,
   }) {
-    value = user.hasRight(id.asString);
+    value = user.hasRight(id);
   }
 
   set switchValue(bool newValue) => value = newValue;

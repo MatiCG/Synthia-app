@@ -11,10 +11,15 @@ import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Widgets/textfield.dart';
 import 'package:synthiapp/config/config.dart';
 
-//import 'package:firebase_auth/firebase_auth-1.1.0/lib/src/user.dart';
+enum UserState {
+  connected,
+  disconnected,
+}
+
 class SynthiaUser {
   // Set all the rights of the user
   StreamController<String> _rightsController = StreamController<String>();
+  final StreamController<UserState> _userState = StreamController<UserState>();
   List<Right> _rights = [];
   // Create firebase auth instance
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -23,11 +28,17 @@ class SynthiaUser {
   SynthiaUser() {
     _auth.authStateChanges().listen((user) {
       if (user == null) {
+        authFlag = false;
+        _userState.add(UserState.disconnected);
         _rightsController.close();
         _rights = [];
         _rightsController = StreamController<String>();
       }
-      if (user != null) fetchUserRights();
+      if (user != null) {
+        if (!authFlag) _userState.add(UserState.connected);
+        authFlag = true;
+        fetchUserRights();
+      }
     });
   }
 
@@ -46,7 +57,8 @@ class SynthiaUser {
   }
 
   /// Sign in the user into firebase. Email/Password
-  Future signIn({required final String email, required final String password}) async {
+  Future signIn(
+      {required final String email, required final String password}) async {
     try {
       await _auth.signInWithEmailAndPassword(
         email: email,
@@ -106,11 +118,11 @@ class SynthiaUser {
   }
 
   /// Check if the user has the [right]
-  bool hasRight(String givenRight) {
+  bool hasRight(RightID givenRight) {
     bool exist = false;
 
     for (final right in _rights) {
-      if (right.id == givenRight) {
+      if (right.id == givenRight.asString) {
         exist = true;
       }
     }
@@ -118,7 +130,7 @@ class SynthiaUser {
   }
 
   /// Retrieve the stream of the user auth status
-  Stream get stream => _auth.authStateChanges();
+  Stream get stream => _userState.stream;
 
   /// Sign out user
   void signOut() {

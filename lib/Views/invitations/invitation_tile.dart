@@ -71,28 +71,8 @@ class _InvitationTileState extends State<InvitationTile> {
         }
       },
       key: ValueKey(controller.model.invitationSelected?.id ?? ''),
-      background: Container(
-          padding: const EdgeInsets.only(left: 15),
-          decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              color: Colors.green),
-          alignment: Alignment.centerLeft,
-          child: const Text("Accepter l'invitation",
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                  color: Colors.white))),
-      secondaryBackground: Container(
-          padding: const EdgeInsets.only(right: 15),
-          decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              color: Colors.red),
-          alignment: Alignment.centerRight,
-          child: const Text("Supprimer l'invitation",
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                  color: Colors.white))),
+      background: _slideLeft(),
+      secondaryBackground: _slideRight(),
       child: ListTile(
         contentPadding: const EdgeInsets.all(8.0),
         leading: SizedBox(
@@ -132,5 +112,33 @@ class _InvitationTileState extends State<InvitationTile> {
         ),
       ),
     );
+  }
+
+  Container _slideRight() {
+    return Container(
+        padding: const EdgeInsets.only(right: 15),
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            color: Colors.red),
+        alignment: Alignment.centerRight,
+        child: const Text("Supprimer l'invitation",
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: Colors.white)));
+  }
+
+  Container _slideLeft() {
+    return Container(
+        padding: const EdgeInsets.only(left: 15),
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            color: Colors.green),
+        alignment: Alignment.centerLeft,
+        child: const Text("Accepter l'invitation",
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: Colors.white)));
   }
 }

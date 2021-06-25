@@ -46,7 +46,7 @@ class _AuthControllerState extends State<AuthController> {
 
         if (selectedWidget is! Root && selectedWidget is! SplashScreen) {
           return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 5000),
+            duration: const Duration(milliseconds: 500),
             transitionBuilder: (child, animation) {
               return FadeTransition(
                 opacity: Tween(begin: 1.0, end: 1.0).animate(animation),
@@ -60,7 +60,7 @@ class _AuthControllerState extends State<AuthController> {
           );
         } else {
           return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 5000),
+            duration: const Duration(milliseconds: 500),
             transitionBuilder: (child, animation) {
               return FadeTransition(
                 opacity: Tween(begin: 1.0, end: 1.0).animate(animation),

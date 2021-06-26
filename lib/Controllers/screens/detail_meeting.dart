@@ -3,6 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Models/screens/home.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:synthiapp/WebMobileFunction/mobile/save_and_launch_file.dart'
+    if (dart.library.html) 'package:synthiapp/WebMobileFunction/web/save_and_launch_file.dart';
 
 enum PageStatus {
   progress,
@@ -14,9 +17,6 @@ class DetailMeetingController {
   final Meeting meeting;
 
   DetailMeetingController({required this.parent, required this.meeting});
-
-  /// Create and Download the CR.
-  void downloadCR() {}
 
   /// Check if the date of the meeting match with the current date
   bool isTodaysDate() {
@@ -62,66 +62,43 @@ class DetailMeetingController {
     return PageStatus.progress;
     */
   }
-}
-/*
-class DetailMeetingController {
-  final String meetingId;
-  final State<StatefulWidget> parent;
-  final DetailMeetingModel model = DetailMeetingModel();
 
-  DetailMeetingController(this.parent, this.meetingId) {
-    getMeeting();
-  }
+  Future<void> createPDF(String content, String title) async {
+    final PdfDocument document = PdfDocument();
+    final PdfPage page = document.pages.add();
 
-  Future getMeeting() async {
-    final SynthiaFirebase _firebase = SynthiaFirebase();
-    final DocumentSnapshot? meeting = await _firebase.fetchMeetingById(meetingId);
+    final PdfFont fontTitle = PdfStandardFont(PdfFontFamily.timesRoman, 30);
 
-    if (meeting != null) {
-      if (checkKeysExist(meeting,
-          ['title', 'members', 'schedule', 'order', 'description', 'note'])) {
-        final data = meeting.data()! as Map<String, dynamic>;
-        final List<dynamic> members = data['members'] as List;
-        final List<String> membersName = [];
+    final PdfTextElement titleElement =
+        PdfTextElement(text: title, font: fontTitle);
 
-        for (final member in members as List<DocumentReference>) {
-          final String memberName = await _firebase.fetchUserRefDataByType(
-              member, UserRefData.fullname);
-          membersName.add(memberName);
-        }
-        if (parent.mounted) {
-          utils.updateView(parent, update: () {
-            model.setMembers = membersName;
-            model.setTitle = data['title'] as String;
-            model.setDescription = data['description'] as String;
-            model.setOrder = data['order'] as String;
-            model.setNote = data['note'] as String;
-            model.setResume = data['resume'] as String;
-            model.setKeywords = data['keywords'] as String;
-            model.setDate = data['schedule'] as Timestamp;
-          });
-        }
-      }
-    }
-  }
+    final PdfLayoutFormat layoutFormat = PdfLayoutFormat(
+        layoutType: PdfLayoutType.paginate,
+        breakType: PdfLayoutBreakType.fitPage);
 
-  bool checkKeysExist(DocumentSnapshot document, List<String> keys) {
-    bool notMissingOne = true;
-    Map<String, dynamic> data;
+    final Size size = fontTitle.measureString(title);
 
-    if (document.data() == null) return false;
-    data = document.data()! as Map<String, dynamic>;
-    for (final key in keys) {
-      if (!data.containsKey(key)) {
-        notMissingOne = false;
-      }
-    }
-    return notMissingOne;
-  }
+    final PdfLayoutResult result = titleElement.draw(
+        page: page,
+        bounds: Rect.fromLTWH(
+            (page.getClientSize().width / 2) - (size.width / 2),
+            0,
+            page.getClientSize().width,
+            page.getClientSize().height),
+        format: layoutFormat)!;
 
-  bool isMeetingComplete() {
-    if (model.resume != '' || model.keywords != '') return true;
-    return false;
+    final PdfTextElement contentElement = PdfTextElement(
+        text: content, font: PdfStandardFont(PdfFontFamily.timesRoman, 12));
+
+    contentElement.draw(
+        page: page,
+        bounds: Rect.fromLTWH(0, result.bounds.bottom + 10,
+            page.getClientSize().width, page.getClientSize().height),
+        format: layoutFormat);
+
+    final List<int> bytes = document.save();
+    document.dispose();
+
+    saveAndLaunchFile(bytes, '$title.pdf');
   }
 }
-*/

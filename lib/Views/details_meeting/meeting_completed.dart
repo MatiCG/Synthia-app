@@ -56,7 +56,10 @@ class _DetailMeetingCompletedState extends State<DetailMeetingCompleted> {
           text: 'Télécharger',
           color: Theme.of(context).accentColor,
           textColor: Theme.of(context).primaryColor,
-          onPressed: () => widget.controller.downloadCR(),
+          onPressed: () {
+            widget.controller.createPDF(widget.controller.meeting.resume,
+                widget.controller.meeting.title);
+          },
         ),
       ),
     );

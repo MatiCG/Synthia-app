@@ -37,7 +37,8 @@ class _InvitationTileState extends State<InvitationTile> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: const Text('Suppression'),
-                content: const Text('Vous êtes sur le point de supprimer une invitation à rejoindre une réunion. Vous devrez demander une nouvelle invitation pour la rejoindre.'),
+                content: const Text(
+                    'Vous êtes sur le point de supprimer une invitation. La supression est définitive'),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(false),
@@ -70,26 +71,10 @@ class _InvitationTileState extends State<InvitationTile> {
         }
       },
       key: ValueKey(controller.model.invitationSelected?.id ?? ''),
-      background: Container(
-        alignment: Alignment.centerLeft,
-        color: Colors.green,
-        child: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Icon(Icons.check, color: Colors.white),
-        ),
-      ),
-      secondaryBackground: Container(
-        alignment: Alignment.centerRight,
-        color: Colors.red,
-        child: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Icon(
-            Icons.delete_forever,
-            color: Colors.white,
-          ),
-        ),
-      ),
+      background: _slideLeft(),
+      secondaryBackground: _slideRight(),
       child: ListTile(
+        contentPadding: const EdgeInsets.all(8.0),
         leading: SizedBox(
           height: 50,
           width: 50,
@@ -99,9 +84,17 @@ class _InvitationTileState extends State<InvitationTile> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(controller.model.meetingTitle, style: const TextStyle(fontSize: 18)),
-            Text(controller.model.invitationDate,
-                style: const TextStyle(fontSize: 12)),
+            Flexible(
+              child: Text(
+                controller.model.meetingTitle,
+                style: const TextStyle(fontSize: 18),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Flexible(
+              child: Text(controller.model.invitationDate,
+                  style: const TextStyle(fontSize: 12)),
+            ),
           ],
         ),
         subtitle: Padding(
@@ -110,7 +103,8 @@ class _InvitationTileState extends State<InvitationTile> {
             TextSpan(
                 text: controller.model.masterFullname,
                 style: const TextStyle(fontWeight: FontWeight.bold)),
-            const TextSpan(text: ' vous à invité à une réunion. Elle aura lieu le '),
+            const TextSpan(
+                text: ' vous à invité à une réunion. Elle aura lieu le '),
             TextSpan(
                 text: controller.model.meetingDate,
                 style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -118,5 +112,33 @@ class _InvitationTileState extends State<InvitationTile> {
         ),
       ),
     );
+  }
+
+  Container _slideRight() {
+    return Container(
+        padding: const EdgeInsets.only(right: 15),
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            color: Colors.red),
+        alignment: Alignment.centerRight,
+        child: const Text("Supprimer l'invitation",
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: Colors.white)));
+  }
+
+  Container _slideLeft() {
+    return Container(
+        padding: const EdgeInsets.only(left: 15),
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            color: Colors.green),
+        alignment: Alignment.centerLeft,
+        child: const Text("Accepter l'invitation",
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: Colors.white)));
   }
 }

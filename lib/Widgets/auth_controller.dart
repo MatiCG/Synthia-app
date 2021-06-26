@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Animations/circular_close.dart';
+import 'package:synthiapp/Classes/user.dart';
 import 'package:synthiapp/Views/root.dart';
 import 'package:synthiapp/config/config.dart';
 import '../Views/Authentification/home_auth.dart';
@@ -15,7 +16,6 @@ class AuthController extends StatefulWidget {
 }
 
 class _AuthControllerState extends State<AuthController> {
-
   @override
   void initState() {
     super.initState();
@@ -35,7 +35,7 @@ class _AuthControllerState extends State<AuthController> {
       stream: user.stream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
-          if (snapshot.data != null) {
+          if (snapshot.data == UserState.connected) {
             selectedWidget = const Root();
           } else {
             selectedWidget = const HomeAuthScreen();

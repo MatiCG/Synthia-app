@@ -18,6 +18,8 @@ class Meeting {
     required this.master,
     required this.document,
   });
+
+  set resume(String resume) => this.resume = resume;
 }
 
 class HomeModel {

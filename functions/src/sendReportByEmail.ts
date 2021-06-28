@@ -2,7 +2,7 @@ import * as functions from "firebase-functions";
 import * as firebase from "@google-cloud/firestore";
 import * as nodemailer from "nodemailer";
 import * as dotenv from "dotenv";
-import {db} from "./index";
+import {cfAdm} from "./config";
 
 dotenv.config();
 
@@ -23,6 +23,8 @@ functions.firestore.document("meetings/{id}")
       const before = change.before.data();
       const data = change.after.data();
 
+      console.log("SEND FUNCTION CALLED");
+
       if (before.reportUrl != undefined && before.reportUrl != "") {
         console.log("Not sending report !");
         return;
@@ -31,16 +33,16 @@ functions.firestore.document("meetings/{id}")
         console.log("Not sending report !");
         return;
       }
-
       const members: firebase.DocumentReference[] = data.members;
       members.forEach(async (member: firebase.DocumentReference) => {
-        const userData = await db.doc(member.path).get();
+        const userData = await cfAdm.firestore().doc(member.path).get();
         const userRights: firebase.DocumentReference[] =
         userData.data()?.rights;
 
         if (userRights != undefined) {
           userRights.forEach(async (right: firebase.DocumentReference) => {
-            const rightData = (await db.doc(right.path).get()).data();
+            const rightData =
+            (await cfAdm.firestore().doc(right.path).get()).data();
 
             if (rightData != undefined &&
               rightData.title == "report_send_email") {

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:synthiapp/Controllers/screens/home.dart';
 import 'package:synthiapp/Widgets/button.dart';
 import 'package:synthiapp/Widgets/header_section.dart';
+import 'package:synthiapp/Widgets/textfield.dart';
 import 'package:synthiapp/config/config.dart';
 
 /// HomeHeader is the first section on the HomePage.
@@ -68,7 +69,57 @@ class HomeHeader extends StatelessWidget {
                               text: 'Supprimer votre compte',
                               textColor: Colors.red[900],
                               onPressed: () async {
-                                await controller.deleteAccount();
+                                await showDialog(
+                                  useRootNavigator: false,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    final userEmail = user.data?.email;
+                                    final textFieldItem =
+                                        SynthiaTextFieldItem(
+                                      title: 'Mot de passe',
+                                      type: types.password,
+                                    );
+                                    if (userEmail == null) {
+                                      Navigator.pop(context, false);
+                                    }
+                                    return Center(
+                                      child: AlertDialog(
+                                        title: const Text('Confirmer'),
+                                        content: Column(
+                                          children: [
+                                            const Text(
+                                                'Veuillez entrer votre mot de passe pour confirmer cette action'),
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 32.0),
+                                              child: SynthiaTextField(
+                                                field: textFieldItem,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context)
+                                                    .pop(false),
+                                            child: const Text('Annuler'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              user.signIn(
+                                                email: userEmail!,
+                                                password: textFieldItem
+                                                    .controller.text,
+                                              );
+                                              await controller.deleteAccount();
+                                              Navigator.of(context).pop(false);
+                                            },
+                                            child: const Text('Confirmer'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  });
                                 Navigator.pop(context);
                               }),
                         ),

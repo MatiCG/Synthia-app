@@ -37,6 +37,7 @@ class SynthiaTextFieldItem {
 
   set setTrailing(Widget? widget) => trailing = widget;
   Widget? get setTrailing => trailing;
+  TextEditingController get textController => controller;
 }
 
 class SynthiaTextField extends StatefulWidget {
@@ -77,15 +78,12 @@ class _SynthiaTextFieldState extends State<SynthiaTextField> {
     final Widget? iconPassword = widget.field.type != types.password
         ? null
         : IconButton(
-            icon: Icon(
-              hidePasswordIcon,
-              color: Theme.of(context).accentColor),
+            icon: Icon(hidePasswordIcon, color: Theme.of(context).accentColor),
             onPressed: () {
               setState(() {
                 isPassword = !isPassword;
-                hidePasswordIcon = isPassword
-                  ? Icons.visibility
-                  : Icons.visibility_off;
+                hidePasswordIcon =
+                    isPassword ? Icons.visibility : Icons.visibility_off;
               });
             },
           );
@@ -154,7 +152,9 @@ class _SynthiaTextFieldState extends State<SynthiaTextField> {
             }
           },
         ),
-        if (widget.field.type == types.password && widget.field.passwordSubtitle) buildSubtitle(context)
+        if (widget.field.type == types.password &&
+            widget.field.passwordSubtitle)
+          buildSubtitle(context)
       ],
     );
   }

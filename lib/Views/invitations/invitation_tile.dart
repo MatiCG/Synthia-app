@@ -42,7 +42,7 @@ class _InvitationTileState extends State<InvitationTile> {
                 actions: <Widget>[
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text("Annuler"),
+                    child: const Text('Annuler'),
                   ),
                   TextButton(
                       onPressed: () => Navigator.of(context).pop(true),

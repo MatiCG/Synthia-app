@@ -22,14 +22,6 @@ class SettingsReportModel {
         id: RightID.reportSendEmail,
         onValueChange: (id, newValue) => callback(id: id, value: newValue),
       ),
-      SettingsNotificationItem(
-        title: 'Format du fichier',
-        subtitle:
-            'Choisissez le format du fichier. Ce format sera utilisé pour le téléchargement et l’envoie du compte-rendu',
-        id: RightID.reportPdfFile,
-        onValueChange: (id, newValue) => callback(id: id, value: newValue),
-        //parent: parent,
-      ),
     ]);
   }
 }

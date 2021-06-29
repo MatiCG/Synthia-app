@@ -1,58 +1,76 @@
 import 'package:flutter/material.dart';
-import 'package:synthiaapp/Controllers/root.dart';
-import 'package:ff_navigation_bar/ff_navigation_bar.dart';
-import 'package:synthiaapp/Widgets/notifications.dart';
-import 'package:synthiaapp/config.dart';
+import 'package:synthiapp/Animations/screen_transition.dart';
+import 'package:synthiapp/Controllers/root.dart';
+import 'package:synthiapp/Views/Screens/creation_meeting.dart';
+import 'package:synthiapp/Widgets/nav_item.dart';
+import 'package:synthiapp/config/config.dart';
 
-class RootPage extends StatefulWidget {
-  RootPage() : super();
-
-  _RootPageState createState() => _RootPageState();
-}
-
-class _RootPageState extends State<RootPage> {
-  static RootController _controller;
+class Root extends StatefulWidget {
+  const Root() : super();
 
   @override
-  void initState() {
-    super.initState();
-    _controller = RootController();
+  _RootState createState() => _RootState();
+}
 
-    PushNotificationsHandler().init();
-  }
+class _RootState extends State<Root> {
+  final RootController _controller = RootController();
+  int selectedPage = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _controller.getPages()[_controller.model.pageIndex],
-      bottomNavigationBar: buildFfNavigationBar(context),
+      extendBody: true,
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Theme.of(context).primaryColor,
+      body: _controller.model.pages[selectedPage]['page'] as Widget,
+      floatingActionButton: FloatingActionButton(
+        elevation: 0,
+        onPressed: () => utils.pushScreenTransition(context, const CreationMeetingPage(), Transitions.upToDown),
+        backgroundColor: Theme.of(context).accentColor,
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 
-  /// Build the bottom navigation bar for the entire app
-  FFNavigationBar buildFfNavigationBar(BuildContext context) {
-    return FFNavigationBar(
-      theme: theme.currentBottomNavBarTheme(),
-      selectedIndex: _controller.model.pageIndex,
-      items: [
-        FFNavigationBarItem(
-          iconData: Icons.home,
-          label: 'Home',
+  List<dynamic> _buildNavItems() {
+    final List<dynamic> items = [];
+
+    _controller.model.pages.asMap().forEach((index, page) {
+      if (page.isEmpty) {
+        items.add(
+          const SizedBox(width: 48),
+        );
+      } else {
+        items.add(NavItem(
+          title: page['title'] as String,
+          icon: (selectedPage == index ? page['selected_icon'] : page['icon']) as IconData,
+          isSelected: selectedPage == index,
+          onTap: () {
+            setState(() {
+              selectedPage = index;
+            });
+          },
+        ));
+      }
+    });
+
+    return items;
+  }
+
+  Widget _buildBottomNavigationBar() {
+    final List<dynamic> items = _buildNavItems();
+
+    return BottomAppBar(
+      shape: const CircularNotchedRectangle(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: List.generate(
+          items.length,
+          (index) => items[index] as Widget,
         ),
-        FFNavigationBarItem(
-          iconData: Icons.person,
-          label: 'Account',
-        ),
-        FFNavigationBarItem(
-          iconData: Icons.settings,
-          label: 'Settings',
-        ),
-      ],
-      onSelectTab: (value) {
-        setState(() {
-          _controller.model.pageIndex = value;
-        });
-      },
+      ),
     );
   }
 }

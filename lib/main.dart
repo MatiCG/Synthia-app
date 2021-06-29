@@ -1,97 +1,53 @@
-import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:synthiaapp/Views/root.dart';
-import 'package:synthiaapp/Views/login.dart';
-import 'package:synthiaapp/config.dart';
-import 'Classes/auth.dart';
+import 'package:synthiapp/Widgets/provider.dart';
+import 'package:synthiapp/Widgets/splashscreen.dart';
+import 'package:synthiapp/config/config.dart';
+import 'Widgets/auth_controller.dart';
 
-void main() => runApp(SynthiaApp());
-
-class SynthiaApp extends StatefulWidget {
-  SynthiaApp() : super();
-
-  _SynthiaAppState createState() => _SynthiaAppState();
+void main() {
+  runApp(SynthiaApp());
 }
 
-class _SynthiaAppState extends State<SynthiaApp> {
-  @override
-  void initState() {
-    super.initState();
-    theme.addListener(() {
-      setState(() {});
-    });
-  }
-
+class SynthiaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-
-    return MaterialApp(
-      title: 'Synthia',
-      theme: theme.lightTheme,
-      darkTheme: theme.darkTheme,
-      themeMode: theme.currentTheme(),
-      home: FutureBuilder(
-        future: _initialization,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return AuthController();
-          } else {
-            return Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-        },
+    return Provider(
+      child: MaterialApp(
+        title: 'Synthia App',
+        theme: theme.lightTheme,
+        home: const InitializeFirebaseApp(),
       ),
     );
   }
 }
 
-class AuthController extends StatefulWidget {
-  AuthController() : super();
+class InitializeFirebaseApp extends StatefulWidget {
+  const InitializeFirebaseApp() : super();
 
-  _AuthControllerState createState() => _AuthControllerState();
+  @override
+  _InitializeFirebaseAppState createState() => _InitializeFirebaseAppState();
 }
 
-class _AuthControllerState extends State<AuthController> {
-  StreamSubscription _streamSubscription;
-  userAuthState _userStatus = userAuthState.NOT_CONNECTED;
-
-  @override
-  void initState() {
-    super.initState();
-    // Listening for a new value of the user status
-    _streamSubscription = auth.stream.listen((value) {
-      // Change the current value for the userStatus to update view and get
-      // the page corresponding
-      if (this.mounted) {
-        setState(() {
-          _userStatus = value;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    // Stop stream to avoid memory leaks
-    _streamSubscription.cancel();
-  }
+class _InitializeFirebaseAppState extends State<InitializeFirebaseApp> {
+  final Future<FirebaseApp> _initialization =
+      Future.delayed(const Duration(seconds: 1), () => Firebase.initializeApp());
 
   @override
   Widget build(BuildContext context) {
-    switch (_userStatus) {
-      case userAuthState.CONNECTED:
-        return RootPage();
-      case userAuthState.NOT_CONNECTED:
-        return LoginPage();
-      default:
-        return LoginPage();
-    }
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: FutureBuilder(
+        future: _initialization,
+        builder: (context, snapshot) {
+          if (!snapshot.hasError &&
+              snapshot.connectionState == ConnectionState.done) {
+            return const AuthController();
+          } else {
+            return SplashScreen();
+          }
+        },
+      ),
+    );
   }
 }

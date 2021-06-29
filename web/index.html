@@ -35,6 +35,26 @@
   <!-- Splashscreen -->
   <img src="assets/logo.png" class="logo">
 
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-function.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyDxHEnMs2mmUrktjWZXDm4bvbzzLtDNa7U",
+      authDomain: "synthia-app-eip.firebaseapp.com",
+      databaseURL: "https://synthia-app-eip.firebaseio.com",
+      projectId: "synthia-app-eip",
+      storageBucket: "synthia-app-eip.appspot.com",
+      messagingSenderId: "348445979536",
+      appId: "1:348445979536:web:a4f2a6ee2ee06ea9fe3915"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->

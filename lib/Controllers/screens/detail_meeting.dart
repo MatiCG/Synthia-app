@@ -14,14 +14,14 @@ enum PageStatus {
 
 class DetailMeetingController {
   final State<StatefulWidget> parent;
-  final Meeting meeting;
+  Meeting meeting;
 
   DetailMeetingController({required this.parent, required this.meeting});
 
   /// Check if the date of the meeting match with the current date
   bool isTodaysDate() {
     final date = DateTime.now();
-    final meetingDate = meeting.date.toDate();
+    final meetingDate = meeting.date!;
 
     if (DateFormat('yyyy-MM-dd').format(date) ==
         DateFormat('yyyy-MM-dd').format(meetingDate)) {

@@ -54,10 +54,10 @@ class _HomeGridBoxState extends State<HomeGridBox> {
               fontSize: 60,
             ),
           ),
-          const Text(
-            "réunions\naujourd'hui",
+          Text(
+            "réunion${widget.controller.getMeetingsOfTheDay() <= 0 ? '' : 's'}\naujourd'hui",
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
             ),
           )
@@ -74,12 +74,12 @@ class _HomeGridBoxState extends State<HomeGridBox> {
       child: Stack(
         alignment: AlignmentDirectional.center,
         children: [
-          const Align(
+           Align(
             alignment: Alignment.topCenter,
             child: Text(
               'Statistiques',
               style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).accentColor,
                   fontSize: 14,
                   fontWeight: FontWeight.bold),
             ),
@@ -90,14 +90,13 @@ class _HomeGridBoxState extends State<HomeGridBox> {
               String text = "Vous n'avez pas participé à des réunions";
 
               if (snapshot.hasData) {
-                text =
-                    'Vous avez participer à ${snapshot.data} réunions';
+                text = 'Vous avez participer à ${snapshot.data} réunions';
               }
 
               return Text(
                 text,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: Theme.of(context).accentColor,
                   fontSize: 10,
                 ),
               );
@@ -129,21 +128,21 @@ class _HomeGridBoxState extends State<HomeGridBox> {
           child: Stack(
             alignment: AlignmentDirectional.center,
             children: [
-              const Align(
+              Align(
                 alignment: Alignment.topCenter,
                 child: Text(
                   'Invitations',
                   style: TextStyle(
-                      color: Colors.white,
+                      color: Theme.of(context).accentColor,
                       fontSize: 14,
                       fontWeight: FontWeight.bold),
                 ),
               ),
               if (invitationLenght <= 0)
-                const Text(
+                Text(
                   "Vous n'avez pas d'invitation",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Theme.of(context).accentColor,
                     fontSize: 10,
                   ),
                 ),

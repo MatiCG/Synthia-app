@@ -20,7 +20,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final LoginController controller = LoginController();
+  late LoginController controller = LoginController(this);
 
   @override
   Widget build(BuildContext context) {
@@ -121,24 +121,34 @@ class _LoginPageState extends State<LoginPage> {
         child: Align(
           child: Column(
             children: [
-              const Text(
-                'En continuant vous acceptez notre',
+              Text(
+                controller.model.errorMsg,
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color.fromRGBO(183, 183, 183, 1.0),
+                  color: Theme.of(context).errorColor,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              RichText(
-                text: TextSpan(
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      log('Ouvrir la politique de confidentialité');
-                    },
-                  text: 'politique de confidentialité',
+              if (controller.model.errorMsg.isEmpty) ...[
+                const Text(
+                  'En continuant vous acceptez notre',
                   style: TextStyle(
-                    color: Theme.of(context).accentColor,
+                    color: Color.fromRGBO(183, 183, 183, 1.0),
                   ),
                 ),
-              ),
+                RichText(
+                  text: TextSpan(
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        log('Ouvrir la politique de confidentialité');
+                      },
+                    text: 'politique de confidentialité',
+                    style: TextStyle(
+                      color: Theme.of(context).accentColor,
+                    ),
+                  ),
+                ),
+              ]
             ],
           ),
         ),

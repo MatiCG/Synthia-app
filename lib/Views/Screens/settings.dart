@@ -62,8 +62,8 @@ class _SettingsPageState extends State<SettingsPage> {
           );
         },
         itemBuilder: (headerIndex, index) {
-          final SettingsItem item =
-              _controller.model.sections[headerIndex].items[index] as SettingsItem;
+          final SettingsItem item = _controller
+              .model.sections[headerIndex].items[index] as SettingsItem;
           return ListSettingsItem(item: item);
         },
       ),
@@ -86,7 +86,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     pageBuilder: (context, animation, secondaryAnimation) =>
                         const SettingsPictures(),
                     transitionDuration: const Duration(milliseconds: 500),
-                    reverseTransitionDuration: const Duration(milliseconds: 300))) as String;
+                    reverseTransitionDuration:
+                        const Duration(milliseconds: 300))) as String;
             setState(() {
               _controller.model.userPicture = newPath;
             });

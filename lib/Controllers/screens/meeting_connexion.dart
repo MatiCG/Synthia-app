@@ -243,7 +243,7 @@ class MeetingConnexionController {
 
       for (final element in servChar) {
         element.write(
-            Uint8List.fromList(utf8.encode('START ${meeting.document.id}')));
+            Uint8List.fromList(utf8.encode('START ${meeting.document!.id}')));
       }
     }
     log('sended');

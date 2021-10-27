@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Controllers/screens/home.dart';
+import 'package:synthiapp/Models/screens/home.dart';
 import 'package:synthiapp/Views/home/grid_box.dart';
 import 'package:synthiapp/Views/home/home_header.dart';
 import 'package:synthiapp/Views/home/meetings_extend.dart';
@@ -26,6 +26,21 @@ class _HomePageState extends State<HomePage> {
 
     setState(() {
       _controller = HomeController(this);
+    });
+
+    SynthiaFirebase().fetchStreamMeetings().listen((event) async {
+      final List<Meeting> meetings =
+          await _controller!.parseMeetingFromSnapshots(event);
+
+      for (final meeting in meetings) {
+        if (_controller!.model.meetings
+            .where((element) => element.document!.id == meeting.document!.id)
+            .isEmpty) {
+          setState(() {
+            _controller!.model.meetings.add(meeting);
+          });
+        }
+      }
     });
   }
 
@@ -55,59 +70,15 @@ class _HomePageState extends State<HomePage> {
         onPanUpdate: (details) {
           if (details.delta.dy < 0 && details.delta.distance >= 25) {
             utils.pushScreen(
-                context,
-                HomeMeetingExtend(
-                  controller: _controller!,
-                ));
+              context,
+              HomeMeetingExtend(
+                controller: _controller!,
+              ),
+            );
           }
         },
         child: Material(
           color: Theme.of(context).primaryColor,
-          child: StreamBuilder(
-              stream: SynthiaFirebase().fetchStreamMeetings(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) return const Text('Something went wrong');
-                return FutureBuilder(
-                  future: _controller!.getMeetingListFromSnapshot(snapshot.data?.docs),
-                  builder: (context, builder) {
-                    return SynthiaList(
-                      isScrollable: false,
-                      itemCount: _controller!.model.meetings.length,
-                      itemBuilder: (index) => ListMeetingItem(
-                        meeting: _controller!.model.meetings[index],
-                      ),
-                      header: HeaderSection(
-                        title: 'Réunions',
-                        trailing: _buildSectionTrailing(context),
-                      ),
-                    );
-                  },
-                );
-              }),
-          /*
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text('Something went wrong');
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text("Loading");
-          }
-
-          return new ListView(
-            children: snapshot.data.docs.map((DocumentSnapshot document) {
-            Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-              return new ListTile(
-                title: new Text(data['full_name']),
-                subtitle: new Text(data['company']),
-              );
-            }).toList(),
-          );
-        },
-      );
-          */
-          /*
           child: SynthiaList(
             isScrollable: false,
             itemCount: _controller!.model.meetings.length,
@@ -119,7 +90,6 @@ class _HomePageState extends State<HomePage> {
               trailing: _buildSectionTrailing(context),
             ),
           ),
-          */
         ),
       ),
     );

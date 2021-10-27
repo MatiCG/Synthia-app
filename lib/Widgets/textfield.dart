@@ -22,7 +22,7 @@ class SynthiaTextFieldItem {
   final types type;
   final String hint;
   final bool passwordSubtitle;
-  final TextEditingController controller = TextEditingController();
+  TextEditingController? textController;
   final FieldsID? id;
   Widget? trailing;
 
@@ -30,6 +30,7 @@ class SynthiaTextFieldItem {
     required this.title,
     this.type = types.defaultType,
     this.hint = '',
+    this.textController,
     this.passwordSubtitle = false,
     this.id,
     this.trailing,
@@ -37,14 +38,19 @@ class SynthiaTextFieldItem {
 
   set setTrailing(Widget? widget) => trailing = widget;
   Widget? get setTrailing => trailing;
-  TextEditingController get textController => controller;
+  TextEditingController get controller =>
+      textController ?? TextEditingController();
 }
 
 class SynthiaTextField extends StatefulWidget {
   final SynthiaTextFieldItem field;
+  EdgeInsetsGeometry padding;
+  final Function(String? text)? onChange;
 
-  const SynthiaTextField({
+  SynthiaTextField({
     required this.field,
+    this.padding = const EdgeInsets.all(0.0),
+    this.onChange,
   }) : super();
 
   @override
@@ -88,74 +94,78 @@ class _SynthiaTextFieldState extends State<SynthiaTextField> {
             },
           );
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        buildTitle(),
-        TextFormField(
-          controller: widget.field.controller,
-          obscureText: isPassword,
-          autocorrect: false,
-          keyboardType:
-              isEmail ? TextInputType.emailAddress : TextInputType.text,
-          decoration: InputDecoration(
-            hintText: widget.field.hint,
-            suffixIcon: widget.field.trailing ?? iconPassword,
-            hintStyle: const TextStyle(
-              fontSize: 13,
-              color: Color(0xffB7B7B7),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 12.0,
-              horizontal: 8.0,
-            ),
-            focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Color.fromRGBO(183, 183, 183, 1.0),
+    return Padding(
+      padding: widget.padding,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          buildTitle(),
+          TextFormField(
+            controller: widget.field.controller,
+            obscureText: isPassword,
+            autocorrect: false,
+            onChanged: widget.onChange,
+            keyboardType:
+                isEmail ? TextInputType.emailAddress : TextInputType.text,
+            decoration: InputDecoration(
+              hintText: widget.field.hint,
+              suffixIcon: widget.field.trailing ?? iconPassword,
+              hintStyle: const TextStyle(
+                fontSize: 13,
+                color: Color(0xffB7B7B7),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 8.0,
+              ),
+              focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color.fromRGBO(183, 183, 183, 1.0),
+                ),
+              ),
+              focusedErrorBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.red,
+                ),
+              ),
+              errorBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.red,
+                ),
+              ),
+              enabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color.fromRGBO(183, 183, 183, 1.0),
+                ),
               ),
             ),
-            focusedErrorBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.red,
-              ),
-            ),
-            errorBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.red,
-              ),
-            ),
-            enabledBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Color.fromRGBO(183, 183, 183, 1.0),
-              ),
-            ),
+            validator: (String? value) {
+              if (value == null || value.isEmpty) {
+                return 'Veuillez remplir ce champ';
+              }
+              switch (widget.field.type) {
+                case types.email:
+                  if (!RegExp(
+                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                      .hasMatch(value)) {
+                    return 'veuillez entrer une adresse e-mail valide';
+                  }
+                  break;
+                case types.password:
+                  if (value.length <= 6) {
+                    return 'Votre mot de passe doit comporter 8 caractères minimun';
+                  }
+                  break;
+                default:
+                  return null;
+              }
+            },
           ),
-          validator: (String? value) {
-            if (value == null || value.isEmpty) {
-              return 'Veuillez remplir ce champ';
-            }
-            switch (widget.field.type) {
-              case types.email:
-                if (!RegExp(
-                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                    .hasMatch(value)) {
-                  return 'veuillez entrer une adresse e-mail valide';
-                }
-                break;
-              case types.password:
-                if (value.length <= 6) {
-                  return 'Votre mot de passe doit comporter 8 caractères minimun';
-                }
-                break;
-              default:
-                return null;
-            }
-          },
-        ),
-        if (widget.field.type == types.password &&
-            widget.field.passwordSubtitle)
-          buildSubtitle(context)
-      ],
+          if (widget.field.type == types.password &&
+              widget.field.passwordSubtitle)
+            buildSubtitle(context)
+        ],
+      ),
     );
   }
 

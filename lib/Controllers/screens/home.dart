@@ -9,9 +9,7 @@ class HomeController {
   final State<StatefulWidget> parent;
   final HomeModel model = HomeModel();
 
-  HomeController(this.parent) {
-    getMeetingList();
-  }
+  HomeController(this.parent);
 
   Future<void> deleteAccount() async {
     final DocumentReference userRef = SynthiaFirebase().getUserReference();
@@ -61,132 +59,45 @@ class HomeController {
     return notMissingOne;
   }
 
-  /*
-    final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('users').snapshots();
+  Future<List<Meeting>> parseMeetingFromSnapshots(
+      QuerySnapshot<Object?> snapshot) async {
+    final List<Meeting> meetings = [];
+    final mandatoryKeys = [
+      'title',
+      'members',
+      'order',
+      'note',
+      'resume',
+      'members',
+      'date',
+      'startAt',
+      'endAt',
+    ];
 
-    @override
-    Widget build(BuildContext context) {
-      return StreamBuilder<QuerySnapshot>(
-        stream: _usersStream,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text('Something went wrong');
-          }
+    await Future.wait(
+      snapshot.docs.map((snap) async {
+        if (checkKeysExist(snap, mandatoryKeys)) {
+          final data = snap.data()! as Map;
+          final String master = await SynthiaFirebase().fetchUserRefDataByType(
+              data['members'][0] as DocumentReference, UserRefData.fullname);
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text("Loading");
-          }
+          meetings.add(Meeting(
+            document: snap.reference,
+            title: data['title'] as String,
+            notes: data['note'] as String,
+            order: data['order'] as String,
+            members: data['members'] as List,
+            resumee: data['resume'] as String,
+            date: DateTime.fromMillisecondsSinceEpoch((data['date'] as Timestamp).millisecondsSinceEpoch),
+            startAt: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch((data['startAt'] as Timestamp).millisecondsSinceEpoch)),
+            endAt: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch((data['endAt'] as Timestamp).millisecondsSinceEpoch)),
+            master: master,
+          ));
+        }
+      }),
+    );
 
-          return new ListView(
-            children: snapshot.data.docs.map((DocumentSnapshot document) {
-            Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-              return new ListTile(
-                title: new Text(data['full_name']),
-                subtitle: new Text(data['company']),
-              );
-            }).toList(),
-          );
-        },
-      );
-    }
-  */
-
-  Future getMeetingListFromSnapshot(
-      List<QueryDocumentSnapshot<Object?>>? meetings) async {
-    final SynthiaFirebase _firebase = SynthiaFirebase();
-
-    if (meetings != null) {
-      await Future.wait(
-        meetings.map((meeting) async {
-          if (checkKeysExist(meeting, [
-            'title',
-            'description',
-            'members',
-            'resume',
-            'members',
-            'schedule'
-          ])) {
-            final data = meeting.data()! as Map;
-            final DocumentReference ref =
-                data['members'][0] as DocumentReference;
-            final String masterFullName = await _firebase
-                .fetchUserRefDataByType(ref, UserRefData.fullname);
-            final Meeting newMeeting = Meeting(
-              document: meeting.reference,
-              title: data['title'] as String,
-              description: data['description'] as String,
-              members: data['members'] as List,
-              resume: data['resume'] as String,
-              date: data['schedule'] as Timestamp,
-              master: masterFullName,
-            );
-
-            if (parent.mounted &&
-                model.meetings
-                    .where((element) => element.title == newMeeting.title)
-                    .isEmpty) {
-              utils.updateView(parent, update: () {
-                model.addNewMeeting(newMeeting);
-                model.meetings.sort((a, b) => a.date.compareTo(b.date));
-              });
-            }
-          }
-        }),
-      );
-    }
-  }
-
-  Future getMeetingList() async {
-    final SynthiaFirebase _firebase = SynthiaFirebase();
-    final List<DocumentSnapshot>? meetings = await _firebase.fetchMeetings();
-
-    if (meetings != null) {
-      await Future.wait(
-        meetings.map((meeting) async {
-          if (checkKeysExist(meeting, [
-            'title',
-            'description',
-            'members',
-            'resume',
-            'members',
-            'schedule'
-          ])) {
-            final data = meeting.data()! as Map<String, dynamic>;
-            final DocumentReference ref =
-                data['members'][0] as DocumentReference;
-            final String masterFullName = await _firebase
-                .fetchUserRefDataByType(ref, UserRefData.fullname);
-            final Meeting newMeeting = Meeting(
-              document: meeting.reference,
-              title: data['title'] as String,
-              description: data['description'] as String,
-              members: data['members'] as List,
-              resume: data['resume'] as String,
-              date: data['schedule'] as Timestamp,
-              master: masterFullName,
-            );
-
-            if (parent.mounted &&
-                model.meetings
-                    .where((element) => element.title == newMeeting.title)
-                    .isEmpty) {
-              // ignore: invalid_use_of_protected_member
-              parent.setState(() {
-                model.addNewMeeting(newMeeting);
-                model.meetings.sort((a, b) {
-                  final date = Timestamp.fromDate(DateTime.now());
-
-                  if (a.date.compareTo(date) == 0) {
-                    return a.date.compareTo(b.date);
-                  }
-                  return -1;
-                });
-              });
-            }
-          }
-        }),
-      );
-    }
+    return meetings;
   }
 
   /// Check each meeting that start the today's date
@@ -194,13 +105,16 @@ class HomeController {
     int counter = 0;
 
     for (final meeting in model.meetings) {
-      final meetingDate = meeting.date.toDate();
+      // TODO: To fix
+      /*
+      final meetingDate = meeting.date!.toDate();
       final currentDate = DateTime.now();
       final timeleft = meetingDate.difference(currentDate);
 
       if (timeleft.inSeconds > 0 && meetingDate.day == currentDate.day) {
         counter++;
       }
+      */
     }
     return counter;
   }

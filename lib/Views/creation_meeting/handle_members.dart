@@ -39,7 +39,7 @@ class _HandleMembersState extends State<HandleMembers> {
             if (userRef != null) {
               if (widget.meeting != null) {
                 invitations = await SynthiaFirebase()
-                    .fetchUserInvitations(userRef, widget.meeting!.document);
+                    .fetchUserInvitations(userRef, widget.meeting!.document!);
               }
               final myMembers = widget.meeting?.members ?? widget.members!;
 
@@ -47,12 +47,13 @@ class _HandleMembersState extends State<HandleMembers> {
                   .where((element) =>
                       (element as DocumentReference).id == userRef.id)
                   .toList();
+              print('ok');
               if (users.isEmpty && invitations == 0) {
                 if (widget.meeting != null && invitations <= 0) {
                   await SynthiaFirebase().sendInvitation(
                     targetRef: userRef,
-                    masterRef: widget.meeting!.members[0] as DocumentReference,
-                    meetingRef: widget.meeting!.document,
+                    masterRef: widget.meeting!.members![0] as DocumentReference,
+                    meetingRef: widget.meeting!.document!,
                   );
                 }
                 setState(() {
@@ -68,6 +69,10 @@ class _HandleMembersState extends State<HandleMembers> {
                       '${newMember.controller.text} est déjà présent ou a déjà reçu une invitation !';
                 });
               }
+            } else {
+              setState(() {
+                displayMessage = "${newMember.controller.text} n'existe pas";
+              });
             }
             newMember.controller.clear();
           });

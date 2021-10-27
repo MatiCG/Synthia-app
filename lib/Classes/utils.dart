@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Animations/screen_transition.dart';
 
@@ -51,5 +52,9 @@ class Utils {
         update();
       });
     }
+  }
+
+  String parseTime(TimeOfDay time) {
+    return '${time.hour}:${time.minute}';
   }
 }

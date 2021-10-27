@@ -57,15 +57,17 @@ class SynthiaUser {
   }
 
   /// Sign in the user into firebase. Email/Password
-  Future signIn(
+  Future<String> signIn(
       {required final String email, required final String password}) async {
     try {
       await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      return '';
     } catch (error) {
       log('SIGN-IN error: $error');
+      return error.toString();
     }
   }
 

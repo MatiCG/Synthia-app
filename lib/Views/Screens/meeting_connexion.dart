@@ -25,7 +25,7 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
 
     _controller = MeetingConnexionController(this, widget.meeting);
     SynthiaFirebase()
-        .fetchReportResumeStream(widget.meeting.document)
+        .fetchReportResumeStream(widget.meeting.document!)
         .listen((event) {
       if (_controller!.model.meetingStarted) {
         if (SynthiaFirebase().checkSnapshotDocument(event, keys: ['resume'])) {

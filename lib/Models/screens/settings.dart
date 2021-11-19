@@ -10,7 +10,7 @@ class SettingsItem {
   Widget? screen;
 
   SettingsItem({
-    required this.title,
+    this.title = '',
     this.screen,
   });
 
@@ -21,10 +21,8 @@ class SettingsItem {
 class SettingsModel {
   List<ScrollSection> sections = [];
   String userPicture = user.data?.photoURL ?? 'assets/avatars/avatar_01.png';
-
   SettingsModel() {
     sections.add(_accountSection());
-    sections.add(_securitySection());
   }
 
   ScrollSection _accountSection() {
@@ -35,12 +33,6 @@ class SettingsModel {
       SettingsItem(
           title: 'Paramètres de compte rendu', screen: const SettingsReport()),
       SettingsItem(title: 'Confidentialité', screen: const PrivacyPolicy()),
-    ]);
-  }
-
-  ScrollSection _securitySection() {
-    return ScrollSection(title: 'Sécurité', items: [
-      SettingsItem(title: 'PIN/Biometrics requis'),
     ]);
   }
 }

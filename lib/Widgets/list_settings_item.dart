@@ -14,8 +14,9 @@ class ListSettingsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => item.screen != null
-        ? utils.pushScreenTransition(context, item.screen!, Transitions.rightToLeft)
-        : null,
+          ? utils.pushScreenTransition(
+              context, item.screen!, Transitions.rightToLeft)
+          : null,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 8.0),
         child: Row(
@@ -31,8 +32,9 @@ class ListSettingsItem extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.chevron_right),
               onPressed: () => item.screen != null
-                ? utils.pushScreenTransition(context, item.screen!, Transitions.rightToLeft)
-                : null,
+                  ? utils.pushScreenTransition(
+                      context, item.screen!, Transitions.rightToLeft)
+                  : null,
             ),
           ],
         ),

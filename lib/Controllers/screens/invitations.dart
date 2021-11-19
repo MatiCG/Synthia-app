@@ -23,7 +23,7 @@ class InvitationController {
   }
 
   /// Delete the [invitation] in the database.
-  Future  dismissInvitation(DocumentSnapshot invitation) async {
+  Future dismissInvitation(DocumentSnapshot invitation) async {
     const String collection = 'invitations';
     final String document = invitation.id;
 
@@ -61,7 +61,6 @@ class InvitationController {
     final DocumentSnapshot<Object?>? invitation = model.invitationSelected;
 
     if (invitation == null) return;
-
     await _fetchDataFromMaster(invitation);
     await _fetchDataFromMeeting(invitation);
     await _fetchInvitationDate(invitation);
@@ -90,17 +89,17 @@ class InvitationController {
       final DocumentReference meeting = data['meeting'] as DocumentReference;
       final DocumentSnapshot snapshot = await meeting.get();
 
-      if (_firebase
-          .checkSnapshotDocument(snapshot, keys: ['schedule', 'title'])) {
+      if (_firebase.checkSnapshotDocument(snapshot, keys: ['date', 'title'])) {
         final data = snapshot.data()! as Map;
-        final Timestamp date = data['schedule'] as Timestamp;
+        log('DATA: $data');
+        final Timestamp date = data['date'] as Timestamp;
+        final Timestamp start = data['startAt'] as Timestamp;
         final String title = data['title'] as String;
 
         utils.updateView(parent, update: () {
           model
             ..meetingTitle = title
-            ..meetingDate =
-                DateFormat('d MMMM y à').add_Hm().format(date.toDate());
+            ..meetingDate = '${DateFormat('d MMMM y à ').format(date.toDate())}${'${start.toDate().hour}:${start.toDate().minute}'}';
         });
       }
     }

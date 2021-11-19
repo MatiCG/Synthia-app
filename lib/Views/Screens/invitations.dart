@@ -12,29 +12,26 @@ class InvitationsPage extends StatefulWidget {
 }
 
 class _InvitationsPageState extends State<InvitationsPage> {
-  InvitationController? controller;
+  late InvitationController controller;
 
   @override
   void initState() {
     super.initState();
 
-    setState(() {
-      controller = InvitationController(this);
-    });
+    controller = InvitationController(this);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (controller == null) return const Scaffold();
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: SynthiaAppBar(
-        title: 'Réunions invitation',
+        title: 'Invitations',
         closeIcon: Icons.close,
-        returnValue: controller!.model.invitations ?? [],
+        returnValue: controller.model.invitations ?? [],
       ),
       body: SynthiaList(
-        itemCount: controller!.model.invitations?.length ?? 0,
+        itemCount: controller.model.invitations?.length ?? 0,
         itemBuilder: (index) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
@@ -45,7 +42,7 @@ class _InvitationsPageState extends State<InvitationsPage> {
                 borderRadius: BorderRadius.circular(20.0),
               ),
               child: InvitationTile(
-                controller: controller!,
+                controller: controller,
               ),
             ),
           );

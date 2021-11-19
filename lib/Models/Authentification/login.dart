@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:synthiapp/Widgets/textfield.dart';
 
 class LoginModel {
+  String errorMsg = '';
   // Form key
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   // Form Fields

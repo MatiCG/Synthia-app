@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
-import 'package:synthiapp/Models/screens/home.dart';
+import 'package:synthiapp/Classes/meeting.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:synthiapp/Views/details_meeting/progress_details.dart';
+import 'package:synthiapp/Views/details_meeting/progress_title.dart';
 import 'package:synthiapp/WebMobileFunction/mobile/save_and_launch_file.dart'
     if (dart.library.html) 'package:synthiapp/WebMobileFunction/web/save_and_launch_file.dart';
 
@@ -14,14 +16,17 @@ enum PageStatus {
 
 class DetailMeetingController {
   final State<StatefulWidget> parent;
-  final Meeting meeting;
+  late ProgressController progress;
+  Meeting meeting;
 
-  DetailMeetingController({required this.parent, required this.meeting});
+  DetailMeetingController({required this.parent, required this.meeting}) {
+    progress = ProgressController(meeting);
+  }
 
   /// Check if the date of the meeting match with the current date
   bool isTodaysDate() {
     final date = DateTime.now();
-    final meetingDate = meeting.date.toDate();
+    final meetingDate = meeting.date!;
 
     if (DateFormat('yyyy-MM-dd').format(date) ==
         DateFormat('yyyy-MM-dd').format(meetingDate)) {
@@ -50,17 +55,6 @@ class DetailMeetingController {
       }
     }
     return PageStatus.progress;
-    /*
-    final data =
-        await FirebaseFirestore.instance.doc(meeting.document.path).get();
-
-    if (SynthiaFirebase().checkSnapshotDocument(data, keys: ['resume'])) {
-      if (((data.data()!)['resume'] as String).isNotEmpty) {
-        return PageStatus.completed;
-      }
-    }
-    return PageStatus.progress;
-    */
   }
 
   Future<void> createPDF(String content, String title) async {
@@ -100,5 +94,16 @@ class DetailMeetingController {
     document.dispose();
 
     saveAndLaunchFile(bytes, '$title.pdf');
+  }
+}
+
+class ProgressController {
+  Meeting meeting;
+  List<Widget> items = [];
+
+  ProgressController(this.meeting) {
+    items
+      ..add(MeetingProgressTitle(title: meeting.title))
+      ..add(MeetingProgressDetails(meeting: meeting));
   }
 }

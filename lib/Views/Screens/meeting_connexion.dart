@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Controllers/screens/meeting_connexion.dart';
-import 'package:synthiapp/Models/screens/home.dart';
+import 'package:synthiapp/Classes/meeting.dart';
 import 'package:synthiapp/Models/screens/meeting_connexion.dart';
 import 'package:synthiapp/Widgets/app_bar.dart';
 import 'package:synthiapp/Widgets/button.dart';
@@ -25,7 +25,7 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
 
     _controller = MeetingConnexionController(this, widget.meeting);
     SynthiaFirebase()
-        .fetchReportResumeStream(widget.meeting.document)
+        .fetchReportResumeStream(widget.meeting.document!)
         .listen((event) {
       if (_controller!.model.meetingStarted) {
         if (SynthiaFirebase().checkSnapshotDocument(event, keys: ['resume'])) {

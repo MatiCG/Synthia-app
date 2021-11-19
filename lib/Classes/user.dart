@@ -57,15 +57,17 @@ class SynthiaUser {
   }
 
   /// Sign in the user into firebase. Email/Password
-  Future signIn(
+  Future<String> signIn(
       {required final String email, required final String password}) async {
     try {
       await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      return '';
     } catch (error) {
       log('SIGN-IN error: $error');
+      return error.toString();
     }
   }
 
@@ -79,6 +81,8 @@ class SynthiaUser {
 
   /// Register a new user into firebase
   Future register({required final List<SynthiaTextFieldItem> data}) async {
+    const avatarPath = 'assets/avatars/blank.png';
+
     try {
       final UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
@@ -89,14 +93,14 @@ class SynthiaUser {
       if (userCredential.user != null) {
         userCredential.user!.updateDisplayName(
             '${getDataById(FieldsID.firstname, data)} ${getDataById(FieldsID.lastname, data)}');
-        userCredential.user!.updatePhotoURL('assets/avatars/blank.png');
+        userCredential.user!.updatePhotoURL(avatarPath);
 
         FirebaseFirestore.instance
             .collection('users')
             .doc(userCredential.user!.uid)
             .set({
           'email': _getDataById(data, FieldsID.email),
-          'photoUrl': 'assets/avatars/blank.png',
+          'photoUrl': avatarPath,
           'firstname': _getDataById(data, FieldsID.firstname),
           'lastname': _getDataById(data, FieldsID.lastname),
           'rights': [],

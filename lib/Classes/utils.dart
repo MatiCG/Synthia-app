@@ -52,4 +52,8 @@ class Utils {
       });
     }
   }
+
+  String parseTime(TimeOfDay time) {
+    return '${time.hour}:${time.minute}';
+  }
 }

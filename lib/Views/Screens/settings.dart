@@ -62,8 +62,8 @@ class _SettingsPageState extends State<SettingsPage> {
           );
         },
         itemBuilder: (headerIndex, index) {
-          final SettingsItem item =
-              _controller.model.sections[headerIndex].items[index] as SettingsItem;
+          final SettingsItem item = _controller
+              .model.sections[headerIndex].items[index] as SettingsItem;
           return ListSettingsItem(item: item);
         },
       ),
@@ -75,9 +75,12 @@ class _SettingsPageState extends State<SettingsPage> {
       top: MediaQuery.of(context).size.height * 0.15,
       left: 0,
       right: 0,
-      child: SizedBox(
+      child: Container(
         height: 75,
         width: 75,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25.0),
+        ),
         child: InkWell(
           onTap: () async {
             final String newPath = await Navigator.push(
@@ -86,7 +89,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     pageBuilder: (context, animation, secondaryAnimation) =>
                         const SettingsPictures(),
                     transitionDuration: const Duration(milliseconds: 500),
-                    reverseTransitionDuration: const Duration(milliseconds: 300))) as String;
+                    reverseTransitionDuration:
+                        const Duration(milliseconds: 300))) as String;
             setState(() {
               _controller.model.userPicture = newPath;
             });

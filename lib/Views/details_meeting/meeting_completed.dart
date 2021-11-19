@@ -41,7 +41,7 @@ class _DetailMeetingCompletedState extends State<DetailMeetingCompleted> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  widget.resume ?? widget.controller.meeting.resume,
+                  widget.resume ?? widget.controller.meeting.resumee,
                   textAlign: TextAlign.justify,
                   style: _textStyle(12, false),
                 ),
@@ -57,7 +57,7 @@ class _DetailMeetingCompletedState extends State<DetailMeetingCompleted> {
           color: Theme.of(context).accentColor,
           textColor: Theme.of(context).primaryColor,
           onPressed: () {
-            widget.controller.createPDF(widget.controller.meeting.resume,
+            widget.controller.createPDF(widget.controller.meeting.resumee,
                 widget.controller.meeting.title);
           },
         ),

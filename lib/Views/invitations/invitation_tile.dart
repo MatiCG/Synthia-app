@@ -101,13 +101,22 @@ class _InvitationTileState extends State<InvitationTile> {
           padding: const EdgeInsets.only(top: 8.0),
           child: Text.rich(TextSpan(children: [
             TextSpan(
-                text: controller.model.masterFullname,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
+              text: controller.model.masterFullname,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).accentColor,
+              ),
+            ),
             const TextSpan(
-                text: ' vous à invité à une réunion. Elle aura lieu le '),
+              text: ' vous à invité à une réunion. Elle aura lieu le ',
+            ),
             TextSpan(
-                text: controller.model.meetingDate,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
+              text: controller.model.meetingDate,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).accentColor,
+              ),
+            ),
           ])),
         ),
       ),

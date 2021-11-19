@@ -32,98 +32,97 @@ class HomeHeader extends StatelessWidget {
             showModalBottomSheet(
                 context: context,
                 builder: (context) {
-                  return Container(
-                    height: MediaQuery.of(context).size.height * 0.35,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(25.0),
-                        topRight: Radius.circular(25.0),
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25.0)
                       ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(24.0),
-                          child: Text(
-                            'Compte',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 20,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              flex: 3,
+                              child: SynthiaButton(
+                                text: 'Se déconnecter',
+                                onPressed: () {
+                                  user.signOut();
+                                  Navigator.pop(context);
+                                },
+                              ),
                             ),
-                          ),
-                        ),
-                        Expanded(child: Container()),
-                        SynthiaButton(
-                          text: 'Se déconnecter',
-                          onPressed: () {
-                            user.signOut();
-                            Navigator.pop(context);
-                          },
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 16.0),
-                          child: SynthiaButton(
-                              text: 'Supprimer votre compte',
-                              textColor: Colors.red[900],
-                              onPressed: () async {
-                                await showDialog(
-                                  useRootNavigator: false,
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    final userEmail = user.data?.email;
-                                    final textFieldItem =
-                                        SynthiaTextFieldItem(
-                                      title: 'Mot de passe',
-                                      type: types.password,
-                                    );
-                                    if (userEmail == null) {
-                                      Navigator.pop(context, false);
-                                    }
-                                    return Center(
-                                      child: AlertDialog(
-                                        title: const Text('Confirmer'),
-                                        content: Column(
-                                          children: [
-                                            const Text(
-                                                'Veuillez entrer votre mot de passe pour confirmer cette action'),
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 32.0),
-                                              child: SynthiaTextField(
-                                                field: textFieldItem,
-                                              ),
+                            Flexible(
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.delete_forever,
+                                  color: Theme.of(context).errorColor,
+                                ),
+                                onPressed: () async {
+                                  await showDialog(
+                                      useRootNavigator: false,
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        final userEmail = user.data?.email;
+                                        final textFieldItem =
+                                            SynthiaTextFieldItem(
+                                          title: 'Mot de passe',
+                                          type: types.password,
+                                        );
+                                        if (userEmail == null) {
+                                          Navigator.pop(context, false);
+                                        }
+                                        return Center(
+                                          child: AlertDialog(
+                                            title: const Text('Confirmer'),
+                                            content: Column(
+                                              children: [
+                                                const Text(
+                                                    'Veuillez entrer votre mot de passe pour confirmer cette action'),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 32.0),
+                                                  child: SynthiaTextField(
+                                                    field: textFieldItem,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.of(context)
-                                                    .pop(false),
-                                            child: const Text('Annuler'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.of(context)
+                                                        .pop(false),
+                                                child: const Text('Annuler'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () async {
+                                                  user.signIn(
+                                                    email: userEmail!,
+                                                    password: textFieldItem
+                                                        .controller.text,
+                                                  );
+                                                  await controller
+                                                      .deleteAccount();
+                                                  Navigator.of(context)
+                                                      .pop(false);
+                                                },
+                                                child: const Text('Confirmer'),
+                                              ),
+                                            ],
                                           ),
-                                          TextButton(
-                                            onPressed: () async {
-                                              user.signIn(
-                                                email: userEmail!,
-                                                password: textFieldItem
-                                                    .controller.text,
-                                              );
-                                              await controller.deleteAccount();
-                                              Navigator.of(context).pop(false);
-                                            },
-                                            child: const Text('Confirmer'),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  });
-                                Navigator.pop(context);
-                              }),
+                                        );
+                                      });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   );
                 });

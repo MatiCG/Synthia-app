@@ -5,6 +5,7 @@ class SynthiaButton extends StatelessWidget {
     required this.text,
     required this.onPressed,
     this.textOnly = false,
+    this.textSize,
     this.margin = const EdgeInsets.all(8.0),
     this.color,
     this.textColor,
@@ -16,6 +17,7 @@ class SynthiaButton extends StatelessWidget {
   final bool textOnly;
   final Function onPressed;
   final EdgeInsets margin;
+  final double? textSize;
   final Color? color;
   final Color? textColor;
   final Color disableColor;
@@ -53,7 +55,7 @@ class SynthiaButton extends StatelessWidget {
                 text!,
                 style: TextStyle(
                   color: txtColor,
-                  fontSize: screenHeight * 0.025,
+                  fontSize: textSize ?? screenHeight * 0.025,
                   fontWeight: FontWeight.w600,
                 ),
               ),

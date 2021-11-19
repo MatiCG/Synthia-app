@@ -26,6 +26,7 @@ class _ListMembersState extends State<ListMembers> {
         ),
       ),
       child: SynthiaList(
+        shrinkWrap: true,
         itemCount: widget.members.length,
         itemBuilder: (index) {
           final userRef = widget.members[index] as DocumentReference;

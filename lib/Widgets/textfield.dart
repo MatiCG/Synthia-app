@@ -22,7 +22,8 @@ class SynthiaTextFieldItem {
   final types type;
   final String hint;
   final bool passwordSubtitle;
-  TextEditingController? textController;
+  final Function(String text)? onChange;
+  late TextEditingController? textController;
   final FieldsID? id;
   Widget? trailing;
 
@@ -30,11 +31,14 @@ class SynthiaTextFieldItem {
     required this.title,
     this.type = types.defaultType,
     this.hint = '',
+    this.onChange,
     this.textController,
     this.passwordSubtitle = false,
     this.id,
     this.trailing,
-  });
+  }) {
+    textController ??= TextEditingController();
+  }
 
   set setTrailing(Widget? widget) => trailing = widget;
   Widget? get setTrailing => trailing;
@@ -44,13 +48,13 @@ class SynthiaTextFieldItem {
 
 class SynthiaTextField extends StatefulWidget {
   final SynthiaTextFieldItem field;
-  EdgeInsetsGeometry padding;
-  final Function(String? text)? onChange;
+  final EdgeInsetsGeometry padding;
+//  final Function(String? text)? onChange;
 
-  SynthiaTextField({
+  const SynthiaTextField({
     required this.field,
     this.padding = const EdgeInsets.all(0.0),
-    this.onChange,
+//    this.onChange,
   }) : super();
 
   @override
@@ -104,7 +108,7 @@ class _SynthiaTextFieldState extends State<SynthiaTextField> {
             controller: widget.field.controller,
             obscureText: isPassword,
             autocorrect: false,
-            onChanged: widget.onChange,
+            onChanged: widget.field.onChange,
             keyboardType:
                 isEmail ? TextInputType.emailAddress : TextInputType.text,
             decoration: InputDecoration(

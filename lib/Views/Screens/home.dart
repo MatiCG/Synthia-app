@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Controllers/screens/home.dart';
-import 'package:synthiapp/Models/screens/home.dart';
+import 'package:synthiapp/Classes/meeting.dart';
 import 'package:synthiapp/Views/home/grid_box.dart';
 import 'package:synthiapp/Views/home/home_header.dart';
 import 'package:synthiapp/Views/home/meetings_extend.dart';
@@ -19,6 +21,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   HomeController? _controller;
+  late StreamSubscription subscription;
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -28,7 +37,8 @@ class _HomePageState extends State<HomePage> {
       _controller = HomeController(this);
     });
 
-    SynthiaFirebase().fetchStreamMeetings().listen((event) async {
+    subscription =
+        SynthiaFirebase().fetchStreamMeetings().listen((event) async {
       final List<Meeting> meetings =
           await _controller!.parseMeetingFromSnapshots(event);
 
@@ -36,9 +46,11 @@ class _HomePageState extends State<HomePage> {
         if (_controller!.model.meetings
             .where((element) => element.document!.id == meeting.document!.id)
             .isEmpty) {
-          setState(() {
-            _controller!.model.meetings.add(meeting);
-          });
+              if (mounted) {
+                setState(() {
+                  _controller!.model.meetings.add(meeting);
+                });
+              }
         }
       }
     });

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Controllers/screens/creation_meeting.dart';
-import 'package:synthiapp/Models/screens/home.dart';
+import 'package:synthiapp/Classes/meeting.dart';
 import 'package:synthiapp/Widgets/button.dart';
 import 'package:synthiapp/Widgets/list.dart';
 

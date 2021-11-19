@@ -22,9 +22,7 @@ class SettingsModel {
   List<ScrollSection> sections = [];
   String userPicture = user.data?.photoURL ?? 'assets/avatars/avatar_01.png';
   SettingsModel() {
-    sections
-      ..add(_accountSection())
-      ..add(_securitySection());
+    sections.add(_accountSection());
   }
 
   ScrollSection _accountSection() {
@@ -35,12 +33,6 @@ class SettingsModel {
       SettingsItem(
           title: 'Paramètres de compte rendu', screen: const SettingsReport()),
       SettingsItem(title: 'Confidentialité', screen: const PrivacyPolicy()),
-    ]);
-  }
-
-  ScrollSection _securitySection() {
-    return ScrollSection(title: 'Sécurité', items: [
-      SettingsItem(title: 'PIN/Biometrics requis'),
     ]);
   }
 }

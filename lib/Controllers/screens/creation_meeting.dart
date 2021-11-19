@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Models/screens/creation_meeting.dart';
-import 'package:synthiapp/Models/screens/home.dart';
+import 'package:synthiapp/Classes/meeting.dart';
 import 'package:synthiapp/Views/creation_meeting/meeting_members.dart';
 import 'package:synthiapp/Views/creation_meeting/meeting_notes.dart';
 import 'package:synthiapp/Views/creation_meeting/meeting_order.dart';
@@ -17,7 +17,7 @@ class CreateMeetingController {
     model = CreationMeetingModel(edit, existMeeting: existMeeting);
     items
       ..add(MeetingTitle(edit: model.meeting, form: model.formKey))
-      ..add(MeetingTime(edit: model.meeting))
+      ..add(MeetingTime(model.meeting))
       ..add(MeetingMembers(edit: model.meeting))
       ..add(MeetingOrder(edit: model.meeting))
       ..add(MeetingNotes(edit: model.meeting));
@@ -34,22 +34,22 @@ class CreateMeetingController {
         .collection('meetings')
         .doc(model.meeting.document!.id)
         .update({
-          'title': model.meeting.title,
-          'order': model.meeting.order,
-          'note': model.meeting.notes,
-          'members': model.meeting.members,
-          'date': Timestamp.fromDate(model.meeting.date!),
-          'startAt': Timestamp.fromDate(timeStart),
-          'endAt': Timestamp.fromDate(timeEnd),
-        });
-
-    Navigator.pop(context, model.meeting);
+      'title': model.meeting.title,
+      'order': model.meeting.order,
+      'note': model.meeting.notes,
+      'members': model.meeting.members,
+      'date': Timestamp.fromDate(model.meeting.date!),
+      'startAt': Timestamp.fromDate(timeStart),
+      'endAt': Timestamp.fromDate(timeEnd),
+    }).then((value) {
+      Navigator.pop(context, model.meeting);
+    });
   }
 
   Future submit(BuildContext context) async {
     if (model.formKey.currentState!.validate()) {
-      final timeStart = DateTime(
-          1999, 1, 1, model.meeting.startAt!.hour, model.meeting.startAt!.minute);
+      final timeStart = DateTime(1999, 1, 1, model.meeting.startAt!.hour,
+          model.meeting.startAt!.minute);
       final timeEnd = DateTime(
           1999, 1, 1, model.meeting.endAt!.hour, model.meeting.endAt!.minute);
 

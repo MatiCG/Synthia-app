@@ -4,8 +4,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:synthiapp/Models/screens/home.dart';
-//import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:synthiapp/Classes/meeting.dart';
 import 'package:synthiapp/Models/screens/meeting_connexion.dart';
 
 class MeetingConnexionController {
@@ -45,31 +44,6 @@ class MeetingConnexionController {
         model.currentStep.setError('Veuillez activé le bluetooth');
       }
     });
-
-    /*
-    alreadyConnected = false;
-    final FlutterBlue manager = model.bleManager;
-    Future.delayed(const Duration(seconds: 2)).then((value) {
-      manager.isAvailable.then((value) {
-        if (value) {
-          manager.isOn.then((value) {
-            _update(() {
-              if (value) {
-                model.nextStep();
-              } else {
-                model.currentStep.setError('Veuillez activé le bluetooth');
-                manager.stopScan();
-              }
-            });
-          });
-        } else {
-          _update(() => model.currentStep
-              .setError("Le bluetooth n'est pas disponible sur cet appareil"));
-          manager.stopScan();
-        }
-      });
-    });
-    */
   }
 
   /// Search for bluetooth devices and end when the synthiaHome is founded
@@ -110,81 +84,6 @@ class MeetingConnexionController {
         }
       }
     });
-    /*
-    await Future.delayed(const Duration(seconds: 2)).then((value) async {
-        manager.startScan(timeout: const Duration(seconds: 30)).then((value) {
-          if (!deviceFounded) {
-            _update(() => model.currentStep.setError(
-                "Veuillez vérifier que l'appareil synthia est allumé. Il est actuellement indétectable."));
-          }
-          manager.stopScan();
-        });
-
-        manager.scanResults.listen((results) {
-          for (final result in results) {
-            if (result.device.name == 'synthia-home') {
-              deviceFounded = true;
-              model.synthiaHome = result.device;
-              log('device founded');
-              manager.stopScan();
-              _update(() => model.nextStep());
-            }
-          }
-        });
-      });
-    */
-    /*
-    final FlutterBlue manager = model.bleManager;
-    bool deviceFounded = false;
-
-    await Future.delayed(const Duration(seconds: 2)).then((value) async {
-      final devices = await manager.connectedDevices;
-
-      for (final device in devices) {
-        if (device.name == 'synthia-home') {
-          await device.disconnect();
-          log('previous device disconnected');
-        }
-      }
-    });
-    /*
-      manager.connectedDevices.then((value) async {
-        for (final device in value) {
-          if (device.name == 'synthia-home') {
-            await device.disconnect();
-//            alreadyConnected = true;
-//            deviceFounded = true;
-//            model.synthiaHome = device;
-//            _update(() => model.nextStep());
-          }
-        }
-      });
-    });
-    */
-    if (deviceFounded == false) {
-      await Future.delayed(const Duration(seconds: 2)).then((value) async {
-        manager.startScan(timeout: const Duration(seconds: 30)).then((value) {
-          if (!deviceFounded) {
-            _update(() => model.currentStep.setError(
-                "Veuillez vérifier que l'appareil synthia est allumé. Il est actuellement indétectable."));
-          }
-          manager.stopScan();
-        });
-
-        manager.scanResults.listen((results) {
-          for (final result in results) {
-            if (result.device.name == 'synthia-home') {
-              deviceFounded = true;
-              model.synthiaHome = result.device;
-              log('device founded');
-              manager.stopScan();
-              _update(() => model.nextStep());
-            }
-          }
-        });
-      });
-    }
-    */
   }
 
   Future<void> _connectToDevice() async {
@@ -211,29 +110,6 @@ class MeetingConnexionController {
       _update(() => model.currentStep.setError(
           "Une erreur c'est produite lors de la connnexion à l'appareil."));
     }
-    /*
-    await Future.delayed(const Duration(seconds: 2)).then((value) async {
-      if (alreadyConnected) {
-        _update(() => model.nextStep());
-        return;
-      }
-      if (model.synthiaHome == null) {
-        utils.updateView(parent, update: () {
-          model.currentStep
-              .setError("L'appareil synthia n'est pas disponible...");
-        });
-      }
-      try {
-        await model.synthiaHome!.connect();
-        log('Connected');
-        _update(() => model.nextStep());
-      } catch (err) {
-        log('err: $err');
-        _update(() => model.currentStep.setError(
-            "Une erreur c'est produite lors de la connnexion à l'appareil. "));
-      }
-    });
-    */
   }
 
   Future startMeeting() async {
@@ -264,21 +140,6 @@ class MeetingConnexionController {
       }
     }
     _update(() => model.endOfSteps());
-    /*
-    await Future.delayed(const Duration(seconds: 2)).then((value) async {
-      final services = await model.synthiaHome!.discoverServices();
-w
-      for (final service in services) {
-        final servChar = service.characteristics;
-
-        for (final element in servChar) {
-          await element.write(
-              Uint8List.fromList(utf8.encode('CONFIG ${meeting.document.id}')));
-        }
-      }
-    });
-    _update(() => model.endOfSteps());
-    */
   }
 
   void _update(Function function) {

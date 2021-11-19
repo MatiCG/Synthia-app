@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Controllers/screens/detail_meeting.dart';
-import 'package:synthiapp/Models/screens/home.dart';
+import 'package:synthiapp/Classes/meeting.dart';
 import 'package:synthiapp/Views/details_meeting/meeting_completed.dart';
 import 'package:synthiapp/Views/details_meeting/meeting_in_progress.dart';
 

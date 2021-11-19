@@ -149,12 +149,14 @@ class _HomeGridBoxState extends State<HomeGridBox> {
               if (invitationLenght > 0)
                 Text.rich(
                   TextSpan(
+                    style: TextStyle(
+                      color: Theme.of(context).accentColor,
+                    ),
                     children: [
                       const TextSpan(text: 'Vous avez '),
                       TextSpan(
                           text: invitationLenght.toString(),
                           style: const TextStyle(
-                              color: Colors.white,
                               fontWeight: FontWeight.bold)),
                       TextSpan(
                           text:

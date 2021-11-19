@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:synthiapp/Classes/meeting.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Models/screens/home.dart';
 import 'package:synthiapp/config/config.dart';
@@ -88,9 +89,12 @@ class HomeController {
             order: data['order'] as String,
             members: data['members'] as List,
             resumee: data['resume'] as String,
-            date: DateTime.fromMillisecondsSinceEpoch((data['date'] as Timestamp).millisecondsSinceEpoch),
-            startAt: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch((data['startAt'] as Timestamp).millisecondsSinceEpoch)),
-            endAt: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch((data['endAt'] as Timestamp).millisecondsSinceEpoch)),
+            date: DateTime.fromMillisecondsSinceEpoch(
+                (data['date'] as Timestamp).millisecondsSinceEpoch),
+            startAt: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(
+                (data['startAt'] as Timestamp).millisecondsSinceEpoch)),
+            endAt: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(
+                (data['endAt'] as Timestamp).millisecondsSinceEpoch)),
             master: master,
           ));
         }
@@ -105,24 +109,19 @@ class HomeController {
     int counter = 0;
 
     for (final meeting in model.meetings) {
-      // TODO: To fix
-      /*
-      final meetingDate = meeting.date!.toDate();
+      final meetingDate = meeting.date; //!.toDate();
       final currentDate = DateTime.now();
-      final timeleft = meetingDate.difference(currentDate);
+      final timeleft = meetingDate?.difference(currentDate);
 
-      if (timeleft.inSeconds > 0 && meetingDate.day == currentDate.day) {
+      if (timeleft != null &&timeleft.inSeconds > 0 && meetingDate!.day == currentDate.day) {
         counter++;
       }
-      */
     }
     return counter;
   }
 
   Future<int> getInvitationsFromSnapshot(
       List<QueryDocumentSnapshot<Object?>>? invitations) async {
-//    List<DocumentSnapshot>? invitations =
-    //      await SynthiaFirebase().fetchInvitations();
 
     if (invitations != null) {
       return invitations.length;

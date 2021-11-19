@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:synthiapp/Models/screens/home.dart';
+import 'package:synthiapp/Classes/meeting.dart';
 import 'package:synthiapp/Views/Screens/detail_meeting.dart';
 import 'package:synthiapp/Classes/utils.dart';
 import 'package:synthiapp/Animations/screen_transition.dart';

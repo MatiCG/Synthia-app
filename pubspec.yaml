@@ -7,21 +7,26 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
+  advance_pdf_viewer: any
   circular_reveal_animation: ^2.0.0
   cloud_firestore: ^2.2.1
   cloud_functions: ^1.1.2
   cupertino_icons: ^1.0.2
+  file_picker: ^4.2.0
   firebase_auth: ^1.3.0
   firebase_core: ^1.3.0
+  firebase_storage: ^10.1.0
   flutter:
     sdk: flutter
   flutter_blue: ^0.8.0
   google_fonts: ^2.1.0
   intl: ^0.17.0
+  mailer: ^5.0.2
   open_file: ^3.2.1
   path_provider: ^2.0.2
   syncfusion_flutter_pdf: ^19.1.69-beta
   universal_html: ^2.0.8
+  uuid: ^3.0.5
   webview_flutter: ^2.0.4
 
 dev_dependencies:

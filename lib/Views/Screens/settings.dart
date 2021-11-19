@@ -75,9 +75,12 @@ class _SettingsPageState extends State<SettingsPage> {
       top: MediaQuery.of(context).size.height * 0.15,
       left: 0,
       right: 0,
-      child: SizedBox(
+      child: Container(
         height: 75,
         width: 75,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25.0),
+        ),
         child: InkWell(
           onTap: () async {
             final String newPath = await Navigator.push(

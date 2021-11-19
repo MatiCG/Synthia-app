@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:synthiapp/Models/screens/creation_meeting.dart';
-import 'package:synthiapp/Models/screens/home.dart';
+import 'package:synthiapp/Classes/meeting.dart';
 import 'package:synthiapp/Widgets/textfield.dart';
 
 class MeetingTitle extends StatelessWidget {
@@ -15,12 +14,12 @@ class MeetingTitle extends StatelessWidget {
       key: form,
       child: SynthiaTextField(
         padding: const EdgeInsets.only(left: 16, right: 16),
-        onChange: (text) {
-          edit.title = text ?? edit.title;
-        },
         field: SynthiaTextFieldItem(
           title: 'Nom de la réunion',
-          textController: TextEditingController(text: edit.title)
+          textController: TextEditingController(text: edit.title),
+          onChange: (text) {
+            edit.title = text;
+          },
         ),
       ),
     );

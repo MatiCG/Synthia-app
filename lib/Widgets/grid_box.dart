@@ -48,7 +48,7 @@ class SynthiaGridBox extends StatelessWidget {
                 border: Border.all(
                   color: Theme.of(context).accentColor,
                 ),
-                color: Colors.transparent,//Colors.orange.shade800,
+                color: Colors.transparent,
               ),
               height: MediaQuery.of(context).size.width * 0.2,
               width: double.infinity,
@@ -61,7 +61,7 @@ class SynthiaGridBox extends StatelessWidget {
                 border: Border.all(
                   color: Theme.of(context).accentColor,
                 ),
-                color: Colors.transparent,// Colors.green.shade600,
+                color: Colors.transparent,
               ),
               height: MediaQuery.of(context).size.width * 0.2,
               width: double.infinity,

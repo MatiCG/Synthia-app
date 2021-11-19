@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
-import 'package:synthiapp/Models/screens/creation_meeting.dart';
-import 'package:synthiapp/Models/screens/home.dart';
+import 'package:synthiapp/Classes/meeting.dart';
 import 'package:synthiapp/Views/creation_meeting/handle_members.dart';
 import 'package:synthiapp/Widgets/build_avatar.dart';
 import 'package:synthiapp/Widgets/list_members.dart';
@@ -54,9 +53,17 @@ class _MeetingMembersState extends State<MeetingMembers> {
           context: context,
           builder: (context) {
             return Padding(
-              padding: MediaQuery.of(context).viewInsets,
-              child: HandleMembers(
-                members: widget.edit.members,
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.4,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+                child: HandleMembers(
+                  members: widget.edit.members,
+                  meeting: widget.edit.document != null ? widget.edit : null,
+                ),
               ),
             );
           },
@@ -77,7 +84,7 @@ class _MeetingMembersState extends State<MeetingMembers> {
     return _buildUserCircularIcon(index);
   }
 
-   Widget _buildCircularIndex() {
+  Widget _buildCircularIndex() {
     return InkWell(
       onTap: () {},
       child: Container(
@@ -110,7 +117,8 @@ class _MeetingMembersState extends State<MeetingMembers> {
       ),
       child: Center(
         child: FutureBuilder(
-          future: _firebase.fetchUserReferencePhotoUrl(widget.edit.members[index] as DocumentReference),
+          future: _firebase.fetchUserReferencePhotoUrl(
+              widget.edit.members[index] as DocumentReference),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return BuildAvatar(

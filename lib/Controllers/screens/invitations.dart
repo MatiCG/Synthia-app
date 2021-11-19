@@ -64,7 +64,6 @@ class InvitationController {
     await _fetchDataFromMaster(invitation);
     await _fetchDataFromMeeting(invitation);
     await _fetchInvitationDate(invitation);
-
   }
 
   /// Function associated to [initInvitationTile]
@@ -92,14 +91,15 @@ class InvitationController {
 
       if (_firebase.checkSnapshotDocument(snapshot, keys: ['date', 'title'])) {
         final data = snapshot.data()! as Map;
-        final Timestamp date = data['schedule'] as Timestamp;
+        log('DATA: $data');
+        final Timestamp date = data['date'] as Timestamp;
+        final Timestamp start = data['startAt'] as Timestamp;
         final String title = data['title'] as String;
-  
+
         utils.updateView(parent, update: () {
           model
             ..meetingTitle = title
-            ..meetingDate =
-                DateFormat('d MMMM y à').add_Hm().format(date.toDate());
+            ..meetingDate = '${DateFormat('d MMMM y à ').format(date.toDate())}${'${start.toDate().hour}:${start.toDate().minute}'}';
         });
       }
     }

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Controllers/screens/meeting_connexion.dart';
 import 'package:synthiapp/Classes/meeting.dart';
+import 'package:synthiapp/Widgets/app_bar.dart';
 
 class MeetingConnexion extends StatefulWidget {
   final Meeting meeting;
@@ -101,9 +102,11 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
     if (_controller == null) return const Scaffold();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Audio Stream Test'),
+      appBar: const SynthiaAppBar(
+        title: '',
+        closeIcon: Icons.close,
       ),
+      backgroundColor: Theme.of(context).primaryColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -111,6 +114,11 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
             if (recognizeFinished)
               _RecognizeContent(
                 text: text,
+              ),
+            if (recognizeFinished && !recognizing)
+              ElevatedButton(
+                onPressed: () => {}, //add call to api and push text <<<<<<<<<<
+                child: Text('End Meeting'),
               ),
             ElevatedButton(
               onPressed: recognizing ? stopRecording : streamingRecognize,
@@ -135,7 +143,7 @@ class _RecognizeContent extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Text(
-            'The text recognized by the Google Speech Api:',
+            'Text Recognized :',
           ),
           SizedBox(
             height: 16.0,

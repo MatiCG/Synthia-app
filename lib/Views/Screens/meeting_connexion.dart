@@ -1,11 +1,12 @@
+import 'dart:async';
+import 'package:flutter/services.dart';
+import 'package:google_speech/google_speech.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:sound_stream/sound_stream.dart';
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Controllers/screens/meeting_connexion.dart';
 import 'package:synthiapp/Classes/meeting.dart';
-import 'package:synthiapp/Models/screens/meeting_connexion.dart';
-import 'package:synthiapp/Widgets/app_bar.dart';
-import 'package:synthiapp/Widgets/button.dart';
-import 'package:synthiapp/config/config.dart';
 
 class MeetingConnexion extends StatefulWidget {
   final Meeting meeting;
@@ -18,132 +19,133 @@ class MeetingConnexion extends StatefulWidget {
 
 class _MeetingConnexionState extends State<MeetingConnexion> {
   MeetingConnexionController? _controller;
+  final RecorderStream _recorder = RecorderStream();
+
+  bool recognizing = false;
+  bool recognizeFinished = false;
+  String text = '';
+  late StreamSubscription<List<int>> _audioStreamSubscription;
+  late BehaviorSubject<List<int>> _audioStream;
 
   @override
   void initState() {
     super.initState();
 
     _controller = MeetingConnexionController(this, widget.meeting);
-    SynthiaFirebase()
-        .fetchReportResumeStream(widget.meeting.document!)
-        .listen((event) {
-      if (_controller!.model.meetingStarted) {
-        if (SynthiaFirebase().checkSnapshotDocument(event, keys: ['resume'])) {
-          if ((event.data()!['resume'] as String).isNotEmpty) {
-            Navigator.pop(context);
-          }
-        }
+    _recorder.initialize();
+  }
+
+  void streamingRecognize() async {
+    _audioStream = BehaviorSubject<List<int>>();
+    _audioStreamSubscription = _recorder.audioStream.listen((event) {
+      _audioStream.add(event);
+    });
+
+    await _recorder.start();
+
+    setState(() {
+      recognizing = true;
+    });
+    final serviceAccount = ServiceAccount.fromString(
+        '${(await rootBundle.loadString('assets/test_service_account.json'))}');
+    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
+    final config = _getConfig();
+
+    final responseStream = speechToText.streamingRecognize(
+        StreamingRecognitionConfig(config: config, interimResults: true),
+        _audioStream);
+
+    var responseText = '';
+
+    responseStream.listen((data) {
+      final currentText =
+          data.results.map((e) => e.alternatives.first.transcript).join('\n');
+
+      if (data.results.first.isFinal) {
+        responseText += '\n' + currentText;
+        setState(() {
+          text = responseText;
+          recognizeFinished = true;
+        });
+      } else {
+        setState(() {
+          text = responseText + '\n' + currentText;
+          recognizeFinished = true;
+        });
       }
+    }, onDone: () {
+      setState(() {
+        recognizing = false;
+      });
     });
   }
+
+  void stopRecording() async {
+    await _recorder.stop();
+    await _audioStreamSubscription.cancel();
+    await _audioStream.close();
+    setState(() {
+      recognizing = false;
+    });
+  }
+
+  RecognitionConfig _getConfig() => RecognitionConfig(
+      encoding: AudioEncoding.LINEAR16,
+      model: RecognitionModel.basic,
+      enableAutomaticPunctuation: true,
+      sampleRateHertz: 16000,
+      languageCode: 'fr-FR');
 
   @override
   Widget build(BuildContext context) {
     if (_controller == null) return const Scaffold();
-    final steps = _controller!.model.steps;
 
     return Scaffold(
-      appBar: const SynthiaAppBar(
-        title: '',
-        closeIcon: Icons.close,
+      appBar: AppBar(
+        title: Text('Audio Stream Test'),
       ),
-      backgroundColor: Theme.of(context).primaryColor,
-      body: Column(
-        children: [
-          if (_controller!.model.meetingStarted)
-            const Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'Enregistrement de la réunion en cours ....',
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    fontSize: 40,
-                  ),
-                ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            if (recognizeFinished)
+              _RecognizeContent(
+                text: text,
               ),
+            ElevatedButton(
+              onPressed: recognizing ? stopRecording : streamingRecognize,
+              child: recognizing ? Text('Stop') : Text('Start'),
             ),
-          if (!_controller!.model.meetingStarted)
-            ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: steps.length,
-              itemBuilder: (context, index) {
-                if (index == 0 && !_controller!.model.bleInitiated) {
-                  steps[index].action!();
-                  _controller!.model.bleInitiated = true;
-                }
-                return StepText(
-                    title: steps[index].title, status: steps[index].status);
-              },
-            ),
-          Flexible(
-            child: Container(
-              alignment: Alignment.center,
-              child: Text(
-                _controller!.model.currentStep.errorMessage ?? '',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-            ),
-          ),
-          if (_controller!.model.currentStep.onError)
-            SynthiaButton(
-              text: 'Recommencer',
-              textColor: Theme.of(context).primaryColor,
-              color: Colors.red,
-              onPressed: () {
-                _controller!.model.bleInitiated = false;
-                utils.pushReplacementScreen(
-                    context, MeetingConnexion(meeting: widget.meeting));
-              },
-            ),
-          if (!_controller!.model.currentStep.onError &&
-              !_controller!.model.meetingStarted)
-            SynthiaButton(
-              text: 'Commencer',
-              textColor: Theme.of(context).primaryColor,
-              color: Theme.of(context).accentColor,
-              enable: _controller?.model.configurationEnded ?? false,
-              onPressed: () => _controller!.startMeeting(),
-            ),
-        ],
-      ),
+          ],
+        ),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
 
-class StepText extends StatelessWidget {
-  final String title;
-  final StepStatus status;
+class _RecognizeContent extends StatelessWidget {
+  final String text;
 
-  const StepText({required this.title, required this.status}) : super();
+  const _RecognizeContent({Key? key, required this.text}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final Color color = status == StepStatus.stack
-        ? Colors.grey.shade500
-        : status == StepStatus.done
-            ? Colors.green
-            : status == StepStatus.error
-                ? Colors.red
-                : Colors.black;
-
-    return ListTile(
-      title: Text(
-        title,
-        style: TextStyle(color: color),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: <Widget>[
+          Text(
+            'The text recognized by the Google Speech Api:',
+          ),
+          SizedBox(
+            height: 16.0,
+          ),
+          Text(
+            text,
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
+        ],
       ),
-      trailing: status == StepStatus.done
-          ? const Icon(Icons.check_circle_outlined, color: Colors.green)
-          : status == StepStatus.error
-              ? const Icon(Icons.error, color: Colors.red)
-              : status == StepStatus.progress
-                  ? const CircularProgressIndicator()
-                  : null,
     );
   }
 }

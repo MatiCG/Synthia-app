@@ -18,7 +18,9 @@ dependencies:
   firebase_storage: ^10.1.0
   flutter:
     sdk: flutter
-  flutter_blue: ^0.8.0
+  google_speech: ^2.0.1
+  rxdart: ^0.27.2
+  sound_stream: ^0.3.0
   google_fonts: ^2.1.0
   intl: ^0.17.0
   mailer: ^5.0.2
@@ -41,3 +43,4 @@ flutter:
     - assets/logo.png
     - assets/avatar.png
     - assets/privacy_policy.html
+    - assets/test_service_account.json

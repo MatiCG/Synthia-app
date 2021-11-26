@@ -1,10 +1,4 @@
-import 'dart:async';
-import 'package:flutter/services.dart';
-import 'package:google_speech/google_speech.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:sound_stream/sound_stream.dart';
 import 'package:flutter/material.dart';
-import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Controllers/screens/meeting_connexion.dart';
 import 'package:synthiapp/Classes/meeting.dart';
 import 'package:synthiapp/Widgets/app_bar.dart';
@@ -20,82 +14,13 @@ class MeetingConnexion extends StatefulWidget {
 
 class _MeetingConnexionState extends State<MeetingConnexion> {
   MeetingConnexionController? _controller;
-  final RecorderStream _recorder = RecorderStream();
-
-  bool recognizing = false;
-  bool recognizeFinished = false;
-  String text = '';
-  late StreamSubscription<List<int>> _audioStreamSubscription;
-  late BehaviorSubject<List<int>> _audioStream;
 
   @override
   void initState() {
     super.initState();
 
     _controller = MeetingConnexionController(this, widget.meeting);
-    _recorder.initialize();
   }
-
-  void streamingRecognize() async {
-    _audioStream = BehaviorSubject<List<int>>();
-    _audioStreamSubscription = _recorder.audioStream.listen((event) {
-      _audioStream.add(event);
-    });
-
-    await _recorder.start();
-
-    setState(() {
-      recognizing = true;
-    });
-    final serviceAccount = ServiceAccount.fromString(
-        '${(await rootBundle.loadString('assets/test_service_account.json'))}');
-    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
-    final config = _getConfig();
-
-    final responseStream = speechToText.streamingRecognize(
-        StreamingRecognitionConfig(config: config, interimResults: true),
-        _audioStream);
-
-    var responseText = '';
-
-    responseStream.listen((data) {
-      final currentText =
-          data.results.map((e) => e.alternatives.first.transcript).join('\n');
-
-      if (data.results.first.isFinal) {
-        responseText += '\n' + currentText;
-        setState(() {
-          text = responseText;
-          recognizeFinished = true;
-        });
-      } else {
-        setState(() {
-          text = responseText + '\n' + currentText;
-          recognizeFinished = true;
-        });
-      }
-    }, onDone: () {
-      setState(() {
-        recognizing = false;
-      });
-    });
-  }
-
-  void stopRecording() async {
-    await _recorder.stop();
-    await _audioStreamSubscription.cancel();
-    await _audioStream.close();
-    setState(() {
-      recognizing = false;
-    });
-  }
-
-  RecognitionConfig _getConfig() => RecognitionConfig(
-      encoding: AudioEncoding.LINEAR16,
-      model: RecognitionModel.basic,
-      enableAutomaticPunctuation: true,
-      sampleRateHertz: 16000,
-      languageCode: 'fr-FR');
 
   @override
   Widget build(BuildContext context) {
@@ -111,18 +36,20 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            if (recognizeFinished)
+            if (_controller!.recognizeFinished)
               _RecognizeContent(
-                text: text,
+                text: _controller!.text,
               ),
-            if (recognizeFinished && !recognizing)
+            if (_controller!.recognizeFinished && !_controller!.recognizing)
               ElevatedButton(
                 onPressed: () => {}, //add call to api and push text <<<<<<<<<<
                 child: Text('End Meeting'),
               ),
             ElevatedButton(
-              onPressed: recognizing ? stopRecording : streamingRecognize,
-              child: recognizing ? Text('Stop') : Text('Start'),
+              onPressed: _controller!.recognizing
+                  ? _controller!.stopRecording
+                  : _controller!.streamingRecognize,
+              child: _controller!.recognizing ? Text('Stop') : Text('Start'),
             ),
           ],
         ),

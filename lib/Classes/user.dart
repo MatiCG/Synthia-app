@@ -95,16 +95,25 @@ class SynthiaUser {
             '${getDataById(FieldsID.firstname, data)} ${getDataById(FieldsID.lastname, data)}');
         userCredential.user!.updatePhotoURL(avatarPath);
 
+
         FirebaseFirestore.instance
-            .collection('users')
-            .doc(userCredential.user!.uid)
-            .set({
-          'email': _getDataById(data, FieldsID.email),
-          'photoUrl': avatarPath,
-          'firstname': _getDataById(data, FieldsID.firstname),
-          'lastname': _getDataById(data, FieldsID.lastname),
-          'rights': [],
+            .collection('tokens')
+            .add({
+          'user': _getDataById(data, FieldsID.email)
+        }).then((value){
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(userCredential.user!.uid)
+              .set({
+            'email': _getDataById(data, FieldsID.email),
+            'photoUrl': avatarPath,
+            'firstname': _getDataById(data, FieldsID.firstname),
+            'lastname': _getDataById(data, FieldsID.lastname),
+            'rights': [],
+            'token': "tokens/0" //+ value.id,
+          });
         });
+
       }
     } catch (error) {
       log('An error occured when register: $error');

@@ -27,10 +27,15 @@ class _MeetingTimeState extends State<MeetingTime> {
     return showTimePicker(
       context: context,
       initialTime: _meeting.startAt ?? TimeOfDay.now(),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child!,
+        );
+      }
     );
   }
 
-  /* '${DateFormat('EEEE, d MMMM').format(edit.date!)}\t\t${_formatTime(edit.startAt!)} - ${_formatTime(edit.endAt!)}'),   */
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -69,61 +74,3 @@ class _MeetingTimeState extends State<MeetingTime> {
     );
   }
 }
-
-/*
-class MeetingTime extends StatefulWidget {
-  final Meeting edit;
-
-  const MeetingTime({required this.edit}) : super();
-
-  @override
-  _MeetingTimeState createState() => _MeetingTimeState();
-}
-
-class _MeetingTimeState extends State<MeetingTime> {
-  late Meeting edit = widget.edit;
-
-  String _formatTime(TimeOfDay time) {
-    return '${time.hour}:${time.minute}';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: const IconButton(icon: Icon(Icons.access_time), onPressed: null,),
-      title: Text(
-          '${DateFormat('EEEE, d MMMM').format(edit.date!)}\t\t${_formatTime(edit.startAt!)} - ${_formatTime(edit.endAt!)}'),
-      onTap: () async {
-        DateTime? date;
-        TimeOfDay? startAt;
-        TimeOfDay? endAt;
-
-        date = await showDatePicker(
-          context: context,
-          initialDate: edit.date ?? DateTime.now(),
-          firstDate: DateTime.now(),
-          lastDate: DateTime(2100),
-        );
-        if (date != null) {
-          // Show next Step
-          startAt = await showTimePicker(
-            context: context,
-            initialTime: edit.startAt ?? TimeOfDay.now(),
-          );
-          endAt = await showTimePicker(
-            context: context,
-            initialTime: edit.endAt ?? TimeOfDay.now(),
-          );
-        }
-        if (date != null && startAt != null && endAt != null) {
-          setState(() {
-            edit.startAt = startAt;
-            edit.endAt = endAt;
-            edit.date = date;
-          });
-        }
-      },
-    );
-  }
-}
-*/

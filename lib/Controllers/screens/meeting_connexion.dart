@@ -76,6 +76,18 @@ class MeetingConnexionController {
         .collection('meetings')
         .doc(meeting.document!.id)
         .update({'rawText': text});
+
+      if (_auth.currentUser != null) {
+        var token = _auth.currentUser.token.uid;
+        print(token);
+        var client = new http.Client();
+        try {
+          client.get('http://40.89.182.198:6000/' + meeting.document!.id + "/" + "fr" + "/" + token);
+        } finally {
+          client.close();
+        }
+      }
+    }
   }
 
   void stopRecording() async {

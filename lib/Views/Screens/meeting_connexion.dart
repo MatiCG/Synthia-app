@@ -61,7 +61,10 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
                 text: "Terminer la réunion",
                 color: const Color(0xFF00C627),
                 textColor: Theme.of(context).primaryColor,
-                onPressed: () => {}, //add call to api and push text <<<<<<<<<<
+                onPressed: () => {
+                  _controller!.pushMeeting(),
+                  Navigator.pop(context)
+                }, //add call to api and push text <<<<<<<<<<
               ),
             ),
           Align(

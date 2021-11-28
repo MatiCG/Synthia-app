@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Classes/meeting.dart';
 import 'package:synthiapp/Models/screens/meeting_connexion.dart';
@@ -68,6 +69,13 @@ class MeetingConnexionController {
         recognizing = false;
       });
     });
+  }
+
+  void pushMeeting() {
+    FirebaseFirestore.instance
+        .collection('meetings')
+        .doc(meeting.document!.id)
+        .update({'rawText': text});
   }
 
   void stopRecording() async {

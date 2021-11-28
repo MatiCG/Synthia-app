@@ -163,7 +163,7 @@ ${widget.meeting?.master} vous a invité à rejoindre une réunion sur l'applica
 
   Widget _buildContent() {
     return const Padding(
-      padding: EdgeInsets.only(top: 8.0),
+      padding: EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
       child: Text(
         "Une fois la réunion créée, chacun des membres que vous avez ajouté recevra une invitation à rejoindre la réunion. Ils seront libres de l'accepter ou non.",
         textAlign: TextAlign.justify,

@@ -53,7 +53,7 @@ class _MeetingMembersState extends State<MeetingMembers> {
           context: context,
           builder: (context) {
             return Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: MediaQuery.of(context).viewInsets,
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.4,
                 decoration: BoxDecoration(

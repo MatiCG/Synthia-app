@@ -43,10 +43,13 @@ class ListMeetingItem extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 20, top: 8),
                   child: Row(
                     children: [
-                      const Icon(Icons.access_time_outlined, size: 16,),
+                      const Icon(
+                        Icons.access_time_outlined,
+                        size: 16,
+                      ),
                       const SizedBox(width: 5),
                       Text(
-                        '${DateFormat('d MMMM y').format(meeting.date!)} à ${utils.parseTime(meeting.startAt!)}',
+                        '${DateFormat('d MMMM y').format(meeting.date!)} à ${meeting.startAt!.format(context)}',
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 10,
@@ -81,12 +84,12 @@ class ListMeetingItem extends StatelessWidget {
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
-                          color: _getCountDown(meeting.date!)['color'] as Color?,
+                          color: _getCountDown(meeting)['color'] as Color?,
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            _getCountDown(meeting.date!)['text'] as String,
+                            _getCountDown(meeting)['text'] as String,
                             style: const TextStyle(
                               color: Colors.white,
                             ),
@@ -104,21 +107,46 @@ class ListMeetingItem extends StatelessWidget {
 
   /// Return a json with [color] and [text] data.
   /// 4 possibilities :
-  ///   - Red : Today
-  ///   - Orange : X days
-  ///   - Green : > 1 month
+  ///   - Red : En cours
+  ///   - Vert : Aujourd'hui
+  ///   - Orange : > 1 month
   ///   - Brown : Past
-  Map _getCountDown(DateTime meetingTime) {
-    final timeleft = meetingTime.difference(DateTime.now());
+  Map _getCountDown(Meeting meeting) {
+    final today = DateTime.now();
+    final timeleft = meeting.date!.difference(today).inDays;
+    final meetingStart = DateTime(
+      meeting.date!.year,
+      meeting.date!.month,
+      meeting.date!.day,
+      meeting.startAt!.hour,
+      meeting.startAt!.minute,
+    );
+    final meetingEnd = DateTime(
+      meeting.date!.year,
+      meeting.date!.month,
+      meeting.date!.day,
+      meeting.endAt!.hour,
+      meeting.endAt!.minute,
+    );
+
+    final values = [
+      {'color': const Color(0xff34495e), 'text': 'Passé'},
+      {'color': const Color(0xffd35400), 'text': "Plus d'un mois"},
+      {'color': const Color(0xff27ae60), 'text': "Aujourd'hui"},
+      {'color': const Color(0xffc0392b), 'text': 'En cours'},
+    ];
 
     if (timeleft.isNegative) {
-      return {'color': const Color(0xffc0392b), 'text': 'Passé'};
-    } else if (timeleft.inDays >= 31 && timeleft.inHours > 24) {
-      return {'color': const Color(0xff27ae60), 'text': "Plus d'un mois"};
-    } else if (meetingTime.day == DateTime.now().day && timeleft.inHours <= 24) {
-      return {'color': const Color(0xffe74c3c), 'text': "Aujourd'hui"};
-    } else {
-      return {'color': const Color(0xfff39c12), 'text': '${timeleft.inDays + 1} jours'};
+      return values[0];
+    } else if (meeting.date!.day == today.day &&
+        today.isAfter(meetingStart) &&
+        today.isBefore(meetingEnd)) {
+      return values[3];
+    } else if (today.day == meeting.date!.day) {
+      return values[2];
+    } else if (timeleft >= 31) {
+      return values[1];
     }
+    return {'color': const Color(0xfff39c12), 'text': '${timeleft + 1} jours'};
   }
 }

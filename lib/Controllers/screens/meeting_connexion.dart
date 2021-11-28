@@ -45,7 +45,7 @@ class MeetingConnexionController {
         StreamingRecognitionConfig(config: config, interimResults: true),
         _audioStream);
 
-    var responseText = '';
+    var responseText = text;
 
     responseStream.listen((data) {
       final currentText =

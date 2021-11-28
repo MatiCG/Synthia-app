@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:synthiapp/Controllers/screens/meeting_connexion.dart';
 import 'package:synthiapp/Classes/meeting.dart';
 import 'package:synthiapp/Widgets/app_bar.dart';
+import 'package:synthiapp/Widgets/button.dart';
 
 class MeetingConnexion extends StatefulWidget {
   final Meeting meeting;
@@ -32,28 +33,49 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
         closeIcon: Icons.close,
       ),
       backgroundColor: Theme.of(context).primaryColor,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            if (_controller!.recognizeFinished)
-              _RecognizeContent(
-                text: _controller!.text,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Text(
+              _controller!.meeting.title,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
               ),
-            if (_controller!.recognizeFinished && !_controller!.recognizing)
-              ElevatedButton(
-                onPressed: () => {}, //add call to api and push text <<<<<<<<<<
-                child: Text('End Meeting'),
-              ),
-            ElevatedButton(
-              onPressed: _controller!.recognizing
-                  ? _controller!.stopRecording
-                  : _controller!.streamingRecognize,
-              child: _controller!.recognizing ? Text('Stop') : Text('Start'),
             ),
-          ],
-        ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+          ),
+          if (_controller!.recognizeFinished)
+            _RecognizeContent(
+              text: _controller!.text,
+            ),
+          const Expanded(
+            child: Text(""),
+          ),
+          if (_controller!.recognizeFinished && !_controller!.recognizing)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: SynthiaButton(
+                text: "Terminer la réunion",
+                color: const Color(0xFF00C627),
+                textColor: Theme.of(context).primaryColor,
+                onPressed: () => {}, //add call to api and push text <<<<<<<<<<
+              ),
+            ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SynthiaButton(
+                text: _controller!.recognizing ? 'Suspendre' : 'Enregistrer',
+                color: Theme.of(context).accentColor,
+                textColor: Theme.of(context).primaryColor,
+                onPressed: _controller!.recognizing
+                    ? _controller!.stopRecording
+                    : _controller!.streamingRecognize),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -66,21 +88,27 @@ class _RecognizeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: <Widget>[
-          Text(
-            'Text Recognized :',
-          ),
-          SizedBox(
-            height: 16.0,
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 16, bottom: 8),
+            child:
+                Text('Text reconnu :', style: _textStyled(context, size: 20)),
           ),
           Text(
             text,
-            style: Theme.of(context).textTheme.bodyText1,
-          ),
-        ],
-      ),
+            textAlign: TextAlign.justify,
+          )
+        ]),
+      ]),
     );
+  }
+
+  TextStyle _textStyled(BuildContext context, {double size = 14}) {
+    return TextStyle(
+        color: Theme.of(context).accentColor,
+        fontWeight: FontWeight.w400,
+        fontSize: size);
   }
 }

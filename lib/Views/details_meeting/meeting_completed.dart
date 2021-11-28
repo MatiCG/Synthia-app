@@ -57,7 +57,7 @@ class _DetailMeetingCompletedState extends State<DetailMeetingCompleted> {
           color: Theme.of(context).accentColor,
           textColor: Theme.of(context).primaryColor,
           onPressed: () {
-            widget.controller.createPDF(widget.controller.meeting.resumee,
+            widget.controller.createPDF(widget.resume ?? widget.controller.meeting.resumee,
                 widget.controller.meeting.title);
           },
         ),

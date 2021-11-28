@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Controllers/screens/meeting_connexion.dart';
 import 'package:synthiapp/Classes/meeting.dart';
-import 'package:synthiapp/Models/screens/meeting_connexion.dart';
 import 'package:synthiapp/Widgets/app_bar.dart';
 import 'package:synthiapp/Widgets/button.dart';
-import 'package:synthiapp/config/config.dart';
 
 class MeetingConnexion extends StatefulWidget {
   final Meeting meeting;
@@ -24,23 +21,11 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
     super.initState();
 
     _controller = MeetingConnexionController(this, widget.meeting);
-    SynthiaFirebase()
-        .fetchReportResumeStream(widget.meeting.document!)
-        .listen((event) {
-      if (_controller!.model.meetingStarted) {
-        if (SynthiaFirebase().checkSnapshotDocument(event, keys: ['resume'])) {
-          if ((event.data()!['resume'] as String).isNotEmpty) {
-            Navigator.pop(context);
-          }
-        }
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     if (_controller == null) return const Scaffold();
-    final steps = _controller!.model.steps;
 
     return Scaffold(
       appBar: const SynthiaAppBar(
@@ -49,101 +34,84 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
       ),
       backgroundColor: Theme.of(context).primaryColor,
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (_controller!.model.meetingStarted)
-            const Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'Enregistrement de la réunion en cours ....',
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    fontSize: 40,
-                  ),
-                ),
-              ),
-            ),
-          if (!_controller!.model.meetingStarted)
-            ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: steps.length,
-              itemBuilder: (context, index) {
-                if (index == 0 && !_controller!.model.bleInitiated) {
-                  steps[index].action!();
-                  _controller!.model.bleInitiated = true;
-                }
-                return StepText(
-                    title: steps[index].title, status: steps[index].status);
-              },
-            ),
-          Flexible(
-            child: Container(
-              alignment: Alignment.center,
-              child: Text(
-                _controller!.model.currentStep.errorMessage ?? '',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.red,
-                ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Text(
+              _controller!.meeting.title,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          if (_controller!.model.currentStep.onError)
-            SynthiaButton(
-              text: 'Recommencer',
-              textColor: Theme.of(context).primaryColor,
-              color: Colors.red,
-              onPressed: () {
-                _controller!.model.bleInitiated = false;
-                utils.pushReplacementScreen(
-                    context, MeetingConnexion(meeting: widget.meeting));
-              },
+          if (_controller!.recognizeFinished)
+            _RecognizeContent(
+              text: _controller!.text,
             ),
-          if (!_controller!.model.currentStep.onError &&
-              !_controller!.model.meetingStarted)
-            SynthiaButton(
-              text: 'Commencer',
-              textColor: Theme.of(context).primaryColor,
-              color: Theme.of(context).accentColor,
-              enable: _controller?.model.configurationEnded ?? false,
-              onPressed: () => _controller!.startMeeting(),
+          const Expanded(
+            child: Text(""),
+          ),
+          if (_controller!.recognizeFinished && !_controller!.recognizing)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: SynthiaButton(
+                text: "Terminer la réunion",
+                color: const Color(0xFF00C627),
+                textColor: Theme.of(context).primaryColor,
+                onPressed: () => {
+                  _controller!.pushMeeting(),
+                  Navigator.pop(context)
+                }, //add call to api and push text <<<<<<<<<<
+              ),
             ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SynthiaButton(
+                text: _controller!.recognizing ? 'Suspendre' : 'Enregistrer',
+                color: Theme.of(context).accentColor,
+                textColor: Theme.of(context).primaryColor,
+                onPressed: _controller!.recognizing
+                    ? _controller!.stopRecording
+                    : _controller!.streamingRecognize),
+          ),
         ],
       ),
     );
   }
 }
 
-class StepText extends StatelessWidget {
-  final String title;
-  final StepStatus status;
+class _RecognizeContent extends StatelessWidget {
+  final String text;
 
-  const StepText({required this.title, required this.status}) : super();
+  const _RecognizeContent({Key? key, required this.text}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final Color color = status == StepStatus.stack
-        ? Colors.grey.shade500
-        : status == StepStatus.done
-            ? Colors.green
-            : status == StepStatus.error
-                ? Colors.red
-                : Colors.black;
-
-    return ListTile(
-      title: Text(
-        title,
-        style: TextStyle(color: color),
-      ),
-      trailing: status == StepStatus.done
-          ? const Icon(Icons.check_circle_outlined, color: Colors.green)
-          : status == StepStatus.error
-              ? const Icon(Icons.error, color: Colors.red)
-              : status == StepStatus.progress
-                  ? const CircularProgressIndicator()
-                  : null,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 16, bottom: 8),
+            child:
+                Text('Text reconnu :', style: _textStyled(context, size: 20)),
+          ),
+          Text(
+            text,
+            textAlign: TextAlign.justify,
+          )
+        ]),
+      ]),
     );
+  }
+
+  TextStyle _textStyled(BuildContext context, {double size = 14}) {
+    return TextStyle(
+        color: Theme.of(context).accentColor,
+        fontWeight: FontWeight.w400,
+        fontSize: size);
   }
 }

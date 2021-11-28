@@ -47,10 +47,13 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
               ),
             ),
           ),
-          if (_controller!.recognizeFinished)
+          if (_controller!.recognizeFinished) ...[
             _RecognizeContent(
               text: _controller!.text,
             ),
+          ] else ...[
+            Image.asset('assets/blank_canva.png'),
+          ],
           const Expanded(
             child: Text(""),
           ),
@@ -61,10 +64,8 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
                 text: "Terminer la réunion",
                 color: const Color(0xFF00C627),
                 textColor: Theme.of(context).primaryColor,
-                onPressed: () => {
-                  _controller!.pushMeeting(),
-                  Navigator.pop(context)
-                }, //add call to api and push text <<<<<<<<<<
+                onPressed: () =>
+                    {_controller!.pushMeeting(), Navigator.pop(context)},
               ),
             ),
           Align(

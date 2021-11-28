@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Classes/meeting.dart';
@@ -8,6 +9,7 @@ import 'package:google_speech/google_speech.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sound_stream/sound_stream.dart';
 import 'package:synthiapp/config/config.dart';
+import 'package:http/http.dart' as http;
 
 class MeetingConnexionController {
   final State<StatefulWidget> parent;
@@ -25,6 +27,7 @@ class MeetingConnexionController {
     _recorder.initialize();
   }
 
+  // ignore: avoid_void_async
   void streamingRecognize() async {
     _audioStream = BehaviorSubject<List<int>>();
     _audioStreamSubscription = _recorder.audioStream.listen((event) {
@@ -38,7 +41,7 @@ class MeetingConnexionController {
     });
 
     final serviceAccount = ServiceAccount.fromString(
-        '${(await rootBundle.loadString('assets/test_service_account.json'))}');
+        await rootBundle.loadString('assets/test_service_account.json'));
     final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
     final config = _getConfig();
 
@@ -53,7 +56,7 @@ class MeetingConnexionController {
           data.results.map((e) => e.alternatives.first.transcript).join('\n');
 
       if (data.results.first.isFinal) {
-        responseText += '\n' + currentText;
+        responseText += '\n$currentText';
         utils.updateView(parent, update: () {
           text = responseText;
           recognizeFinished = true;
@@ -71,25 +74,29 @@ class MeetingConnexionController {
     });
   }
 
-  void pushMeeting() {
+  // ignore: avoid_void_async
+  void pushMeeting() async {
     FirebaseFirestore.instance
         .collection('meetings')
         .doc(meeting.document!.id)
         .update({'rawText': text});
 
-      if (_auth.currentUser != null) {
-        var token = _auth.currentUser.token.uid;
-        print(token);
-        var client = new http.Client();
-        try {
-          client.get('http://40.89.182.198:6000/' + meeting.document!.id + "/" + "fr" + "/" + token);
-        } finally {
-          client.close();
-        }
+    if (user != null) {
+      final token = user.getUserToken();
+      print("-----------------------------------" + token);
+      final client = new http.Client();
+      try {
+        await client.get(Uri.parse(
+            'http://40.89.182.198:6000/${meeting.document!.id}/fr/$token'));
+      } catch (e) {
+        print(e);
+      } finally {
+        client.close();
       }
     }
   }
 
+  // ignore: avoid_void_async
   void stopRecording() async {
     await _recorder.stop();
     await _audioStreamSubscription.cancel();

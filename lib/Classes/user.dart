@@ -70,8 +70,12 @@ class SynthiaUser {
           .collection('users')
           .doc(userCredential.user!.uid)
           .get()
-          .then((DocumentSnapshot documentSnapshot) {
-        _userToken = documentSnapshot.get('token').toString();
+          .then((DocumentSnapshot snapshot) {
+        if (snapshot.exists) {
+          final Map<String, dynamic> data =
+              snapshot.data()! as Map<String, dynamic>;
+          _userToken = data["token"].toString();
+        }
       });
       return '';
     } catch (error) {

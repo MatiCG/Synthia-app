@@ -6,8 +6,9 @@ import 'package:synthiapp/Widgets/list.dart';
 
 class ListMembers extends StatefulWidget {
   final List members;
+  final bool editable;
 
-  const ListMembers({required this.members}) : super();
+  const ListMembers({required this.members, this.editable = true}) : super();
 
   @override
   _ListMembersState createState() => _ListMembersState();
@@ -43,17 +44,17 @@ class _ListMembersState extends State<ListMembers> {
                     isRounded: true,
                     path: data['photoUrl'] as String,
                   ),
-                  trailing: index == 0
+                  trailing: index == 0 || !widget.editable
                       ? null
                       : IconButton(
-                        icon: const Icon(Icons.delete_outline),
-                        color: Colors.red,
-                        onPressed: () {
-                          setState(() {
-                            widget.members.removeAt(index);
-                          });
-                        },
-                      ),
+                          icon: const Icon(Icons.delete_outline),
+                          color: Colors.red,
+                          onPressed: () {
+                            setState(() {
+                              widget.members.removeAt(index);
+                            });
+                          },
+                        ),
                 );
               }
               return Container();

@@ -24,6 +24,7 @@ class SynthiaUser {
   // Create firebase auth instance
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String _userToken = '';
 
   SynthiaUser() {
     _auth.authStateChanges().listen((user) {
@@ -60,10 +61,22 @@ class SynthiaUser {
   Future<String> signIn(
       {required final String email, required final String password}) async {
     try {
-      await _auth.signInWithEmailAndPassword(
+      final UserCredential userCredential =
+          await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .get()
+          .then((DocumentSnapshot snapshot) {
+        if (snapshot.exists) {
+          final Map<String, dynamic> data =
+              snapshot.data()! as Map<String, dynamic>;
+          _userToken = data["token"].toString();
+        }
+      });
       return '';
     } catch (error) {
       log('SIGN-IN error: $error');
@@ -95,12 +108,9 @@ class SynthiaUser {
             '${getDataById(FieldsID.firstname, data)} ${getDataById(FieldsID.lastname, data)}');
         userCredential.user!.updatePhotoURL(avatarPath);
 
-
         FirebaseFirestore.instance
             .collection('tokens')
-            .add({
-          'user': _getDataById(data, FieldsID.email)
-        }).then((value){
+            .add({'user': _getDataById(data, FieldsID.email)}).then((value) {
           FirebaseFirestore.instance
               .collection('users')
               .doc(userCredential.user!.uid)
@@ -110,14 +120,18 @@ class SynthiaUser {
             'firstname': _getDataById(data, FieldsID.firstname),
             'lastname': _getDataById(data, FieldsID.lastname),
             'rights': [],
-            'token': "tokens/0" //+ value.id,
+            'token': value.id,
           });
+          _userToken = value.id;
         });
-
       }
     } catch (error) {
       log('An error occured when register: $error');
     }
+  }
+
+  String getUserToken() {
+    return _userToken;
   }
 
   Future updateProfilePath(String path) async {

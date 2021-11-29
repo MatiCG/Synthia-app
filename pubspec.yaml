@@ -30,6 +30,9 @@ dependencies:
   universal_html: ^2.0.8
   uuid: ^3.0.5
   webview_flutter: ^2.0.4
+  syncfusion_flutter_calendar: ^19.3.55
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:

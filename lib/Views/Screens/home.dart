@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Controllers/screens/home.dart';
@@ -46,11 +46,11 @@ class _HomePageState extends State<HomePage> {
         if (_controller!.model.meetings
             .where((element) => element.document!.id == meeting.document!.id)
             .isEmpty) {
-              if (mounted) {
-                setState(() {
-                  _controller!.model.meetings.add(meeting);
-                });
-              }
+          if (mounted) {
+            setState(() {
+              _controller!.model.meetings.add(meeting);
+            });
+          }
         }
       }
     });

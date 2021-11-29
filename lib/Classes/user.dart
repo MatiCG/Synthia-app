@@ -6,6 +6,8 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:synthiapp/Classes/right.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Widgets/textfield.dart';
@@ -24,6 +26,7 @@ class SynthiaUser {
   // Create firebase auth instance
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   SynthiaUser() {
     _auth.authStateChanges().listen((user) {
@@ -47,7 +50,6 @@ class SynthiaUser {
     final SynthiaFirebase myFunctions = SynthiaFirebase();
     final DocumentSnapshot document =
         await _firestore.collection('users').doc(user.uid).get();
-
     myFunctions.findRightsInDocuments(
       documents: document['rights'] as List,
       callback: (right) {
@@ -94,6 +96,7 @@ class SynthiaUser {
         userCredential.user!.updateDisplayName(
             '${getDataById(FieldsID.firstname, data)} ${getDataById(FieldsID.lastname, data)}');
         userCredential.user!.updatePhotoURL(avatarPath);
+        final token = await messaging.getToken();
 
         FirebaseFirestore.instance
             .collection('users')
@@ -103,6 +106,7 @@ class SynthiaUser {
           'photoUrl': avatarPath,
           'firstname': _getDataById(data, FieldsID.firstname),
           'lastname': _getDataById(data, FieldsID.lastname),
+          'fcmToken': token,
           'rights': [],
         });
       }

@@ -30,7 +30,8 @@ class _SettingsNotificationsState extends State<SettingsNotifications> {
 
   @override
   Widget build(BuildContext context) {
-    if (_controller == null || _controller!.model == null) return const Scaffold();
+    if (_controller == null || _controller!.model == null)
+      return const Scaffold();
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: const SynthiaAppBar(
@@ -55,7 +56,8 @@ class _SettingsNotificationsState extends State<SettingsNotifications> {
             },
             itemBuilder: (headerIndex, index) {
               return ListSettingsNotificationItem(
-                item: _controller!.model!.sections[headerIndex].items[index] as SettingsNotificationItem,
+                item: _controller!.model!.sections[headerIndex].items[index]
+                    as SettingsNotificationItem,
               );
             },
           ),

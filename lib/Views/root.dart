@@ -1,5 +1,9 @@
+import 'dart:developer';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Animations/screen_transition.dart';
+import 'package:synthiapp/Classes/right.dart';
 import 'package:synthiapp/Controllers/root.dart';
 import 'package:synthiapp/Views/Screens/creation_meeting.dart';
 import 'package:synthiapp/Widgets/nav_item.dart';
@@ -14,7 +18,24 @@ class Root extends StatefulWidget {
 
 class _RootState extends State<Root> {
   final RootController _controller = RootController();
+
   int selectedPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    user.messaging.requestPermission();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      if (!user.hasRight(RightID.anyNotifications)) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(event.notification!.body ?? '')));
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +46,8 @@ class _RootState extends State<Root> {
       body: _controller.model.pages[selectedPage]['page'] as Widget,
       floatingActionButton: FloatingActionButton(
         elevation: 0,
-        onPressed: () => utils.pushScreenTransition(context, const CreationMeetingPage(), Transitions.upToDown),
+        onPressed: () => utils.pushScreenTransition(
+            context, const CreationMeetingPage(), Transitions.upToDown),
         backgroundColor: Theme.of(context).accentColor,
         child: const Icon(Icons.add),
       ),
@@ -45,7 +67,8 @@ class _RootState extends State<Root> {
       } else {
         items.add(NavItem(
           title: page['title'] as String,
-          icon: (selectedPage == index ? page['selected_icon'] : page['icon']) as IconData,
+          icon: (selectedPage == index ? page['selected_icon'] : page['icon'])
+              as IconData,
           isSelected: selectedPage == index,
           onTap: () {
             setState(() {

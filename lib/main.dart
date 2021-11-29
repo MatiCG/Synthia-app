@@ -30,8 +30,8 @@ class InitializeFirebaseApp extends StatefulWidget {
 }
 
 class _InitializeFirebaseAppState extends State<InitializeFirebaseApp> {
-  final Future<FirebaseApp> _initialization =
-      Future.delayed(const Duration(seconds: 1), () => Firebase.initializeApp());
+  final Future<FirebaseApp> _initialization = Future.delayed(
+      const Duration(seconds: 1), () => Firebase.initializeApp());
 
   @override
   Widget build(BuildContext context) {

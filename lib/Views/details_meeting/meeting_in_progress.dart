@@ -22,6 +22,7 @@ class DetailMeetingProgress extends StatefulWidget {
 
 class _DetailMeetingProgressState extends State<DetailMeetingProgress> {
   late DetailMeetingController controller;
+  bool iaCalled = false;
 
   @override
   void initState() {
@@ -43,22 +44,26 @@ class _DetailMeetingProgressState extends State<DetailMeetingProgress> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(top: 16),
-              child: ListMembers(members: controller.meeting.members, editable: false),
+              child: ListMembers(
+                  members: controller.meeting.members, editable: false),
             ),
           ),
           Align(
             alignment: Alignment.bottomCenter,
             child: SynthiaButton(
-              text: 'Commencer',
-              enable: widget.controller.isTodaysDate(),
-              color: Theme.of(context).accentColor,
-              textColor: Theme.of(context).primaryColor,
-              onPressed: () => utils.pushScreen(
-                  context,
-                  MeetingConnexion(
-                    meeting: widget.controller.meeting,
-                  )),
-            ),
+                text: !iaCalled ? 'Commencer' : 'Veuillez patienter',
+                enable: widget.controller.isTodaysDate() && iaCalled == false,
+                color: Theme.of(context).accentColor,
+                textColor: Theme.of(context).primaryColor,
+                onPressed: () async {
+                  final call = await utils.futurePushScreen(context,
+                          MeetingConnexion(meeting: widget.controller.meeting))
+                      as bool;
+
+                  setState(() {
+                    iaCalled = call;
+                  });
+                }),
           ),
         ],
       ),

@@ -113,7 +113,6 @@ class ListMeetingItem extends StatelessWidget {
   ///   - Brown : Past
   Map _getCountDown(Meeting meeting) {
     final today = DateTime.now();
-    final timeleft = meeting.date!.difference(today).inDays;
     final meetingStart = DateTime(
       meeting.date!.year,
       meeting.date!.month,
@@ -128,6 +127,7 @@ class ListMeetingItem extends StatelessWidget {
       meeting.endAt!.hour,
       meeting.endAt!.minute,
     );
+    final timeleft = meetingEnd.difference(today);
 
     final values = [
       {'color': const Color(0xff34495e), 'text': 'Passé'},
@@ -136,7 +136,7 @@ class ListMeetingItem extends StatelessWidget {
       {'color': const Color(0xffc0392b), 'text': 'En cours'},
     ];
 
-    if (timeleft.isNegative) {
+    if (meetingStart.day != today.day || timeleft.inDays.isNegative) {
       return values[0];
     } else if (meeting.date!.day == today.day &&
         today.isAfter(meetingStart) &&
@@ -144,9 +144,9 @@ class ListMeetingItem extends StatelessWidget {
       return values[3];
     } else if (today.day == meeting.date!.day) {
       return values[2];
-    } else if (timeleft >= 31) {
+    } else if (timeleft.inDays >= 31) {
       return values[1];
     }
-    return {'color': const Color(0xfff39c12), 'text': '${timeleft + 1} jours'};
+    return {'color': const Color(0xfff39c12), 'text': '${timeleft.inDays + 1} jours'};
   }
 }

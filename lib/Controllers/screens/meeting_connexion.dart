@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Classes/meeting.dart';
@@ -63,7 +62,7 @@ class MeetingConnexionController {
         });
       } else {
         utils.updateView(parent, update: () {
-          text = responseText + '\n' + currentText;
+          text = '$responseText\n$currentText';
           recognizeFinished = true;
         });
       }

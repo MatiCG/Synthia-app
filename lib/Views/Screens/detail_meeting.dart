@@ -43,6 +43,7 @@ class _DetailMeetingPageState extends State<DetailMeetingPage> {
             return DetailMeetingCompleted(
               controller: _controller,
               resume: _controller.getResumeFromSnapshot(snapshot.data!),
+              keywords: _controller.getKeywordsFromSnapshot(snapshot.data!),
             );
           }
         }

@@ -35,6 +35,18 @@ class DetailMeetingController {
     return false;
   }
 
+  String? getKeywordsFromSnapshot(Object data) {
+    if (data is DocumentSnapshot<Map<String, dynamic>> &&
+      SynthiaFirebase().checkSnapshotDocument(data, keys: ['keyWords'])) {
+      final String resume = data.data()!['keyWords'] as String;
+
+      if (resume.isNotEmpty) {
+        return resume;
+      }
+    }
+    return null;
+  }
+
   String? getResumeFromSnapshot(Object data) {
     if (data is DocumentSnapshot<Map<String, dynamic>> &&
         SynthiaFirebase().checkSnapshotDocument(data, keys: ['resume'])) {

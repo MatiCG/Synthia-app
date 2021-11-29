@@ -76,24 +76,33 @@ class MeetingConnexionController {
 
   // ignore: avoid_void_async
   void pushMeeting() async {
+    String token = '';
+
     FirebaseFirestore.instance
         .collection('meetings')
         .doc(meeting.document!.id)
         .update({'rawText': text});
-
-    if (user != null) {
-      final token = user.getUserToken();
-      print("-----------------------------------" + token);
-      final client = new http.Client();
-      try {
-        await client.get(Uri.parse(
-            'http://40.89.182.198:6000/${meeting.document!.id}/fr/$token'));
-      } catch (e) {
-        print(e);
-      } finally {
-        client.close();
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get()
+        .then((DocumentSnapshot snapshot) async {
+      if (snapshot.exists) {
+        final Map<String, dynamic> data =
+            snapshot.data()! as Map<String, dynamic>;
+        token = data["token"].toString();
+        print("-----------------------------------" + token);
+        final client = new http.Client();
+        try {
+          await client.get(Uri.parse(
+              'http://40.89.182.198:6000/${meeting.document!.id}/fr/$token'));
+        } catch (e) {
+          print(e);
+        } finally {
+          client.close();
+        }
       }
-    }
+    });
   }
 
   // ignore: avoid_void_async

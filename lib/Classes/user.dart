@@ -66,17 +66,6 @@ class SynthiaUser {
         email: email,
         password: password,
       );
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .get()
-          .then((DocumentSnapshot snapshot) {
-        if (snapshot.exists) {
-          final Map<String, dynamic> data =
-              snapshot.data()! as Map<String, dynamic>;
-          _userToken = data["token"].toString();
-        }
-      });
       return '';
     } catch (error) {
       log('SIGN-IN error: $error');
@@ -122,16 +111,11 @@ class SynthiaUser {
             'rights': [],
             'token': value.id,
           });
-          _userToken = value.id;
         });
       }
     } catch (error) {
       log('An error occured when register: $error');
     }
-  }
-
-  String getUserToken() {
-    return _userToken;
   }
 
   Future updateProfilePath(String path) async {

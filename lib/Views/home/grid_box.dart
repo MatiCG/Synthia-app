@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Controllers/screens/home.dart';
+import 'package:synthiapp/Views/Calendar/calendar.dart';
 import 'package:synthiapp/Views/Screens/invitations.dart';
 import 'package:synthiapp/Widgets/grid_box.dart';
 import 'package:synthiapp/config/config.dart';
@@ -71,38 +72,32 @@ class _HomeGridBoxState extends State<HomeGridBox> {
   Padding _buildBottomRightBox() {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
-      child: Stack(
-        alignment: AlignmentDirectional.center,
-        children: [
-           Align(
-            alignment: Alignment.topCenter,
-            child: Text(
-              'Statistiques',
-              style: TextStyle(
-                  color: Theme.of(context).accentColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
-          FutureBuilder(
-            future: widget.controller.getAllMeetings(),
-            builder: (context, snapshot) {
-              String text = "Vous n'avez pas participé à des réunions";
-
-              if (snapshot.hasData) {
-                text = 'Vous avez participer à ${snapshot.data} réunions';
-              }
-
-              return Text(
-                text,
-                style: TextStyle(
-                  color: Theme.of(context).accentColor,
-                  fontSize: 10,
+      child: InkWell(
+        onTap: () async {
+            await utils.futurePushScreen(context, Calendar(controller: widget.controller,));
+        },
+        child: Hero(
+          tag: 'calendar',
+          child: Stack(
+            alignment: AlignmentDirectional.center,
+            children: [
+              Align(
+                alignment: Alignment.topCenter,
+                child: Text(
+                  'Calendrier',
+                  style: TextStyle(
+                      color: Theme.of(context).accentColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
                 ),
-              );
-            },
+              ),
+              const Icon(
+                  Icons.calendar_today,
+                  color: Colors.blue,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

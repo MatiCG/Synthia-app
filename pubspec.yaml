@@ -33,6 +33,7 @@ dependencies:
   syncfusion_flutter_calendar: ^19.3.55
   flutter_localizations:
     sdk: flutter
+  syncfusion_localizations: ^19.3.56
 
 dev_dependencies:
   flutter_test:

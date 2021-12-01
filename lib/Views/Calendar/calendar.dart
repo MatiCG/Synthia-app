@@ -32,6 +32,11 @@ class _Calendar extends State<Calendar> {
           view: CalendarView.month,
           firstDayOfWeek: 1,
           monthViewSettings: MonthViewSettings(showAgenda: true),
+          allowedViews: const [
+            CalendarView.schedule,
+            CalendarView.month,
+          ],
+          appointmentTimeTextFormat: 'HH:mm',
           dataSource: widget.controller.getCalendarDataSource(),
         ));
   }

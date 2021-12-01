@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 import 'package:synthiapp/Widgets/provider.dart';
 import 'package:synthiapp/Widgets/splashscreen.dart';
 import 'package:synthiapp/config/config.dart';
@@ -18,6 +19,7 @@ class SynthiaApp extends StatelessWidget {
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
+          SfGlobalLocalizations.delegate
         ],
         supportedLocales: const [
           Locale('fr'),

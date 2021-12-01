@@ -87,13 +87,16 @@ class _HomeGridBoxState extends State<HomeGridBox> {
                   'Calendrier',
                   style: TextStyle(
                       color: Theme.of(context).accentColor,
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              const Icon(
-                  Icons.calendar_today,
-                  color: Colors.blue,
+              Text(
+                "Voir le calendrier",
+                style: TextStyle(
+                  color: Theme.of(context).accentColor,
+                  fontSize: 10,
+                ),
               ),
             ],
           ),

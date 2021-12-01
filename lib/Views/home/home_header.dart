@@ -37,9 +37,8 @@ class HomeHeader extends StatelessWidget {
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.15,
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(25.0)
-                      ),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25.0)),
                       child: Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

@@ -6,7 +6,7 @@
 
    <application
         android:label="synthiapp"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/synthia_logo">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

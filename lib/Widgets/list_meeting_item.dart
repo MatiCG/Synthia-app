@@ -136,7 +136,7 @@ class ListMeetingItem extends StatelessWidget {
       {'color': const Color(0xffc0392b), 'text': 'En cours'},
     ];
 
-    if (meetingStart.day != today.day || timeleft.inDays.isNegative) {
+    if (timeleft.inSeconds <= 0) {
       return values[0];
     } else if (meeting.date!.day == today.day &&
         today.isAfter(meetingStart) &&
@@ -147,6 +147,9 @@ class ListMeetingItem extends StatelessWidget {
     } else if (timeleft.inDays >= 31) {
       return values[1];
     }
-    return {'color': const Color(0xfff39c12), 'text': '${timeleft.inDays + 1} jours'};
+    return {
+      'color': const Color(0xfff39c12),
+      'text': '${timeleft.inDays + 1} jours'
+    };
   }
 }

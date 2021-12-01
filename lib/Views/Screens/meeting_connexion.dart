@@ -31,6 +31,7 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
       appBar: const SynthiaAppBar(
         title: '',
         closeIcon: Icons.close,
+        returnValue: false,
       ),
       backgroundColor: Theme.of(context).primaryColor,
       body: Column(
@@ -64,8 +65,10 @@ class _MeetingConnexionState extends State<MeetingConnexion> {
                 text: "Terminer la réunion",
                 color: const Color(0xFF00C627),
                 textColor: Theme.of(context).primaryColor,
-                onPressed: () =>
-                    {_controller!.pushMeeting(), Navigator.pop(context)},
+                onPressed: () {
+                  _controller!.pushMeeting();
+                  Navigator.pop(context, true);
+                },
               ),
             ),
           Align(

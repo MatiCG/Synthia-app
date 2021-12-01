@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:synthiapp/Views/settings/notifications.dart';
 import 'package:synthiapp/Views/settings/privacy_policy.dart';
 import 'package:synthiapp/Views/settings/report.dart';
 import 'package:synthiapp/Widgets/scroll_list.dart';
@@ -27,9 +26,11 @@ class SettingsModel {
 
   ScrollSection _accountSection() {
     return ScrollSection(title: 'Compte', items: [
+      /*
       SettingsItem(
           title: 'Paramètres de notifications',
           screen: const SettingsNotifications()),
+      */
       SettingsItem(
           title: 'Paramètres de compte rendu', screen: const SettingsReport()),
       SettingsItem(title: 'Confidentialité', screen: const PrivacyPolicy()),

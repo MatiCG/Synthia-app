@@ -94,7 +94,7 @@ class MeetingConnexionController {
         final client = new http.Client();
         try {
           await client.get(Uri.parse(
-              'http://40.89.182.198:6000/${meeting.document!.id}/fr/$token'));
+              'https://40.89.182.198:6000/${meeting.document!.id}/fr/$token'));
         } catch (e) {
           print(e);
         } finally {

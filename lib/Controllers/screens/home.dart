@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:synthiapp/Classes/meeting.dart';
+import 'package:synthiapp/Classes/appointement.dart';
 import 'package:synthiapp/Classes/synthia_firebase.dart';
 import 'package:synthiapp/Models/screens/home.dart';
 import 'package:synthiapp/config/config.dart';
@@ -141,7 +143,6 @@ class HomeController {
 
   Future<int> getAllMeetings() async {
     final meetings = await SynthiaFirebase().fetchUserMeetings();
-
     return meetings.length;
   }
 
@@ -156,4 +157,25 @@ class HomeController {
         ? 'assets/avatars/avatar_05.png'
         : user.data?.photoURL ?? 'assets/avatars/avatar_05.png';
   }
+
+  AppointmentDataSource getCalendarDataSource() {
+    List<Appointment> appointments = <Appointment>[];
+    for (final meeting in model.meetings) {
+      final startAt = RegExp(r"([0-9:]+)").allMatches(meeting.startAt.toString()).elementAt(0).group(0).toString();
+      final endAt = RegExp(r"([0-9:]+)").allMatches(meeting.endAt.toString()).elementAt(0).group(0).toString();
+      final date = meeting.date.toString().split(" ")[0];
+      appointments.add(Appointment(
+        startTime: DateTime.parse("$date $startAt:00Z"),
+        endTime: DateTime.parse("$date $endAt:00Z"),
+        subject: meeting.title,
+        color: Colors.blue,
+        startTimeZone: '',
+        endTimeZone: '',
+      ));
+    }
+
+    return AppointmentDataSource(appointments);
+  }
+
+
 }

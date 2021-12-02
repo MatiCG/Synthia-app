@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -14,6 +16,7 @@ void main() {
 class SynthiaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    HttpOverrides.global = MyHttpOverrides();
     return Provider(
       child: MaterialApp(
         localizationsDelegates: const [
@@ -42,8 +45,8 @@ class InitializeFirebaseApp extends StatefulWidget {
 }
 
 class _InitializeFirebaseAppState extends State<InitializeFirebaseApp> {
-  final Future<FirebaseApp> _initialization =
-      Future.delayed(const Duration(seconds: 1), () => Firebase.initializeApp());
+  final Future<FirebaseApp> _initialization = Future.delayed(
+      const Duration(seconds: 1), () => Firebase.initializeApp());
 
   @override
   Widget build(BuildContext context) {
@@ -61,5 +64,14 @@ class _InitializeFirebaseAppState extends State<InitializeFirebaseApp> {
         },
       ),
     );
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

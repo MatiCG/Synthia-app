@@ -1,5 +1,8 @@
 library config.globals;
 
+import 'dart:io';
+
+import 'package:flutter/services.dart';
 import 'package:synthiapp/Classes/theme.dart';
 import 'package:synthiapp/Classes/user.dart';
 import 'package:synthiapp/Classes/utils.dart';
@@ -7,6 +10,8 @@ import 'package:synthiapp/Classes/utils.dart';
 SynthiaUser user = SynthiaUser();
 SynthiaTheme theme = SynthiaTheme();
 Utils utils = Utils();
+final Future<ByteData> cert = rootBundle.load('assets/synthia.crt');
+final SecurityContext securityContext = SecurityContext.defaultContext;
 
 /// This is a quick fix for an issue that i found on Firebase.
 /// [authStateChanges] is called to many times for the same state and that

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:synthiapp/Classes/meeting.dart';
@@ -8,7 +9,6 @@ import 'package:google_speech/google_speech.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sound_stream/sound_stream.dart';
 import 'package:synthiapp/config/config.dart';
-import 'package:http/http.dart' as http;
 
 class MeetingConnexionController {
   final State<StatefulWidget> parent;
@@ -90,16 +90,13 @@ class MeetingConnexionController {
         final Map<String, dynamic> data =
             snapshot.data()! as Map<String, dynamic>;
         token = data["token"].toString();
-        print("-----------------------------------" + token);
-        final client = new http.Client();
-        try {
-          await client.get(Uri.parse(
-              'https://40.89.182.198:6000/${meeting.document!.id}/fr/$token'));
-        } catch (e) {
-          print(e);
-        } finally {
-          client.close();
-        }
+        securityContext
+            .setTrustedCertificatesBytes((await cert).buffer.asUint8List());
+        final HttpClient client = HttpClient(context: securityContext);
+        final HttpClientRequest request = await client.getUrl(Uri.parse(
+            'https://api.synthia.fr/${meeting.document!.id}/fr/$token'));
+        request.headers.set('Content-Type', 'application/json');
+        final HttpClientResponse result = await request.close();
       }
     });
   }
